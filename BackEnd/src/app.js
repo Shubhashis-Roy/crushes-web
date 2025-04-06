@@ -8,9 +8,9 @@ const app = express();
 // app.use(cors());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow only your frontend domain
-    methods: "GET,POST,PUT,DELETE", // Allow specific HTTP methods
-    credentials: true, // Allow cookies, authentication headers
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE, PATCH",
+    credentials: true,
   })
 );
 app.use(express.json());

@@ -30,15 +30,20 @@ const EditProfile = ({ user }) => {
           gender,
           about,
         },
+
         { withCredentials: true }
       );
+
+      console.log(res?.data, "res data hlo");
+
       dispatch(addUser(res?.data?.data));
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
       }, 3000);
     } catch (err) {
-      setError(err.response.data);
+      // setError(err.response.data);
+      console.log(err, "error hlo");
     }
   };
 

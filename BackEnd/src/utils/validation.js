@@ -16,7 +16,7 @@ const validateSignUpData = (req) => {
 
 const validateEditProfileData = (req) => {
   const allowedEditFields = [
-    "firstNama",
+    "firstName",
     "lastName",
     "emailId",
     "age",
