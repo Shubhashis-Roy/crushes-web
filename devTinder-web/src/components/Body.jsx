@@ -6,6 +6,7 @@ import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useEffect } from "react";
+import { getCookie } from "../utils/getCookie";
 
 const Body = () => {
   const dispatch = useDispatch();
@@ -18,9 +19,9 @@ const Body = () => {
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true,
       });
-      dispatch(addUser(res.data));
+      dispatch(addUser(res?.data));
     } catch (err) {
-      if (err.status === 401) {
+      if (err.status === 400) {
         navigate("/login");
       }
       console.error(err);
@@ -28,6 +29,12 @@ const Body = () => {
   };
 
   useEffect(() => {
+    const token = getCookie("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     fetchUser();
   }, []);
 
