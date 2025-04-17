@@ -36,10 +36,12 @@ const Connections = () => {
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
           connection;
 
+        console.log(connection, "connection ========");
+
         return (
           <div
             key={_id}
-            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto"
+            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto justify-between"
           >
             <div>
               <img
@@ -52,7 +54,11 @@ const Connections = () => {
               <h2 className="font-bold text-xl">
                 {firstName + " " + lastName}
               </h2>
-              {age && gender && <p>{age + ", " + gender}</p>}
+              <div className="flex">
+                <p>{age}</p>
+                {gender && <p> ,</p>}
+                <p className="pl-2"> {gender}</p>
+              </div>
               <p>{about}</p>
             </div>
             <Link to={"/chat/" + _id}>
