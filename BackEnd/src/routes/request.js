@@ -21,13 +21,13 @@ requestRouter.post(
           .json({ message: "Invalid status type: " + status });
       }
 
-      // User Id is present in DB or not.
+      // Check if the toUser exists
       const toUser = await User.findById(toUserId);
       if (!toUser) {
-        return res.status(400).json({ message: "User not find: " });
+        return res.status(400).json({ message: "User not found" });
       }
 
-      // If there is an existing Connection Req
+      // Check for an existing connection request in either direction
       const existingConnectionReq = await ConnectionRequest.findOne({
         $or: [
           { fromUserId, toUserId },
@@ -35,12 +35,26 @@ requestRouter.post(
         ],
       });
 
+      console.log("existingConnectionReq : ", existingConnectionReq);
+
+      // If a request exists
       if (existingConnectionReq) {
-        return res
-          .status(400)
-          .send({ message: "Connection request already exists!!!" });
+        if (existingConnectionReq.status === "rejected") {
+          existingConnectionReq.status = status;
+          const updatedReq = await existingConnectionReq.save();
+
+          return res.json({
+            message: `${req.user.firstName} is ${status} in ${toUser.firstName}`,
+            data: updatedReq,
+          });
+        } else {
+          return res
+            .status(400)
+            .json({ message: "Connection request already exists!!!" });
+        }
       }
 
+      // No existing request, create new
       const connectionRequest = new ConnectionRequest({
         fromUserId,
         toUserId,
@@ -50,12 +64,11 @@ requestRouter.post(
       const data = await connectionRequest.save();
 
       res.json({
-        message:
-          req.user.firstName + " is " + status + " in " + toUser.firstName,
+        message: `${req.user.firstName} is ${status} in ${toUser.firstName}`,
         data,
       });
     } catch (error) {
-      res.status(400).send(`connectionReq api Error: ${error.message}`);
+      res.status(400).send(`connectionReq API Error: ${error.message}`);
     }
   }
 );

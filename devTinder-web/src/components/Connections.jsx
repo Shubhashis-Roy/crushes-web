@@ -36,8 +36,6 @@ const Connections = () => {
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
           connection;
 
-        console.log(connection, "connection ========");
-
         return (
           <div
             key={_id}

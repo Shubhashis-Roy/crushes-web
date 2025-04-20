@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addRequests, removeRequest } from "../utils/requestSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
@@ -10,13 +10,15 @@ const Requests = () => {
 
   const reviewRequest = async (status, _id) => {
     try {
-      const res = axios.post(
+      axios.post(
         BASE_URL + "/request/review/" + status + "/" + _id,
         {},
         { withCredentials: true }
       );
       dispatch(removeRequest(_id));
-    } catch (err) {}
+    } catch (err) {
+      console.log(err, "review error.");
+    }
   };
 
   const fetchRequests = async () => {
@@ -26,7 +28,9 @@ const Requests = () => {
       });
 
       dispatch(addRequests(res.data.data));
-    } catch (err) {}
+    } catch (err) {
+      console.log(err, "reqest error.");
+    }
   };
 
   useEffect(() => {
@@ -49,7 +53,7 @@ const Requests = () => {
         return (
           <div
             key={_id}
-            className=" flex justify-between items-center m-4 p-4 rounded-lg bg-base-300  mx-auto"
+            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto justify-between"
           >
             <div>
               <img
@@ -62,7 +66,11 @@ const Requests = () => {
               <h2 className="font-bold text-xl">
                 {firstName + " " + lastName}
               </h2>
-              {age && gender && <p>{age + ", " + gender}</p>}
+              <div className="flex">
+                <p>{age}</p>
+                {gender && <p> ,</p>}
+                <p className="pl-2"> {gender}</p>
+              </div>
               <p>{about}</p>
             </div>
             <div>
