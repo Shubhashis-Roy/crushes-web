@@ -35,8 +35,6 @@ requestRouter.post(
         ],
       });
 
-      console.log("existingConnectionReq : ", existingConnectionReq);
-
       // If a request exists
       if (existingConnectionReq) {
         if (existingConnectionReq.status === "rejected") {

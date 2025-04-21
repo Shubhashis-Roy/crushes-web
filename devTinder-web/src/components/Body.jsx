@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addUser } from "../utils/userSlice";
+import { addUser } from "../redux/userSlice";
 import { useEffect } from "react";
 import { getCookie } from "../utils/getCookie";
 
