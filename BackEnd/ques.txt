@@ -1,3 +1,16 @@
+ToDo:
+- need to update the feed API:
+   - If someone igone then need to show this user in the last obj of the feed in next time.
+
+
+
+
+
+
+
+
+====================================================
+
 User.findOne with duplicate, which obj it return.
 diff b/w patch & put
 
@@ -19,3 +32,5 @@ docs ref: schema type
 ========================================
 READ ABOUT:
 - Thought process - post vs get API
+
+

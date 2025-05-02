@@ -26,8 +26,18 @@ authRouter.post("/signup", async (req, res) => {
       password: passwordHash,
     });
 
-    await user.save();
-    res.status(200).send("User Added Successfully!");
+    const savedUser = await user.save();
+    // Create a JWT token
+    const token = await savedUser.getJWT();
+
+    // Add the token to cookie & send the res back to the user
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 2 * 3600000),
+    });
+
+    res
+      .status(200)
+      .send({ message: "User Added Successfully!", data: savedUser });
   } catch (err) {
     // if (err.code === 11000) {
     //   res.status(400).send("Email already exists");

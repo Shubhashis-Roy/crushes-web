@@ -1,0 +1,1 @@
+- after signup need redirect to profile and show the profile details 
