@@ -17,7 +17,6 @@ const Feed = () => {
       });
       dispatch(addFeed(res?.data?.data));
     } catch (err) {
-      //TODO: handle error
       console.log(err);
     }
   };
@@ -26,17 +25,24 @@ const Feed = () => {
     getFeed();
   }, []);
 
-  if (!feed) return;
+  if (!feed) return null;
 
   if (feed.length <= 0)
-    return <h1 className="flex justify-center my-10">No new users founds!</h1>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-white via-pink-100 to-pink-200">
+        <h1 className="text-black text-2xl font-semibold drop-shadow-lg">
+          💔 No new users found!
+        </h1>
+      </div>
+    );
 
   return (
-    feed && (
-      <div className="flex justify-center my-10">
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-white via-pink-50 to-pink-100">
+      <div className="backdrop-blur-lg bg-white/60 p-6 rounded-2xl shadow-xl border border-pink-200 w-[90%] max-w-md transition-all duration-500">
         <UserCard user={feed[0]} />
       </div>
-    )
+    </div>
   );
 };
+
 export default Feed;
