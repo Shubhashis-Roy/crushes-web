@@ -26,11 +26,9 @@ const NavBar = () => {
     <div className="fixed top-0 left-0 w-full z-50 bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg px-6 py-3 flex justify-between items-center">
       <Link
         to="/"
-        className={`text-2xl font-bold drop-shadow-md transition-colors duration-300 ${
-          isFeedPage ? "text-pink-600" : "text-white"
-        }`}
+        className="text-2xl font-bold drop-shadow-md transition-colors duration-300 text-pink-600"
       >
-        ❤️ DevTinder
+        Crushes
       </Link>
 
       {user && (

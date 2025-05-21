@@ -1,9 +1,10 @@
-import { useState } from "react";
-import UserCard from "./UserCard";
+import { useState, useRef } from "react";
+import Sidebar from "./Sidebar";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../redux/userSlice";
+import { FaPen } from "react-icons/fa";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
@@ -11,138 +12,166 @@ const EditProfile = ({ user }) => {
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
   const [age, setAge] = useState(user.age || "");
   const [gender, setGender] = useState(user.gender || "");
+  // const [gender, setGender] = useState(user.gender || "");
+
   const [about, setAbout] = useState(user.about || "");
-  const [error, setError] = useState("");
-  const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
+  const [showAgeToast, setShowAgeToast] = useState(false); // 👈 New state
+  const dispatch = useDispatch();
+  const fileInputRef = useRef(null);
 
-  const saveProfile = async () => {
-    //Clear Errors
-    setError("");
-    try {
-      const res = await axios.patch(
-        BASE_URL + "/profile/edit",
-        {
-          firstName,
-          lastName,
-          photoUrl,
-          age,
-          gender,
-          about,
-        },
+ const saveProfile = async () => {
+  // Age validation
+  const ageNumber = parseInt(age);
+  if (isNaN(ageNumber) || ageNumber < 18 || ageNumber > 100) {
+    setShowAgeToast(true);
+    setTimeout(() => setShowAgeToast(false), 3000);
+    return;
+  }
 
-        { withCredentials: true }
-      );
+  try {
+    const res = await axios.patch(
+      `${BASE_URL}/profile/edit`,
+      {
+        firstName,
+        lastName,
+        photoUrl,
+        age,
+        gender: gender.toLowerCase(), // ✅ Ensures consistent format
+        about,
+      },
+      { withCredentials: true }
+    );
+    dispatch(addUser(res?.data?.data));
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-      console.log(res?.data, "res data hlo");
 
-      dispatch(addUser(res?.data?.data));
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-    } catch (err) {
-      // setError(err.response.data);
-      console.log(err, "error hlo");
-    }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
-    <>
-      <div className="flex justify-center my-10">
-        <div className="flex justify-center mx-10">
-          <div className="card bg-base-300 w-96 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title justify-center">Edit Profile</h2>
-              <div>
-                <label className="form-control w-full max-w-xs my-2">
-                  <div className="label">
-                    <span className="label-text">First Name:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={firstName}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full max-w-xs my-2">
-                  <label className="form-control w-full max-w-xs my-2">
-                    <div className="label">
-                      <span className="label-text">Last Name:</span>
-                    </div>
-                    <input
-                      type="text"
-                      value={lastName}
-                      className="input input-bordered w-full max-w-xs"
-                      onChange={(e) => setLastName(e.target.value)}
-                    />
-                  </label>
-                  <div className="label">
-                    <span className="label-text">Photo URL :</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={photoUrl}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setPhotoUrl(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full max-w-xs my-2">
-                  <div className="label">
-                    <span className="label-text">Age:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={age}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setAge(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full max-w-xs my-2">
-                  <div className="label">
-                    <span className="label-text">Gender:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={gender}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full max-w-xs my-2">
-                  <div className="label">
-                    <span className="label-text">About:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={about}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setAbout(e.target.value)}
-                  />
-                </label>
-              </div>
-              <p className="text-red-500">{error}</p>
-              <div className="card-actions justify-center m-2">
-                <button className="btn btn-primary" onClick={saveProfile}>
-                  Save Profile
-                </button>
-              </div>
-            </div>
+    <div className="flex overflow-hidden mt-5 mb-4">
+      <Sidebar />
+
+      <div className="flex-1 overflow-y-auto px-3 py-2">
+        <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl border border-pink-100">
+          <div className="flex flex-col items-center mb-8 relative">
+            <img
+              src={photoUrl || "/default-avatar.png"}
+              alt="User"
+              className="w-36 h-36 rounded-full object-cover border-4 border-pink-300 shadow-lg"
+            />
+            <button
+              className="absolute top-28 right-[calc(45%-35px)] bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full shadow-md"
+              onClick={() => fileInputRef.current.click()}
+            >
+              <FaPen size={14} />
+            </button>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <h2 className="mt-4 text-xl font-semibold text-pink-700">
+              Edit Your Profile
+            </h2>
+            <p className="text-sm text-gray-500">
+              Let the world know who you are 🌸
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            />
+            <input
+              type="number"
+              placeholder="Age"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              min="18"
+              max="100"
+              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            />
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            >
+              <option value="" disabled>
+                Select your gender
+              </option>
+              <option value="Man">Man</option>
+              <option value="Woman">Woman</option>
+              <option value="Non-binary">Non-binary</option>
+              <option value="Trans man">Trans man</option>
+              <option value="Trans woman">Trans woman</option>
+              <option value="Genderfluid">Genderfluid</option>
+              <option value="Genderqueer">Genderqueer</option>
+              <option value="Agender">Agender</option>
+              <option value="Pangender">Pangender</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <textarea
+              placeholder="About You"
+              value={about}
+              onChange={(e) => setAbout(e.target.value)}
+              rows={4}
+              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300 col-span-1 sm:col-span-2 resize-none"
+            />
+          </div>
+
+          <button
+            onClick={saveProfile}
+            className="mt-6 w-full bg-pink-500 text-white py-3 rounded-lg font-semibold hover:bg-pink-600 transition"
+          >
+            Save Profile
+          </button>
         </div>
-        <UserCard
-          user={{ firstName, lastName, photoUrl, age, gender, about }}
-        />
+
+        {/* ✅ Success Toast */}
+        {showToast && (
+          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-pink-200 shadow-lg px-6 py-3 rounded-xl text-pink-700 font-medium z-50 animate-fadeInUp">
+            Profile saved successfully 🎉
+          </div>
+        )}
+
+        {/* ❌ Age Error Toast */}
+        {showAgeToast && (
+          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-red-200 shadow-lg px-6 py-3 rounded-xl text-red-700 font-medium z-50 animate-fadeInUp">
+            Age must be between 18 and 100 🚫
+          </div>
+        )}
       </div>
-      {showToast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Profile saved successfully.</span>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
+
 export default EditProfile;
