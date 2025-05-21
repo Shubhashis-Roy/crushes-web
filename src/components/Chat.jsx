@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { createSocketConnection } from "../utils/socket";
+import { createSocketConnection } from "../socket/socket";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
@@ -17,7 +17,7 @@ const Chat = () => {
       withCredentials: true,
     });
 
-    console.log(chat.data.messages);
+    // console.log(chat.data.messages);
 
     const chatMessages = chat?.data?.messages.map((msg) => {
       const { senderId, text } = msg;
@@ -46,7 +46,7 @@ const Chat = () => {
     });
 
     socket.on("messageReceived", ({ firstName, lastName, text }) => {
-      console.log(firstName + " :  " + text);
+      // console.log(firstName + " :  " + text);
       setMessages((messages) => [...messages, { firstName, lastName, text }]);
     });
 
