@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
+ 
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
@@ -50,6 +51,7 @@ const Chat = () => {
       console.error("Failed to fetch chat messages", err);
     }
   };
+ 
 
   // Fetch list of chats (partners) for side menu
   const fetchChatList = async () => {
@@ -82,10 +84,8 @@ const Chat = () => {
       userId,
       targetUserId,
     });
-
-    socketRef.current.on("messageReceived", ({ firstName, lastName, text }) => {
-      setMessages((prev) => [...prev, { firstName, lastName, text }]);
-      scrollToBottom();
+    socket.on("messageReceived", ({ firstName, lastName, text }) => { 
+      setMessages((messages) => [...messages, { firstName, lastName, text }]); 
     });
 
     return () => {
