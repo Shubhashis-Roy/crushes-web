@@ -1,12 +1,11 @@
 import { useState, useRef } from "react";
-import Sidebar from "./Sidebar";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL } from "../../utils/constants";
 import { useDispatch } from "react-redux";
-import { addUser } from "../redux/userSlice";
+import { addUser } from "../../redux/userSlice";
 import { FaPen } from "react-icons/fa";
 
-const EditProfile = ({ user }) => {
+const EditProfileContent = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
@@ -71,11 +70,9 @@ const EditProfile = ({ user }) => {
 
   return (
     <div className="flex overflow-hidden">
-      <Sidebar />
-
-      <div className="flex-1 overflow-y-auto ">
-        <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-xl border border-pink-100">
-          <div className="flex flex-col items-center mb-8 relative">
+      <div className="flex-1 overflow-y-auto">
+        <div className=" mx-auto bg-white p-3">
+          <div className="flex flex-col items-center relative">
             <img
               src={photoUrl || "/default-avatar.png"}
               alt="User"
@@ -94,10 +91,10 @@ const EditProfile = ({ user }) => {
               onChange={handleFileChange}
               className="hidden"
             />
-            <h2 className="mt-4 text-xl font-semibold text-pink-700">
+            <h2 className="p-2 text-xl font-semibold text-pink-700">
               Edit Your Profile
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm p-3 text-gray-500">
               Let the world know who you are 🌸
             </p>
           </div>
@@ -145,14 +142,25 @@ const EditProfile = ({ user }) => {
               <option value="Pangender">Pangender</option>
               <option value="Other">Other</option>
             </select>
-
-            <textarea
-              placeholder="About You"
-              value={about}
-              onChange={(e) => setAbout(e.target.value)}
-              rows={4}
-              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300 col-span-1 sm:col-span-2 resize-none"
-            />
+            <div className="col-span-1 sm:col-span-2">
+              <textarea
+                placeholder="About You"
+                value={about}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (inputValue.length <= 40) {
+                    setAbout(inputValue);
+                  } else {
+                    setAbout(inputValue.slice(0, 40));
+                  }
+                }}
+                rows={4}
+                className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none"
+              />
+              <p className="text-right text-xs text-gray-400 mt-1">
+                {about.length} / 40 characters
+              </p>
+            </div>
           </div>
 
           <button
@@ -186,4 +194,4 @@ const EditProfile = ({ user }) => {
   );
 };
 
-export default EditProfile;
+export default EditProfileContent;
