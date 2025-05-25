@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
- 
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
@@ -51,7 +50,6 @@ const Chat = () => {
       console.error("Failed to fetch chat messages", err);
     }
   };
- 
 
   // Fetch list of chats (partners) for side menu
   const fetchChatList = async () => {
@@ -84,8 +82,10 @@ const Chat = () => {
       userId,
       targetUserId,
     });
-    socket.on("messageReceived", ({ firstName, lastName, text }) => { 
-      setMessages((messages) => [...messages, { firstName, lastName, text }]); 
+
+    socketRef.current.on("messageReceived", ({ firstName, lastName, text }) => {
+      setMessages((prev) => [...prev, { firstName, lastName, text }]);
+      scrollToBottom();
     });
 
     return () => {
@@ -116,64 +116,59 @@ const Chat = () => {
         <header className="p-4 font-semibold text-lg border-b border-gray-700 text-pink-400">
           Chats
         </header>
-         <ul className="divide-y divide-gray-700">
-      {chatList.length === 0 ? (
-        chatPartner ? (
-          <li
-            key={chatPartner.userId || "active"}
-            onClick={() =>
-              navigate(`/chat/${chatPartner.userId || targetUserId}`)
-            }
-            className="cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 bg-pink-600"
-          >
-            <img
-              src={chatPartner.photoUrl || "/default-profile.png"}
-              alt={`${chatPartner.firstName} ${chatPartner.lastName}`}
-              className="w-12 h-12 rounded-full object-cover border-2 border-white"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-white truncate">
-                {chatPartner.firstName} {chatPartner.lastName}
-              </div>
-              <div className="text-xs text-gray-300 truncate">Active Chat</div>
-            </div>
-          </li>
-        ) : (
-          <li className="p-4 text-gray-400">No chats yet</li>
-        )
-      ) : (
-        chatList.map((chat) => {
-          const isActive = chat.userId === targetUserId;
-          return (
-            <li
-              key={chat.userId}
-              onClick={() => navigate(`/chat/${chat.userId}`)}
-              className={`cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 hover:bg-pink-700 ${
-                isActive ? "bg-pink-600" : ""
-              }`}
-            >
-              <img
-                src={chat.photoUrl || "/default-profile.png"}
-                alt={`${chat.firstName} ${chat.lastName}`}
-                className="w-12 h-12 rounded-full object-cover border-2 border-white"
-              />
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-white truncate">
-                  {chat.firstName} {chat.lastName}
+        <ul className="divide-y divide-gray-700">
+          {chatList.length === 0 ? (
+            chatPartner ? (
+              <li
+                key={chatPartner.userId || "active"}
+                onClick={() =>
+                  navigate(`/chat/${chatPartner.userId || targetUserId}`)
+                }
+                className="cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 bg-pink-600"
+              >
+                <img
+                  src={chatPartner.photoUrl || "/default-profile.png"}
+                  alt={`${chatPartner.firstName} ${chatPartner.lastName}`}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-white truncate">
+                    {chatPartner.firstName} {chatPartner.lastName}
+                  </div>
+                  <div className="text-xs text-gray-300 truncate">
+                    Active Chat
+                  </div>
                 </div>
-                <div className="text-xs text-gray-300 truncate flex items-center gap-1">
-                  <span className="flex-1 truncate">{chat.lastMessage || "No messages yet"}</span>
-                  {renderStatusIcon(chat.lastMessageStatus)}
-                </div>
-              </div>
-              <div className="text-[10px] text-gray-400 ml-2 whitespace-nowrap">
-                {formatTime(chat.lastMessageAt)}
-              </div>
-            </li>
-          );
-        })
-      )}
-    </ul>
+              </li>
+            ) : (
+              <li className="p-4 text-gray-400">No chats yet</li>
+            )
+          ) : (
+            chatList.map((chat) => {
+              const isActive = chat.userId === targetUserId;
+              return (
+                <li
+                  key={chat.userId}
+                  onClick={() => navigate(`/chat/${chat.userId}`)}
+                  className={`cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 hover:bg-pink-700 ${
+                    isActive ? "bg-pink-600" : ""
+                  }`}
+                >
+                  <img
+                    src={chat.photoUrl || "/default-profile.png"}
+                    alt={`${chat.firstName} ${chat.lastName}`}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-white"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-white truncate">
+                      {chat.firstName} {chat.lastName}
+                    </div>
+                  </div>
+                </li>
+              );
+            })
+          )}
+        </ul>
       </aside>
 
       {/* Chat area */}
