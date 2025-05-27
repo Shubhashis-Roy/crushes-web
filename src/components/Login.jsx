@@ -12,6 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("Subhashis@9");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [city, setCity] = useState("");
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,7 +52,7 @@ const Login = () => {
       setLoading(true);
       const res = await axios.post(
         BASE_URL + "/signup",
-        { firstName, lastName, emailId, password },
+        { firstName, lastName, city, emailId, password },
         { withCredentials: true }
       );
       dispatch(addUser(res.data.data));
@@ -148,6 +149,12 @@ const Login = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Last Name"
+                />
+                <InputField
+                  label="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="City"
                 />
               </>
             )}

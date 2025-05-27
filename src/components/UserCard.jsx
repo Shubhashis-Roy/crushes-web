@@ -1,21 +1,24 @@
+import PropTypes from "prop-types";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../redux/feedSlice";
 
 const UserCard = ({ user }) => {
-  const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
+  const { _id, firstName, lastName, age, gender, about, city } = user;
   const dispatch = useDispatch();
 
   const handleSendRequest = async (status, userId) => {
     try {
-      const res = await axios.post(
+      await axios.post(
         BASE_URL + "/request/send/" + status + "/" + userId,
         {},
         { withCredentials: true }
       );
       dispatch(removeUserFromFeed(userId));
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -24,7 +27,11 @@ const UserCard = ({ user }) => {
         <img src={user.photoUrl} alt="photo" />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">{firstName + " " + lastName}</h2>
+        <div className="flex">
+          <h2 className="card-title">{firstName + " " + lastName}</h2>
+          {city && <p className="text-[18px] pt-1">{" , " + city?.cityName}</p>}
+        </div>
+
         {age && gender && <p>{age + ", " + gender}</p>}
         <p>{about}</p>
         <div className="card-actions justify-center my-4">
@@ -45,4 +52,18 @@ const UserCard = ({ user }) => {
     </div>
   );
 };
+
+UserCard.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
+    photoUrl: PropTypes.string,
+    age: PropTypes.number,
+    gender: PropTypes.oneOf(["male", "female", "other"]),
+    about: PropTypes.string,
+    city: PropTypes.string,
+  }),
+};
+
 export default UserCard;

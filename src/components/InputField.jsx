@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Mail, Lock, User } from "lucide-react";
+import { Mail, Lock, User, MapPin } from "lucide-react";
 
 const icons = {
   mail: Mail,
@@ -24,9 +24,15 @@ const InputField = ({
     <div className="mb-4">
       <label className="text-white text-sm">{label}</label>
       <div className="relative">
-        <span className="absolute left-2 top-2 text-white/70">
-          <Icon size={18} />
-        </span>
+        {label === "City" ? (
+          <span className="absolute left-2 top-2 text-white/70 pt-2">
+            <MapPin size={18} />
+          </span>
+        ) : (
+          <span className="absolute left-2 top-2 text-white/70 pt-2">
+            <Icon size={18} />
+          </span>
+        )}
         <input
           type={type}
           value={value}
