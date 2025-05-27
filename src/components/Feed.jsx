@@ -23,6 +23,7 @@ const Feed = () => {
 
   useEffect(() => {
     getFeed();
+    // eslint-disable-next-line
   }, []);
 
   if (!feed) return null;
