@@ -29,7 +29,7 @@ const UserCard = ({ user }) => {
       <div className="card-body">
         <div className="flex">
           <h2 className="card-title">{firstName + " " + lastName}</h2>
-          {city && <p className="text-[18px] pt-1">{" , " + city?.cityName}</p>}
+          {city && <p className="text-[18px] pt-1">{" , " + city}</p>}
         </div>
 
         {age && gender && <p>{age + ", " + gender}</p>}
