@@ -1,19 +1,22 @@
 import { useRef, useState } from "react";
 import {
-  FaTimes, FaBars, FaUser, FaLock, FaSignOutAlt, FaImages, FaVideo,
-  FaEnvelope, FaHeart, FaCogs, FaEdit, FaTrash,
+  FaTimes,
+  FaBars,
+  FaUser,
+  FaLock,
+  FaSignOutAlt,
+  FaEdit,
+  FaTrash,
+  FaImages
 } from "react-icons/fa";
 import PropTypes from "prop-types";
 
 const menuItems = [
-  { label: "Recommendation", icon: <FaHeart /> },
   { label: "My Match", icon: <FaUser /> },
-  { label: "Personal Information", icon: <FaCogs /> },
-  { label: "Edit Profile", icon: <FaEdit /> },
-  { label: "Change Password", icon: <FaLock /> },
-  { label: "My Messages", icon: <FaEnvelope /> },
+  // { label: "Personal Information", icon: <FaCogs /> },
+  { label: "Edit Personal Info", icon: <FaEdit /> },
   { label: "Manage Images", icon: <FaImages /> },
-  { label: "Manage Videos", icon: <FaVideo /> },
+  { label: "Change Password", icon: <FaLock /> },
   { label: "Delete Account", icon: <FaTrash />, danger: true },
   { label: "Logout", icon: <FaSignOutAlt />, danger: true },
 ];
@@ -46,7 +49,9 @@ const Sidebar = ({ onSelect, selectedLabel }) => {
       >
         {/* Toggle Button */}
         <div className="flex justify-between items-center mb-4 ps-3">
-          {isOpen && <h2 className="text-pink-600 font-bold text-xl">My Area</h2>}
+          {isOpen && (
+            <h2 className="text-pink-600 font-bold text-xl">My Area</h2>
+          )}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="text-pink-600 text-xl hover:text-pink-800 transition"

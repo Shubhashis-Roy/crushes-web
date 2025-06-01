@@ -48,9 +48,13 @@ const NavBar = () => {
               className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-400 shadow-pink-200 shadow-md"
             >
               <img
-                alt="user avatar"
-                src={user.photoUrl}
-                className="object-cover w-full h-full"
+                src={
+                  Array.isArray(user.photoUrl)
+                    ? user.photoUrl[0] || "/default-avatar.png"
+                    : user.photoUrl || "/default-avatar.png"
+                }
+                alt="User"
+                className="w-full h-full object-cover"
               />
             </div>
 

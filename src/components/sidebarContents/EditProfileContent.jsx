@@ -57,16 +57,6 @@ const EditProfileContent = ({ user }) => {
     gender !== (user.gender || "") ||
     about !== (user.about || "");
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPhotoUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
 
   return (
     <div className="flex overflow-hidden">
@@ -74,26 +64,15 @@ const EditProfileContent = ({ user }) => {
         <div className=" mx-auto bg-white p-3">
           <div className="flex flex-col items-center relative">
             <img
-              src={photoUrl || "/default-avatar.png"}
+              src={
+                Array.isArray(user.photoUrl)
+                  ? user.photoUrl[0] || "/default-avatar.png"
+                  : user.photoUrl || "/default-avatar.png"
+              }
               alt="User"
               className="w-36 h-36 rounded-full object-cover border-4 border-pink-300 shadow-lg"
             />
-            <button
-              className="absolute top-28 right-[calc(45%-35px)] bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full shadow-md"
-              onClick={() => fileInputRef.current.click()}
-            >
-              <FaPen size={14} />
-            </button>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <h2 className="p-2 text-xl font-semibold text-pink-700">
-              Edit Your Profile
-            </h2>
+          
             <p className="text-sm p-3 text-gray-500">
               Let the world know who you are 🌸
             </p>

@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import axios from "axios";
@@ -11,6 +11,7 @@ import { getCookie } from "../utils/getCookie";
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); // 👈 get current route
   const userData = useSelector((store) => store.user);
 
   const fetchUser = async () => {
@@ -42,8 +43,10 @@ const Body = () => {
     <div>
       <NavBar />
       <Outlet />
-      <Footer />
+      {/* Show footer only on login screen */}
+      {location.pathname === "/login" && <Footer />}
     </div>
   );
 };
+
 export default Body;

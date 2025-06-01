@@ -39,6 +39,32 @@ const PersonalInfoContent = () => {
     );
   };
 
+  const handleSave = () => {
+    const formData = {
+      sexualOrientation,
+      pronouns,
+      jobTitle,
+      company,
+      school,
+      location,
+      drinking,
+      smoking,
+      cannabis,
+      exercise,
+      diet,
+      pets,
+      zodiac,
+      intent,
+      interests,
+      spotify,
+      instagram,
+      languages,
+      verified,
+    };
+    console.log("Saving personal info:", formData);
+    // Add API call or save logic here
+  };
+
   const interestOptions = ["Hiking", "Reading", "Music", "Travel", "Cooking"];
   const sexualOptions = ["Straight", "Gay", "Bisexual", "Pansexual", "Asexual"];
   const intentOptions = ["Long-term partner", "Short-term fun", "New friends"];
@@ -293,6 +319,16 @@ const PersonalInfoContent = () => {
           />
           <label className="font-semibold">Verified Badge</label>
         </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={handleSave}
+          className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200"
+        >
+          Save
+        </button>
       </div>
     </div>
   );
