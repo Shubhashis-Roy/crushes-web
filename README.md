@@ -28,7 +28,7 @@ Crushes – Social Matching App with React.js, Vite, Node, Express.js, MongoDB, 
           <th>React.js</th>
           <th>Vite</th>
            <th>React-Redux</th>
-           <th> AWS SES</th>
+           <th>AWS SES</th>
         </tr>
           <tr>
            <th>MongoDB</th>
@@ -39,7 +39,7 @@ Crushes – Social Matching App with React.js, Vite, Node, Express.js, MongoDB, 
       </tbody>    
 </table
 
-### <b> NPM Packages </b>
+### <b> Front-end NPM Packages </b>
 
 - react
 - react-dom
@@ -53,6 +53,19 @@ Crushes – Social Matching App with React.js, Vite, Node, Express.js, MongoDB, 
 - tailwindcss-animate
 - heroicons/react
 
+### <b> Back-end NPM Packages </b>
+
+- socket.io
+- node-cron
+- multer
+- bcrypt
+- cookie-parser
+- validator
+- jsonwebtoken
+- firebase
+- express
+- cors
+
 ### Other Applications
 
 - Postman
@@ -63,7 +76,7 @@ Crushes – Social Matching App with React.js, Vite, Node, Express.js, MongoDB, 
 
 ### 1. Create a new directory, cd into it and run 'git init' .
 
-### 2. Clone this repository
+### 2. Clone this repository and the back-end repository. I’ve pasted the back-end repository link above.
 
 ### 3. Create a .gitignore file add node-modules, .env .
 
