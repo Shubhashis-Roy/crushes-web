@@ -6,16 +6,22 @@ import { removeUserFromFeed } from "../redux/feedSlice";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { useState } from "react";
-import { FaHeart, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaHeart,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTimes,
+} from "react-icons/fa";
 
 const UserCard = ({ user }) => {
   const dispatch = useDispatch();
   const { _id, firstName, age, gender, about, city, photoUrl } = user;
 
   // Use user.photoUrl array or fallback to single photoUrl in array form
-  const photos = Array.isArray(user.photoUrl) && user.photoUrl.length > 0
-    ? user.photoUrl
-    : [photoUrl];
+  const photos =
+    Array.isArray(user.photoUrl) && user.photoUrl.length > 0
+      ? user.photoUrl
+      : [photoUrl];
 
   // State to track which photo is currently shown
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
@@ -46,15 +52,17 @@ const UserCard = ({ user }) => {
         immediate: down,
       });
     },
-    onDragEnd: ({ movement: [mx], direction: [xDir], velocity }) => {
-      const swipeThreshold = 100;
 
-      if (Math.abs(mx) < swipeThreshold || velocity < 0.3) {
+    onDragEnd: ({ movement: [mx], direction: [xDir], velocity }) => {
+      const swipeThreshold = 120;
+      const velocityThreshold = 0.4;
+
+      if (Math.abs(mx) < swipeThreshold || velocity < velocityThreshold) {
         api.start({ x: 0, rot: 0 });
         return;
       }
 
-      if (xDir < 0) {
+      if (xDir > 0) {
         setShowLove(true);
         setTimeout(() => setShowLove(false), 1500);
         handleSendRequest("interested");
@@ -64,7 +72,8 @@ const UserCard = ({ user }) => {
         handleSendRequest("ignored");
       }
 
-      api.start({ x: xDir < 0 ? -500 : 500, rot: xDir < 0 ? -15 : 15 });
+      // Animate card out
+      api.start({ x: xDir > 0 ? 500 : -500, rot: xDir > 0 ? 15 : -15 });
     },
   });
 
@@ -82,7 +91,7 @@ const UserCard = ({ user }) => {
     <div className="relative w-96 h-[660px] flex flex-col items-center justify-center">
       {/* ❤️ Floating hearts */}
       {showLove && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20">
           {[...Array(6)].map((_, i) => (
             <FaHeart
               key={i}
@@ -96,13 +105,31 @@ const UserCard = ({ user }) => {
               }}
             />
           ))}
+          <div className="relative z-30 mt-4 text-white text-xl font-semibold">
+            ❤️ Interested
+          </div>
         </div>
       )}
 
       {/* ❌ NO text */}
       {showNo && (
-        <div className="absolute top-1/2 left-1/2 z-20 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="text-red-600 text-6xl font-bold animate-no">NO</div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20">
+          {[...Array(6)].map((_, i) => (
+            <FaTimes
+              key={i}
+              className="text-red-500 text-3xl animate-float"
+              style={{
+                position: "absolute",
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                opacity: 0.7,
+                animationDelay: `${i * 0.2}s`,
+              }}
+            />
+          ))}
+          <div className="relative z-30 mt-4 text-white text-xl font-semibold">
+            ❌ Not Interested
+          </div>
         </div>
       )}
 
@@ -110,7 +137,7 @@ const UserCard = ({ user }) => {
       <animated.div
         {...bind()}
         style={{ x, rotateZ: rot }}
-        className="absolute w-full h-[600px] rounded-2xl overflow-hidden shadow-xl touch-none z-10 bg-base-300"
+        className="absolute w-full h-[600px] rounded-2xl overflow-hidden shadow-xl touch-none z-10 bg-base-300 cursor-pointer"
       >
         {/* Photo status bar */}
         <div className="absolute top-3 left-3 right-3 z-20 flex gap-2 justify-center">
@@ -118,9 +145,7 @@ const UserCard = ({ user }) => {
             <div
               key={idx}
               className={`h-1 flex-1 rounded-full overflow-hidden ${
-                idx === currentPhotoIndex
-                  ? "bg-pink-600"
-                  : "bg-gray-300"
+                idx === currentPhotoIndex ? "bg-pink-600" : "bg-gray-300"
               }`}
             >
               {/* Fill proportionally (optional) */}
@@ -156,11 +181,11 @@ const UserCard = ({ user }) => {
           <FaChevronRight />
         </button>
 
-        <div className="card-body relative h-[600px]">
+        <div className="card-body relative h-[560px]">
           <img
             src={photos[currentPhotoIndex]}
             alt={`${firstName}'s photo ${currentPhotoIndex + 1}`}
-            className="w-full h-full object-cover z-10 relative rounded-2xl"
+            className="w-full h-full object-cover z-10 relative rounded-2xl pointer-events-none touch-none"
           />
 
           <div className="flex justify-between items-center mt-4 px-2 gap-40">
@@ -179,25 +204,7 @@ const UserCard = ({ user }) => {
       </animated.div>
 
       {/* Bottom Action Buttons */}
-      <div className="absolute bottom-0 flex justify-center gap-8 z-30">
-        <button
-          onClick={() => {
-            setShowLove(true);
-            setTimeout(() => setShowLove(false), 1500);
-            handleSendRequest("interested");
-          }}
-          className="w-14 h-14 rounded-full border-4 border-green-400 text-green-500 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
-        >
-          ❤️
-        </button>
-
-        <button
-          onClick={() => alert("⭐ Maybe clicked – placeholder")}
-          className="w-12 h-12 rounded-full border-4 border-blue-300 text-blue-400 flex items-center justify-center text-xl hover:scale-110 transition-transform"
-        >
-          ⭐
-        </button>
-
+      <div className="absolute bottom-9 flex justify-center gap-8 z-30">
         <button
           onClick={() => {
             setShowNo(true);
@@ -207,6 +214,23 @@ const UserCard = ({ user }) => {
           className="w-14 h-14 rounded-full border-4 border-red-400 text-red-500 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
         >
           ❌
+        </button>
+
+        <button
+          onClick={() => alert("⭐ Maybe clicked – placeholder")}
+          className="w-12 h-12 rounded-full border-4 border-blue-300 text-blue-400 flex items-center justify-center text-xl hover:scale-110 transition-transform"
+        >
+          ⭐
+        </button>
+        <button
+          onClick={() => {
+            setShowLove(true);
+            setTimeout(() => setShowLove(false), 1500);
+            handleSendRequest("interested");
+          }}
+          className="w-14 h-14 rounded-full border-4 border-green-400 text-green-500 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
+        >
+          ❤️
         </button>
       </div>
     </div>

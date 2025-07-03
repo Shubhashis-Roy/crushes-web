@@ -1,4 +1,3 @@
-// Feed.js
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +23,7 @@ const Feed = () => {
 
   useEffect(() => {
     getFeed();
+    // eslint-disable-next-line
   }, []);
 
   if (!feed) return null;
@@ -32,7 +32,7 @@ const Feed = () => {
     return (
       <div className="relative min-h-screen flex items-center justify-center ">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1472396961693-142e6e269027?q=80')] bg-cover bg-center mix-blend-overlay opacity-30 z-0" />
-        <h1 className="relative z-10 text-white text-3xl font-semibold drop-shadow-lg">
+        <h1 className="relative z-10 text-white text-3xl font-semibold drop-shadow-lg text-center sm:text-left">
           💔 No new users found!
         </h1>
       </div>

@@ -22,11 +22,16 @@ const Connections = () => {
 
   useEffect(() => {
     fetchConnections();
+    // eslint-disable-next-line
   }, []);
 
-  if (!connections) return;
-
-  if (connections.length === 0) return <h1> No Connections Found</h1>;
+  if (!connections || connections.length === 0)
+    return (
+      <h1 className="flex justify-center mt-72 sm:mt-52">
+        {" "}
+        No Connections Found
+      </h1>
+    );
 
   return (
     <div className="text-center my-10">
