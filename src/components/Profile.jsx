@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import MyMatchContent from "./sidebarContents/MyMatchContent";
 // import PersonalInfoContent from "./sidebarContents/PersonalInfoContent";
 import EditProfileContent from "./sidebarContents/EditProfileContent";
-import ChangePasswordContent from "./sidebarContents/ChangePasswordContent";
+// import ChangePasswordContent from "./sidebarContents/ChangePasswordContent";
 import DeleteAccountContent from "./sidebarContents/DeleteAccountContent";
 import { removeUser } from "../redux/userSlice";
 import { BASE_URL } from "../utils/constants";
@@ -47,10 +47,10 @@ const Profile = () => {
         return <MyMatchContent />;
       case "Edit Personal Info":
         return <EditProfileContent user={user} />;
-        case "Manage Images":
-          return <ManageImagesContent user={user} />;
-      case "Change Password":
-        return <ChangePasswordContent />;
+      case "Manage Images":
+        return <ManageImagesContent user={user} />;
+      // case "Change Password":
+      //   return <ChangePasswordContent />;
       case "Delete Account":
         return <DeleteAccountContent />;
       default:
@@ -85,5 +85,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-

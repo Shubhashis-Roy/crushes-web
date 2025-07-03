@@ -3,11 +3,11 @@ import {
   FaTimes,
   FaBars,
   FaUser,
-  FaLock,
+  // FaLock,
   FaSignOutAlt,
   FaEdit,
   FaTrash,
-  FaImages
+  FaImages,
 } from "react-icons/fa";
 import PropTypes from "prop-types";
 
@@ -16,7 +16,7 @@ const menuItems = [
   // { label: "Personal Information", icon: <FaCogs /> },
   { label: "Edit Personal Info", icon: <FaEdit /> },
   { label: "Manage Images", icon: <FaImages /> },
-  { label: "Change Password", icon: <FaLock /> },
+  // { label: "Change Password", icon: <FaLock /> },
   { label: "Delete Account", icon: <FaTrash />, danger: true },
   { label: "Logout", icon: <FaSignOutAlt />, danger: true },
 ];

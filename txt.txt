@@ -8,4 +8,4 @@ F.E: http://16.16.185.216
 ToDo: 
 - feed page card when interest or reject that time give a mgs.[test it]
 - "not interest" UI msg not proper visible. [done]
-- change password.
+- change password [remove].
