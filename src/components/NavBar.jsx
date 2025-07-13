@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../redux/userSlice";
 import { useState } from "react";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 const NavBar = () => {
   const user = useSelector((store) => store.user);
@@ -37,6 +38,10 @@ const NavBar = () => {
         : "text-white hover:bg-white/30"
     }`;
 
+  const handleChatNavigate = () => {
+    navigate("/connections");
+  };
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-50 bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg px-6 py-3 flex justify-between items-center">
@@ -49,6 +54,13 @@ const NavBar = () => {
 
         {user && (
           <div className="flex items-center gap-4">
+            {!isConnectionsPage && (
+              <IoChatbubbleEllipsesOutline
+                onClick={handleChatNavigate}
+                className="text-4xl cursor-pointer font-extrabold text-pink-600 transition-all duration-300 hover:text-red-500"
+              />
+            )}
+
             <span
               className={`text-sm font-extrabold transition-colors duration-300 ${
                 isProfilePage ? "text-black" : "text-white"
@@ -56,7 +68,6 @@ const NavBar = () => {
             >
               Welcome, {user.firstName}
             </span>
-
             <div className="relative group">
               <div
                 tabIndex={0}

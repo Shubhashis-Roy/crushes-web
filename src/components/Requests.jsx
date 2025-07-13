@@ -46,7 +46,7 @@ const Requests = () => {
     );
 
   return (
-    <div className="text-center my-10">
+    <div className="text-center mb-10 mt-20 ">
       <h1 className="text-bold text-white text-3xl">Connection Requests</h1>
 
       {requests.map((request) => {

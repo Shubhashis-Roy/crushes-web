@@ -122,9 +122,18 @@ const Login = () => {
           </button>
 
           <div className="backdrop-blur bg-white/20 shadow-2xl rounded-2xl p-8 w-full max-w-md">
-            <h2 className="text-white text-3xl font-bold text-center mb-6 drop-shadow-lg">
+            {/* <h2 className="text-white text-3xl font-bold text-center mb-6 drop-shadow-lg">
+              {isLoginForm ? "Welcome Back 💕" : "Create an Account"}
+            </h2> */}
+            <h2 className="text-white text-3xl font-bold text-center mb-2 drop-shadow-lg">
               {isLoginForm ? "Welcome Back 💕" : "Create an Account"}
             </h2>
+
+            {isLoginForm && (
+              <p className="text-black text-[16px] font-extrabold text-center mb-4 italic">
+                🔐 Pre-filled login is for demo purposes — no signup needed!
+              </p>
+            )}
 
             {!isLoginForm && (
               <>
