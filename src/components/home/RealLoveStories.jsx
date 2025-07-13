@@ -35,8 +35,9 @@ LoveStoryCard.propTypes = {
 
 const RealLoveStories = () => {
   return (
-    <section className="bg-white py-12 px-4 z-10 relative mb-16">
-      <h2 className="text-3xl sm:text-4xl font-bold text-center text-pink-600 mb-8">
+    // <section className="bg-white py-12 px-4 z-10 relative mb-16">
+    <section className="px-4 pb-12 z-10 relative mb-16">
+      <h2 className="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
         ❤️ Real Love Stories
       </h2>
 

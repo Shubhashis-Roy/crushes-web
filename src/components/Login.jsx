@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { Eye, EyeOff } from "lucide-react";
 import InputField from "./InputField";
+import { features } from "../schema/HomePageCard.schema";
+import RealLoveStories from "./home/RealLoveStories";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("shub@gmail.in");
@@ -64,60 +66,48 @@ const Login = () => {
     }
   };
 
-  const features = [
-    {
-      title: "Meaningful Connections",
-      description:
-        "Our matching algorithm focuses on compatibility for lasting relationships.",
-    },
-    {
-      title: "Safe Dating",
-      description:
-        "Verified profiles and secure messaging for a worry-free dating experience.",
-    },
-    {
-      title: "Find Love Anywhere",
-      description:
-        "Connect with people near you or across the globe based on your preference.",
-    },
-  ];
-
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-purple-300/60 to-pink-200/60">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1472396961693-142e6e269027?q=80')] bg-cover bg-center mix-blend-overlay opacity-30 z-0" />
+    <div className="relative min-h-screen bg-gradient-to-br from-purple-300/60 to-pink-200/60 ">
+      <div className="absolute inset-0 bg-[url('https://t4.ftcdn.net/jpg/05/84/66/13/240_F_584661359_CN18OI3yMmh8s154PUZYswxKzZjgLlFd.jpg')] bg-cover bg-center mix-blend-overlay opacity-80 z-0" />
 
       {!showForm ? (
-        <main className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-40">
-          <h1 className="text-white text-5xl sm:text-6xl font-bold mb-4">
-            Find Your Perfect <span className="text-pink-300">Match</span>
-          </h1>
-          <p className="text-white text-lg max-w-2xl mb-10">
-            Connect with like-minded individuals who share your interests,
-            passions, and values.
-          </p>
-          <div className="flex space-x-4 mb-12">
-            <button
-              className="bg-white text-love-DEFAULT font-semibold py-2 px-6 rounded-full shadow hover:scale-105 transition-transform"
-              onClick={() => setShowForm(true)}
-            >
-              Find Love
-            </button>
-            <button className="border border-white text-white font-semibold py-2 px-6 rounded-full hover:bg-white/10 transition-colors">
-              Learn More
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-5xl">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white/10 backdrop-blur p-6 rounded-xl border border-white/30 shadow-lg text-white text-center"
+        <>
+          <main className="relative z-10 flex flex-col items-center justify-center text-center px-4 pt-40 pb-20">
+            <h1 className="text-white text-5xl sm:text-6xl font-bold mb-4">
+              Find Your Perfect <span className="text-pink-300">Match</span>
+            </h1>
+            <p className="text-white text-lg max-w-2xl mb-10">
+              Connect with like-minded individuals who share your interests,
+              passions, and values.
+            </p>
+
+            <div className="flex justify-center space-x-4 mb-12">
+              <button
+                className="bg-gradient-to-r from-pink-600 via-red-500 to-red-400 
+  text-white text-[24px] font-extrabold py-3 px-8 rounded-full 
+  shadow-2xl transform transition-all duration-300 ease-in-out 
+  hover:scale-110 hover:-rotate-1 hover:shadow-2xl 
+  focus:ring-4 focus:ring-pink-600"
+                onClick={() => setShowForm(true)}
               >
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-white/80">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </main>
+                ❤️ Find Love
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-5xl">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="bg-white/10 backdrop-blur p-6 rounded-xl border border-white/30 shadow-lg text-white text-center"
+                >
+                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                  <p className="text-white/80">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </main>
+          <RealLoveStories />
+        </>
       ) : (
         <main className="relative z-10 flex justify-center px-4 pt-40 pb-20">
           <button
