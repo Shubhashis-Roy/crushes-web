@@ -34,7 +34,7 @@ const Connections = () => {
     );
 
   return (
-    <div className="text-center mb-10 mt-20 ">
+    <div className="text-center mb-10 mt-20">
       <h1 className="text-bold text-white text-3xl">Connections</h1>
 
       {connections.map((connection) => {
@@ -44,13 +44,13 @@ const Connections = () => {
         return (
           <div
             key={_id}
-            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto justify-between"
+            className="flex m-4 p-4 rounded-lg bg-base-300 w-[50%] mx-auto justify-between px-10"
           >
             <div>
               <img
                 alt="photo"
                 className="w-20 h-20 rounded-full object-cover"
-                src={photoUrl}
+                src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
               />
             </div>
             <div className="text-left mx-4 ">
@@ -65,7 +65,7 @@ const Connections = () => {
               <p>{about}</p>
             </div>
             <Link to={"/chat/" + _id}>
-              <button className="btn btn-primary">Chat</button>
+              <button className="btn btn-secondary px-7 mt-4">Chat</button>
             </Link>
           </div>
         );

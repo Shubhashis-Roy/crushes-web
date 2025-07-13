@@ -7,8 +7,13 @@ F.E: http://16.16.185.216
 
 ToDo: 
 - feed page card when interest or reject that time give a mgs.[test it] 
-swapping right not send req.
-add diff image for every users
+
+
 add shimmer UI.
 make chat UI better.
-- add a mgs for chat testing perpuse
+
+
+- add a mgs for chat testing perpuse[done]
+- swapping right not send req.(stop this feature as of now)
+- age not update/ profile data update api[Done]
+- add diff image for every users

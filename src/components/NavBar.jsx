@@ -15,9 +15,12 @@ const NavBar = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const isProfilePage = location.pathname === "/profile";
+  const isChatPage = location.pathname.startsWith("/chat");
   const isFeedPage = location.pathname === "/";
   const isConnectionsPage = location.pathname === "/connections";
   const isRequestsPage = location.pathname === "/requests";
+
+  console.log(isChatPage, "isChatPage ============= hlo");
 
   const handleLogout = async () => {
     try {
@@ -33,7 +36,7 @@ const NavBar = () => {
     `px-4 py-2 rounded transition-colors duration-200 ${
       active
         ? "bg-pink-200 text-black"
-        : isProfilePage
+        : isProfilePage || isChatPage
         ? "text-black hover:bg-gray-300"
         : "text-white hover:bg-white/30"
     }`;
@@ -77,8 +80,8 @@ const NavBar = () => {
                 <img
                   src={
                     Array.isArray(user.photoUrl)
-                      ? user.photoUrl[0] || "/default-avatar.png"
-                      : user.photoUrl || "/default-avatar.png"
+                      ? user.photoUrl[0]
+                      : user.photoUrl
                   }
                   alt="User"
                   className="w-full h-full object-cover"
@@ -87,7 +90,7 @@ const NavBar = () => {
 
               <ul
                 className={`absolute right-0 mt-3 w-48 backdrop-blur-lg rounded-xl p-2 hidden group-focus-within:flex group-hover:flex flex-col gap-y-3 z-50 shadow-xl border  ${
-                  isProfilePage
+                  isProfilePage || isChatPage
                     ? "border-white/100 bg-white bg-opacity-95"
                     : "border-white/30"
                 }`}
@@ -130,8 +133,8 @@ const NavBar = () => {
                   <button
                     onClick={() => setShowLogoutModal(true)}
                     className={`px-4 py-2 rounded text-left ${
-                      isProfilePage
-                        ? "text-red-500 hover:bg-white/80"
+                      isProfilePage || isChatPage
+                        ? "text-red-500 hover:bg-red-300"
                         : "text-red-300 hover:bg-white/30"
                     }`}
                   >

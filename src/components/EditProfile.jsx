@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../redux/userSlice";
 import { FaPen } from "react-icons/fa";
 
+//! NOT USED FOR NOW, BUT MAYBE LATER
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);

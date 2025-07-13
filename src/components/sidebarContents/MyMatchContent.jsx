@@ -22,6 +22,7 @@ const MyMatchContent = () => {
 
   useEffect(() => {
     fetchConnections();
+    // eslint-disable-next-line
   }, []);
 
   if (!connections) return null;
@@ -45,7 +46,7 @@ const MyMatchContent = () => {
 
       <div className="grid gap-6 px-4 max-w-5xl mx-auto">
         {connections.map((connection) => {
-          const { _id, firstName, lastName, photoUrl, age, gender, about } =
+          const { _id, firstName, lastName, age, photoUrl, gender, about } =
             connection;
 
           return (
@@ -56,7 +57,7 @@ const MyMatchContent = () => {
               <img
                 alt="photo"
                 className="w-24 h-24 rounded-full object-cover border-4 border-pink-500 shadow-md"
-                src={photoUrl}
+                src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
               />
               <div className="flex-1 text-left">
                 <h2 className="text-2xl font-bold text-black">

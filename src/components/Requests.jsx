@@ -62,7 +62,7 @@ const Requests = () => {
               <img
                 alt="photo"
                 className="w-20 h-20 rounded-full"
-                src={photoUrl}
+                src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
               />
             </div>
             <div className="text-left mx-4 ">
@@ -78,13 +78,13 @@ const Requests = () => {
             </div>
             <div>
               <button
-                className="btn btn-primary mx-2"
+                className="btn btn-neutral mx-2 mt-4"
                 onClick={() => reviewRequest("rejected", request._id)}
               >
                 Reject
               </button>
               <button
-                className="btn btn-secondary mx-2"
+                className="btn btn-secondary mx-2 mt-4"
                 onClick={() => reviewRequest("accepted", request._id)}
               >
                 Accept

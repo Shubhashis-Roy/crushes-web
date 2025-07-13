@@ -60,7 +60,7 @@ const Profile = () => {
 
   return (
     user && (
-      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-pink-50 to-pink-100 p-4">
+      <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-pink-50 to-pink-100 p-4 pt-12">
         <div className="flex bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-5xl h-[80vh]">
           {/* Sidebar */}
           <Sidebar onSelect={handleMenuSelect} selectedLabel={selectedScreen} />

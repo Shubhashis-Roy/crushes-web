@@ -71,6 +71,7 @@ const Chat = () => {
 
   useEffect(() => {
     fetchChatMessages();
+    // eslint-disable-next-line
   }, [targetUserId]);
 
   useEffect(() => {
@@ -91,6 +92,7 @@ const Chat = () => {
     return () => {
       socketRef.current.disconnect();
     };
+    // eslint-disable-next-line
   }, [userId, targetUserId]);
 
   const scrollToBottom = () => {
@@ -126,11 +128,14 @@ const Chat = () => {
                 }
                 className="cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 bg-pink-600"
               >
-                <img
-                  src={chatPartner.photoUrl || "/default-profile.png"}
+                {/* <img
+                  src={chatPartner.photoUrl[0]}
                   alt={`${chatPartner.firstName} ${chatPartner.lastName}`}
                   className="w-12 h-12 rounded-full object-cover border-2 border-white"
-                />
+                /> */}
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-500 text-white font-bold text-lg border-2 border-white">
+                  {chatPartner?.firstName?.[0]?.toUpperCase() || "?"}
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-white truncate">
                     {chatPartner.firstName} {chatPartner.lastName}
@@ -191,11 +196,17 @@ const Chat = () => {
           }}
         />
 
-        <header className="p-5 border-b text-xl font-semibold text-white relative z-10">
+        <header className="p-5 border-b text-xl font-semibold text-white relative z-10 ">
           Chat with{" "}
           {chatPartner
             ? `${chatPartner.firstName} ${chatPartner.lastName}`
             : "Loading..."}
+          {userId === "6838a2486c40d256a20f7927" && (
+            <p className="text-[12px] px-2 text-white  bg-red-400 w-[43%] rounded-md">
+              For chat testing purpose Email: rinki@gmail.com | Password:
+              Subhashis@9
+            </p>
+          )}
         </header>
 
         <main

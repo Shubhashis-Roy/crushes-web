@@ -1,14 +1,14 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../redux/userSlice";
-import { FaPen } from "react-icons/fa";
+import PropTypes from "prop-types";
 
 const EditProfileContent = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
+  // const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
   const [age, setAge] = useState(user.age || "");
   const [gender, setGender] = useState(user.gender || "");
   // const [gender, setGender] = useState(user.gender || "");
@@ -17,7 +17,7 @@ const EditProfileContent = ({ user }) => {
   const [showToast, setShowToast] = useState(false);
   const [showAgeToast, setShowAgeToast] = useState(false); // 👈 New state
   const dispatch = useDispatch();
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
 
   const saveProfile = async () => {
     // Age validation
@@ -34,9 +34,9 @@ const EditProfileContent = ({ user }) => {
         {
           firstName,
           lastName,
-          photoUrl,
+          // photoUrl,
           age,
-          gender: gender.toLowerCase(), // ✅ Ensures consistent format
+          gender: gender.toLowerCase(),
           about,
         },
         { withCredentials: true }
@@ -52,11 +52,10 @@ const EditProfileContent = ({ user }) => {
   const isEdited =
     firstName !== user.firstName ||
     lastName !== user.lastName ||
-    photoUrl !== user.photoUrl ||
+    // photoUrl !== user.photoUrl ||
     age !== (user.age || "") ||
     gender !== (user.gender || "") ||
     about !== (user.about || "");
-
 
   return (
     <div className="flex overflow-hidden">
@@ -72,7 +71,7 @@ const EditProfileContent = ({ user }) => {
               alt="User"
               className="w-36 h-36 rounded-full object-cover border-4 border-pink-300 shadow-lg"
             />
-          
+
             <p className="text-sm p-3 text-gray-500">
               Let the world know who you are 🌸
             </p>
@@ -110,16 +109,9 @@ const EditProfileContent = ({ user }) => {
               <option value="" disabled>
                 Select your gender
               </option>
-              <option value="Man">Man</option>
-              <option value="Woman">Woman</option>
-              <option value="Non-binary">Non-binary</option>
-              <option value="Trans man">Trans man</option>
-              <option value="Trans woman">Trans woman</option>
-              <option value="Genderfluid">Genderfluid</option>
-              <option value="Genderqueer">Genderqueer</option>
-              <option value="Agender">Agender</option>
-              <option value="Pangender">Pangender</option>
-              <option value="Other">Other</option>
+              <option value="male">Man</option>
+              <option value="female">Woman</option>
+              <option value="other">Other</option>
             </select>
             <div className="col-span-1 sm:col-span-2">
               <textarea
@@ -171,6 +163,20 @@ const EditProfileContent = ({ user }) => {
       </div>
     </div>
   );
+};
+
+EditProfileContent.propTypes = {
+  user: PropTypes.shape({
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    photoUrl: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string),
+    ]),
+    age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    gender: PropTypes.string,
+    about: PropTypes.string,
+  }).isRequired,
 };
 
 export default EditProfileContent;

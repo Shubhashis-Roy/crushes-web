@@ -134,9 +134,10 @@ const UserCard = ({ user }) => {
       )}
 
       {/* Swipeable Card */}
+      {/* ============= Stop the swaping as it is not working perfactly ============= */}
       <animated.div
-        {...bind()}
-        style={{ x, rotateZ: rot }}
+        // {...bind()}
+        // style={{ x, rotateZ: rot }}
         className="absolute w-full h-[600px] rounded-2xl overflow-hidden shadow-xl touch-none z-10 bg-base-300 cursor-pointer"
       >
         {/* Photo status bar */}
@@ -189,8 +190,9 @@ const UserCard = ({ user }) => {
           />
 
           <div className="flex justify-between items-center mt-4 px-2 gap-40">
-            <h2 className="card-title text-white text-3xl font-extrabold">
-              {firstName}
+            <h2 className="card-title text-white text-2xl font-extrabold">
+              {firstName.split(" ")[0].charAt(0).toUpperCase() +
+                firstName.split(" ")[0].slice(1)}
             </h2>
             {city && <p className="text-[13px] text-white">{city}</p>}
           </div>
@@ -204,7 +206,7 @@ const UserCard = ({ user }) => {
       </animated.div>
 
       {/* Bottom Action Buttons */}
-      <div className="absolute bottom-9 flex justify-center gap-8 z-30">
+      <div className="absolute bottom-9 flex justify-center gap-20 z-30">
         <button
           onClick={() => {
             setShowNo(true);
@@ -216,12 +218,12 @@ const UserCard = ({ user }) => {
           ❌
         </button>
 
-        <button
+        {/* <button
           onClick={() => alert("⭐ Maybe clicked – placeholder")}
           className="w-12 h-12 rounded-full border-4 border-blue-300 text-blue-400 flex items-center justify-center text-xl hover:scale-110 transition-transform"
         >
           ⭐
-        </button>
+        </button> */}
         <button
           onClick={() => {
             setShowLove(true);
