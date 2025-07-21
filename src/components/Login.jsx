@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import InputField from "./InputField";
 import { features } from "../schema/HomePageCard.schema";
 import RealLoveStories from "./home/RealLoveStories";
+import ToastMessage from "./ToastPupUpMessage";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("shub@gmail.in");
@@ -77,8 +78,8 @@ const Login = () => {
               Find Your Perfect <span className="text-pink-300">Match</span>
             </h1>
             <p className="text-white text-lg max-w-2xl mb-10">
-              Connect with like-minded individuals who share your interests,
-              passions, and values.
+              Discover people who share your vibe, your interests, and your
+              desire for something meaningful.
             </p>
 
             <div className="flex justify-center space-x-4 mb-12">
@@ -106,6 +107,7 @@ const Login = () => {
               ))}
             </div>
           </main>
+          <ToastMessage />
           <RealLoveStories />
         </>
       ) : (
