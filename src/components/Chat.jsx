@@ -4,7 +4,10 @@ import { createSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import chatImage from "../../public/chatBackground.jpg";
+import { FaBars } from "react-icons/fa";
+import "./styles/ChatTheme.css";
+import chatDark from "../assets/bg-chatUI.jpg";
+import { IoSend } from "react-icons/io5";
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -12,15 +15,17 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [chatPartner, setChatPartner] = useState(null);
-  const [chatList, setChatList] = useState([]); // List of chat partners/conversations
+  const [chatList, setChatList] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   const user = useSelector((store) => store.user);
   const userId = user?._id;
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Fetch chat messages for current target user
   const fetchChatMessages = async () => {
     if (!targetUserId) return;
+
     try {
       const res = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
         withCredentials: true,
@@ -37,9 +42,7 @@ const Chat = () => {
       });
       setMessages(chatMessages);
 
-      // Set chat partner info by extracting from messages or fallback
       if (chatMessages.length > 0) {
-        // Assume partner is anyone not current user
         const partnerMsg = chatMessages.find((msg) => msg.userId !== userId);
         setChatPartner(partnerMsg ?? null);
       } else {
@@ -51,23 +54,20 @@ const Chat = () => {
     }
   };
 
-  // Fetch list of chats (partners) for side menu
   const fetchChatList = async () => {
     try {
-      // Example endpoint: get all chat partners for the logged in user
       const res = await axios.get(`${BASE_URL}/chat/list`, {
         withCredentials: true,
       });
-      // Assuming response is array of { userId, firstName, lastName, lastMessage, lastMessageAt }
       setChatList(res.data);
     } catch (err) {
       console.error("Failed to fetch chat list", err);
     }
   };
 
-  useEffect(() => {
-    fetchChatList();
-  }, []);
+  // useEffect(() => {
+  //   fetchChatList();
+  // }, []);
 
   useEffect(() => {
     fetchChatMessages();
@@ -112,41 +112,64 @@ const Chat = () => {
   };
 
   return (
-    <div className="h-[84vh] flex text-white mt-16 relative overflow-hidden rounded-md shadow-lg border border-gray-700">
-      {/* Side menu - chat list */}
-      <aside className="w-72 bg-gray-800 overflow-y-auto border-r border-gray-700">
-        <header className="p-4 font-semibold text-lg border-b border-gray-700 text-pink-400">
-          Chats
+    <div className="chat-whatsapp-theme  flex-1 flex text-white mt-16 relative overflow-hidden rounded-md shadow-lg border border-gray-700">
+      {/* Sidebar */}
+      <aside
+        className={`bg-[var(--bg-sidebar)] overflow-y-auto border-r border-gray-700 transition-all duration-300 flex flex-col ${
+          sidebarOpen ? "w-80" : "w-16"
+        }`}
+      >
+        {/* Sidebar Header */}
+        <header className="py-[10.5px] pr-4 pl-6 font-semibold text-lg border-b border-gray-700 text-[var(--text-light)] flex justify-between items-center">
+          {sidebarOpen ? (
+            <>
+              <span>Chats</span>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-white"
+              >
+                ✕
+              </button>
+            </>
+          ) : (
+            <button onClick={() => setSidebarOpen(true)} className="text-white">
+              <FaBars size={20} />
+            </button>
+          )}
         </header>
+
+        {/* Chat List */}
         <ul className="divide-y divide-gray-700">
           {chatList.length === 0 ? (
             chatPartner ? (
+              // Show active chat if no list
               <li
                 key={chatPartner.userId || "active"}
                 onClick={() =>
                   navigate(`/chat/${chatPartner.userId || targetUserId}`)
                 }
-                className="cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 bg-pink-600"
+                className="cursor-pointer pr-4 pl-6 py-3 border-b border-gray-700 flex items-center gap-3 bg-[var(--bg-sidebar)]"
               >
-                {/* <img
-                  src={chatPartner.photoUrl[0]}
-                  alt={`${chatPartner.firstName} ${chatPartner.lastName}`}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white"
-                /> */}
-                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-pink-500 text-white font-bold text-lg border-2 border-white">
+                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-500 text-white font-bold text-lg">
                   {chatPartner?.firstName?.[0]?.toUpperCase() || "?"}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-white truncate">
-                    {chatPartner.firstName} {chatPartner.lastName}
+                {sidebarOpen && (
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-[15px] text-[var(--text-light)] truncate">
+                      {chatPartner.firstName} {chatPartner.lastName}
+                    </div>
+                    <div className="text-xs text-[var(--text-muted)] truncate">
+                      Active Chat
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-300 truncate">
-                    Active Chat
-                  </div>
-                </div>
+                )}
               </li>
             ) : (
-              <li className="p-4 text-gray-400">No chats yet</li>
+              sidebarOpen && (
+                <li className="pr-4 pl-6 py-3 text-[var(--text-muted)]">
+                  No chats yet
+                </li>
+              )
             )
           ) : (
             chatList.map((chat) => {
@@ -155,20 +178,22 @@ const Chat = () => {
                 <li
                   key={chat.userId}
                   onClick={() => navigate(`/chat/${chat.userId}`)}
-                  className={`cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 hover:bg-pink-700 ${
-                    isActive ? "bg-pink-600" : ""
+                  className={`cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 hover:bg-gray-600 ${
+                    isActive ? "bg-gray-700" : ""
                   }`}
                 >
                   <img
                     src={chat.photoUrl || "/default-profile.png"}
                     alt={`${chat.firstName} ${chat.lastName}`}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white"
+                    className="w-12 h-12 rounded-full object-cover"
                   />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-white truncate">
-                      {chat.firstName} {chat.lastName}
+                  {sidebarOpen && (
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-[var(--text-light)] truncate">
+                        {chat.firstName} {chat.lastName}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </li>
               );
             })
@@ -177,95 +202,93 @@ const Chat = () => {
       </aside>
 
       {/* Chat area */}
-      <div className="flex-1 flex flex-col relative">
+      <div
+        className="chat-bg flex-1 flex flex-col h-[calc(100vh-4rem)] relative"
+        // 👆 ensures full height minus top margin (mt-16 = 4rem)
+        style={{
+          backgroundImage: `url(${chatDark})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "contain",
+        }}
+      >
+        {/* Background Overlay */}
         <div
+          className="absolute inset-0 pointer-events-none z-0"
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: `url(${chatImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            zIndex: 0,
-            filter: "brightness(0.7)",
-            borderTopRightRadius: "0.375rem",
-            borderBottomRightRadius: "0.375rem",
+            background: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(1px)",
+            WebkitBackdropFilter: "blur(4px)",
           }}
-        />
+        ></div>
 
-        <header className="p-5 border-b text-xl font-semibold text-white relative z-10 ">
-          Chat with{" "}
-          {chatPartner
-            ? `${chatPartner.firstName} ${chatPartner.lastName}`
-            : "Loading..."}
-          {userId === "6838a2486c40d256a20f7927" && (
-            <p className="text-[12px] px-2 text-white  bg-red-400 w-[43%] rounded-md">
-              For chat testing purpose Email: rinki@gmail.com | Password:
-              Subhashis@9
-            </p>
-          )}
+        {/* Chat Header */}
+        <header className="py-1 px-4 border-b border-gray-700 flex items-center gap-3 bg-[var(--bg-sidebar)] relative z-10">
+          <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold">
+            {chatPartner?.firstName?.[0]?.toUpperCase() || "?"}
+          </div>
+          <div className="flex flex-col">
+            <span className="font-semibold text-[var(--text-light)] text-[15px]">
+              {chatPartner
+                ? `${chatPartner.firstName} ${chatPartner.lastName}`
+                : "Loading..."}
+            </span>
+            <span className="text-[12px] text-[var(--text-muted)]">Online</span>
+          </div>
         </header>
 
-        <main
-          className="flex-1 overflow-y-auto px-6 py-4 space-y-4 scroll-smooth relative z-10"
-          style={{ scrollbarWidth: "thin" }}
-        >
-          {/* Messages container */}
-          <div>
-            {messages.map((msg, idx) => {
-              const isOwn = user.firstName === msg.firstName;
-              return (
+        {/* Messages Area (fills available space) */}
+        <main className="flex-1 overflow-y-auto px-6 py-4 space-y-2 relative z-10">
+          {messages.map((msg, idx) => {
+            const isOwn = user.firstName === msg.firstName;
+            return (
+              <div
+                key={idx}
+                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+              >
                 <div
-                  key={idx}
-                  className={`flex flex-col max-w-[70%] ${
-                    isOwn ? "ml-auto items-end" : "mr-auto items-start"
+                  className={`px-3 py-2 max-w-[60%] text-sm rounded-lg ${
+                    isOwn
+                      ? "bubble-out rounded-tr-none"
+                      : "bubble-in rounded-tl-none"
                   }`}
                 >
-                  <div
-                    className={`inline-block rounded-xl px-4 py-2 mb-1 ${
-                      isOwn
-                        ? "bg-pink-600 text-white"
-                        : "bg-gray-700 text-gray-200"
-                    }`}
-                  >
-                    <div className="font-semibold text-sm">
-                      {msg.firstName} {msg.lastName}
-                    </div>
-                    <p className="mt-1 whitespace-pre-wrap">{msg.text}</p>
-                    <div className="text-xs text-gray-400 mt-1 text-right">
-                      {msg.createdAt
-                        ? new Date(msg.createdAt).toLocaleTimeString()
-                        : ""}
-                    </div>
+                  {msg.text}
+                  <div className="text-[10px] text-gray-400 text-right mt-1">
+                    {msg.createdAt
+                      ? new Date(msg.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : ""}
                   </div>
                 </div>
-              );
-            })}
-            <div ref={messagesEndRef} />
-          </div>
+              </div>
+            );
+          })}
+          <div ref={messagesEndRef} />
         </main>
 
-        <footer className="p-4 border-t border-gray-700 flex items-center gap-3 bg-gray-800 relative z-10">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") sendMessage();
-            }}
-            className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
-          />
-          <button
-            onClick={sendMessage}
-            disabled={!newMessage.trim()}
-            className="bg-pink-500 hover:bg-pink-600 disabled:bg-pink-300 text-white font-semibold px-5 py-2 rounded-md transition"
-          >
-            Send
-          </button>
+        {/* Chat Input (always bottom) */}
+        <footer className="px-4 pb-2 bg-transparent relative z-10">
+          <div className="flex items-center bg-[#2a3942] rounded-full px-3 py-[6px] w-full">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") sendMessage();
+              }}
+              className="flex-1 bg-transparent text-white px-2 outline-none border-none"
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!newMessage.trim()}
+              className="ml-2 bg-green-500 rounded-full p-2 flex items-center justify-center disabled:opacity-50"
+            >
+              <IoSend size={20} className="text-white" />
+            </button>
+          </div>
         </footer>
       </div>
     </div>
