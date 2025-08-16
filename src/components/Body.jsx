@@ -37,6 +37,7 @@ const Body = () => {
     }
 
     fetchUser();
+    // eslint-disable-next-line
   }, []);
 
   return (

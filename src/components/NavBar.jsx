@@ -20,8 +20,6 @@ const NavBar = () => {
   const isConnectionsPage = location.pathname === "/connections";
   const isRequestsPage = location.pathname === "/requests";
 
-  console.log(isChatPage, "isChatPage ============= hlo");
-
   const handleLogout = async () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });

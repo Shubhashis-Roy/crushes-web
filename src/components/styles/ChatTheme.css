@@ -1,0 +1,32 @@
+.chat-whatsapp-theme {
+  --bg-dark: #111b21;
+  --bg-chat: #0b141a;
+  --bg-sidebar: #202c33;
+  --bubble-green: #005c4b;
+  --bubble-gray: #202c33;
+  --text-light: #e9edef;
+  --text-muted: #8696a0;
+}
+
+.chat-whatsapp-theme {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+}
+
+.chat-whatsapp-theme .sidebar {
+  background-color: var(--bg-sidebar);
+}
+
+.chat-whatsapp-theme .chat-bg {
+  background-color: var(--bg-chat);
+}
+
+.chat-whatsapp-theme .bubble-out {
+  background-color: var(--bubble-green);
+  color: var(--text-light);
+}
+
+.chat-whatsapp-theme .bubble-in {
+  background-color: var(--bubble-gray);
+  color: var(--text-light);
+}
