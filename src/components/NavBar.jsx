@@ -55,7 +55,7 @@ const NavBar = () => {
 
         {user && (
           <div className="flex items-center gap-4">
-            {!isConnectionsPage && (
+            {!isConnectionsPage && !isChatPage && (
               <IoChatbubbleEllipsesOutline
                 onClick={handleChatNavigate}
                 className="text-4xl cursor-pointer font-extrabold text-pink-600 transition-all duration-300 hover:text-red-500"
