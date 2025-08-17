@@ -17,6 +17,10 @@ const Chat = () => {
   const [chatPartner, setChatPartner] = useState(null);
   const [chatList, setChatList] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isTyping, setIsTyping] = useState(false); // 👈 NEW state
+  const [isOnline, setIsOnline] = useState(false);
+
+  const typingTimeoutRef = useRef(null); // 👈 NEW ref
 
   const user = useSelector((store) => store.user);
   const userId = user?._id;
@@ -89,6 +93,21 @@ const Chat = () => {
       scrollToBottom();
     });
 
+    socketRef.current.on("typing", ({ userId: typingUserId }) => {
+      if (typingUserId !== userId) {
+        setIsTyping(true);
+        clearTimeout(typingTimeoutRef.current);
+
+        // hide "typing..." after 2s of no event
+        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 2000);
+      }
+    });
+
+    socketRef.current.on("userStatus", ({ userId: statusUserId, status }) => {
+      if (statusUserId === targetUserId) {
+        setIsOnline(status === "online");
+      }
+    });
     return () => {
       socketRef.current.disconnect();
     };
@@ -109,6 +128,10 @@ const Chat = () => {
       text: newMessage.trim(),
     });
     setNewMessage("");
+  };
+
+  const handleTyping = () => {
+    socketRef.current.emit("typing", { userId, targetUserId });
   };
 
   return (
@@ -232,7 +255,13 @@ const Chat = () => {
                 ? `${chatPartner.firstName} ${chatPartner.lastName}`
                 : "Loading..."}
             </span>
-            <span className="text-[12px] text-[var(--text-muted)]">Online</span>
+            {/* <span className="text-[12px] text-[var(--text-muted)]">
+              {isTyping ? "Typing..." : "Online"}
+            </span> */}
+
+            <span className="text-[12px] text-[var(--text-muted)]">
+              {isTyping ? "Typing..." : isOnline ? "Online" : "Offline"}
+            </span>
           </div>
         </header>
 
@@ -275,7 +304,10 @@ const Chat = () => {
               type="text"
               placeholder="Type your message..."
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={(e) => {
+                setNewMessage(e.target.value);
+                handleTyping();
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") sendMessage();
               }}
