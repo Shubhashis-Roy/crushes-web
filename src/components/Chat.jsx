@@ -263,6 +263,17 @@ const Chat = () => {
               {isTyping ? "Typing..." : isOnline ? "Online" : "Offline"}
             </span>
           </div>
+
+          {chatPartner.userId === "6839f1d1133f2ccbd6245df1" && (
+            <div className="flex flex-col ml-10">
+              <span className="text-[14px]">
+                FOR TESTING: Rinki Das account login details:
+              </span>
+              <span className="text-[14px]">
+                Email: rinki@gmail.in || Password: Subhashis@9
+              </span>
+            </div>
+          )}
         </header>
 
         {/* Messages Area (fills available space) */}
