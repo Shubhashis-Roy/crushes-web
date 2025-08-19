@@ -60,18 +60,21 @@ const Chat = () => {
 
   const fetchChatList = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/chat/list`, {
+      const res = await axios.get(`${BASE_URL}/chat/users-list`, {
         withCredentials: true,
       });
-      setChatList(res.data);
+
+      console.log(res?.data?.users, "Chat List Response hlo");
+
+      // setChatList(res.data);
     } catch (err) {
       console.error("Failed to fetch chat list", err);
     }
   };
 
-  // useEffect(() => {
-  //   fetchChatList();
-  // }, []);
+  useEffect(() => {
+    fetchChatList();
+  }, []);
 
   useEffect(() => {
     fetchChatMessages();
