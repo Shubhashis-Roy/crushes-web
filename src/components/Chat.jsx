@@ -134,6 +134,8 @@ const Chat = () => {
     socketRef.current.emit("typing", { userId, targetUserId });
   };
 
+  console.log(chatPartner, "chatPartner hlo");
+
   return (
     <div className="chat-whatsapp-theme  flex-1 flex text-white mt-16 relative overflow-hidden rounded-md shadow-lg border border-gray-700">
       {/* Sidebar */}
@@ -264,7 +266,7 @@ const Chat = () => {
             </span>
           </div>
 
-          {chatPartner.userId === "6839f1d1133f2ccbd6245df1" && (
+          {chatPartner?.userId === "6839f1d1133f2ccbd6245df1" && (
             <div className="flex flex-col ml-10">
               <span className="text-[14px]">
                 FOR TESTING: Rinki Das account login details:
