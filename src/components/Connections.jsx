@@ -64,7 +64,7 @@ const Connections = () => {
               </div>
               <p>{about}</p>
             </div>
-            <Link to={"/chat/" + _id}>
+            <Link to={"/chat"}>
               <button className="btn btn-secondary px-7 mt-4">Chat</button>
             </Link>
           </div>
