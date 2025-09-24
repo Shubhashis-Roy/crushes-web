@@ -40,7 +40,7 @@ const NavBar = () => {
     }`;
 
   const handleChatNavigate = () => {
-    navigate("/connections");
+    navigate("/chat");
   };
 
   return (

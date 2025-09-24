@@ -69,7 +69,7 @@ const MyMatchContent = () => {
                 </p>
                 <p className="text-sm text-gray-400 mt-1">{about}</p>
               </div>
-              <Link to={"/chat/" + _id}>
+              <Link to={"/chat"}>
                 <button className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow">
                   Chat
                 </button>
