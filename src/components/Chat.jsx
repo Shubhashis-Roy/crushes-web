@@ -3,16 +3,16 @@ import { useEffect, useState, useRef } from "react";
 // import { createSocketConnection } from "../utils/socket";
 // import chatDark from "../assets/bg-chatUI.jpg";
 // import { IoSend } from "react-icons/io5";
+// import { FaBars } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { FaBars } from "react-icons/fa";
 import "./styles/ChatTheme.css";
 import ChatWindow from "./ChatWindow";
 import { useChatSocket } from "../hooks/useChatSocket";
+import ChatSidebar from "./ChatSidebar";
 
 const Chat = () => {
-  // const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [chatPartner, setChatPartner] = useState(null);
@@ -47,13 +47,6 @@ const Chat = () => {
         };
       });
       setMessages(chatMessages);
-
-      if (chatMessages.length > 0) {
-        const partnerMsg = chatMessages.find((msg) => msg.userId !== userId);
-        setChatPartner(partnerMsg ?? null);
-      } else {
-        setChatPartner(null);
-      }
       scrollToBottom();
     } catch (err) {
       console.error("Failed to fetch chat messages", err);
@@ -81,6 +74,7 @@ const Chat = () => {
 
   const handleChat = (userDetails) => {
     fetchChatMessages(userDetails._id);
+    setChatPartner(userDetails);
     setActiveChatUserId(userDetails._id);
   };
 
@@ -96,76 +90,16 @@ const Chat = () => {
   });
 
   return (
-    <div className="chat-whatsapp-theme  flex-1 flex text-white mt-16 relative overflow-hidden rounded-md shadow-lg border border-gray-700">
-      {/* Sidebar */}
-      <aside
-        className={`bg-[var(--bg-sidebar)] overflow-y-auto border-r border-gray-700 transition-all duration-300 flex flex-col ${
-          sidebarOpen ? "w-80" : "w-16"
-        }`}
-      >
-        {/* Sidebar Header */}
-        <header className="py-[10.5px] pr-4 pl-6 font-semibold text-lg border-b border-gray-700 text-[var(--text-light)] flex justify-between items-center">
-          {sidebarOpen ? (
-            <>
-              <span>Chats</span>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="text-white"
-              >
-                ✕
-              </button>
-            </>
-          ) : (
-            <button onClick={() => setSidebarOpen(true)} className="text-white">
-              <FaBars size={20} />
-            </button>
-          )}
-        </header>
+    <div className="chat-whatsapp-theme  flex-1 flex text-white mt-16 relative overflow-hidden rounded-md shadow-lg border border-gray-700  ">
+      {/* ============= ChatSidebar ============= */}
+      <ChatSidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        chatList={chatList}
+        handleChat={handleChat}
+      />
 
-        {/* Chat List */}
-        <ul className="divide-y divide-gray-700">
-          {chatList.length !== 0
-            ? chatList.map((chat) => {
-                // const isActive = chat.userId === targetUserId;
-                return (
-                  <li
-                    key={chat.userId}
-                    onClick={() => handleChat(chat)}
-                    // className={`cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 hover:bg-gray-600 ${
-                    //   isActive ? "bg-gray-700" : ""
-                    // }`}
-                    className={`cursor-pointer px-4 py-3 border-b border-gray-700 flex items-center gap-3 hover:bg-gray-600 `}
-                  >
-                    {chat.photoUrl?.length > 0 ? (
-                      <img
-                        src={chat.photoUrl[0]}
-                        alt={`${chat.firstName}`}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold">
-                        {chat?.firstName?.[0]?.toUpperCase() || "?"}
-                      </div>
-                    )}
-                    {sidebarOpen && (
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-[var(--text-light)] truncate">
-                          {chat.firstName} {chat.lastName}
-                        </div>
-                      </div>
-                    )}
-                  </li>
-                );
-              })
-            : sidebarOpen && (
-                <li className="pr-4 pl-6 py-3 text-[var(--text-muted)]">
-                  No chats yet
-                </li>
-              )}
-        </ul>
-      </aside>
-
-      {/* Chat area */}
+      {/* ============= Chat area ============= */}
       <ChatWindow
         messages={messages}
         newMessage={newMessage}

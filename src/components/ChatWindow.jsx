@@ -14,8 +14,6 @@ const ChatWindow = ({
   isTyping,
   isOnline,
 }) => {
-  console.log(chatPartner, "chatPartner hlo");
-
   return (
     <div
       className="chat-bg flex-1 flex flex-col h-[calc(100vh-4rem)] relative"
@@ -38,7 +36,17 @@ const ChatWindow = ({
       {/* Chat Header */}
       <header className="py-1 px-4 border-b border-gray-700 flex items-center gap-3 bg-[var(--bg-sidebar)] relative z-10">
         <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold">
-          {chatPartner?.firstName?.[0]?.toUpperCase() || "?"}
+          {chatPartner?.photoUrl?.length > 0 ? (
+            <img
+              src={chatPartner?.photoUrl[0]}
+              alt={`${chatPartner?.firstName}`}
+              className="w-10 h-8 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold">
+              {chatPartner?.firstName?.[0]?.toUpperCase() || "?"}
+            </div>
+          )}
         </div>
         <div className="flex flex-col">
           <span className="font-semibold text-[var(--text-light)] text-[15px]">
@@ -138,6 +146,7 @@ ChatWindow.propTypes = {
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     userId: PropTypes.string,
+    photoUrl: PropTypes.arrayOf(PropTypes.string),
   }),
   user: PropTypes.shape({
     firstName: PropTypes.string,
