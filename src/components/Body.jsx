@@ -41,10 +41,9 @@ const Body = () => {
   }, []);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100">
       <NavBar />
       <Outlet />
-      {/* Show footer only on login screen */}
       {location.pathname === "/login" && <Footer />}
     </div>
   );

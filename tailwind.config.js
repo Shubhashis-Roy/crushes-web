@@ -1,12 +1,11 @@
 /** @type {import('tailwindcss').Config} */
+import daisyui from "daisyui"
+import tailwindScrollbarHide from "tailwind-scrollbar-hide"
+
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      animation: {
-        float: "floatUp 1.5s ease-out forwards",
-        no: "scalePop 0.8s ease-out",
-      },
       keyframes: {
         floatUp: {
           "0%": { transform: "translateY(0)", opacity: "1" },
@@ -14,11 +13,21 @@ export default {
         },
         scalePop: {
           "0%": { transform: "scale(0)", opacity: "0" },
-          "50%": { transform: "scale(1.3)", opacity: "1" },
-          "100%": { transform: "scale(1)", opacity: "0" },
+          "50%": { transform: "scale(1.2)", opacity: "1" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
+      },
+      animation: {
+        floatUp: "floatUp 1.5s ease-out forwards",
+        scalePop: "scalePop 0.8s ease-out",
+        floatSlow: "float 10s ease-in-out infinite",
+        floatMedium: "float 6s ease-in-out infinite",
       },
     },
   },
-  plugins: [require("daisyui", "tailwind-scrollbar-hide")],
-};
+  plugins: [daisyui, tailwindScrollbarHide],
+}
