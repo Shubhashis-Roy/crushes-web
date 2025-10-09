@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from "react"
-import { Card } from "../../components/ui/card"
-import { Input } from "../../components/ui/input"
-import { Label } from "../../components/ui/label"
-import { Button } from "../../components/ui/button"
-import { OnboardingData } from "./OnboardingFlow"
-import { FaUser, FaBirthdayCake, FaVenusMars, FaHeart } from "react-icons/fa"
+import React, { useState, useEffect } from "react";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Button } from "../../components/ui/button";
+import { OnboardingData } from "./OnboardingFlow";
+import { FaUser, FaBirthdayCake, FaVenusMars, FaHeart } from "react-icons/fa";
 
 interface BasicInfoStepProps {
-  data: OnboardingData
-  updateData: (data: Partial<OnboardingData>) => void
-  onNext: () => void
-  onPrev: () => void
+  data: OnboardingData;
+  updateData: (data: Partial<OnboardingData>) => void;
+  onNext: () => void;
+  onPrev: () => void;
 }
 
 const getZodiacSign = (date: string): string => {
-  const d = new Date(date)
-  const month = d.getMonth() + 1
-  const day = d.getDate()
+  const d = new Date(date);
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
   const signs = [
     { sign: "Capricorn", start: [12, 22], end: [1, 19] },
     { sign: "Aquarius", start: [1, 20], end: [2, 18] },
@@ -30,31 +29,31 @@ const getZodiacSign = (date: string): string => {
     { sign: "Libra", start: [9, 23], end: [10, 22] },
     { sign: "Scorpio", start: [10, 23], end: [11, 21] },
     { sign: "Sagittarius", start: [11, 22], end: [12, 21] },
-  ]
+  ];
   for (const { sign, start, end } of signs) {
     if (
       (month === start[0] && day >= start[1]) ||
       (month === end[0] && day <= end[1])
     ) {
-      return sign
+      return sign;
     }
   }
-  return "Unknown"
-}
+  return "Unknown";
+};
 
 const getAge = (dateOfBirth: string): number => {
-  const today = new Date()
-  const birthDate = new Date(dateOfBirth)
-  let age = today.getFullYear() - birthDate.getFullYear()
-  const monthDiff = today.getMonth() - birthDate.getMonth()
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
   if (
     monthDiff < 0 ||
     (monthDiff === 0 && today.getDate() < birthDate.getDate())
   ) {
-    age--
+    age--;
   }
-  return age
-}
+  return age;
+};
 
 const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
   const [formData, setFormData] = useState({
@@ -62,134 +61,151 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
     dateOfBirth: data.dateOfBirth,
     gender: data.gender,
     interestedIn: data.interestedIn,
-  })
+  });
 
   useEffect(() => {
     if (formData.dateOfBirth) {
-      const age = getAge(formData.dateOfBirth)
-      const zodiacSign = getZodiacSign(formData.dateOfBirth)
-      updateData({ ...formData, age, zodiacSign })
+      const age = getAge(formData.dateOfBirth);
+      const zodiacSign = getZodiacSign(formData.dateOfBirth);
+      updateData({ ...formData, age, zodiacSign });
     } else {
-      updateData(formData)
+      updateData(formData);
     }
-  }, [formData, updateData])
+  }, [formData, updateData]);
 
-  const genderOptions = ["Male", "Female", "Non-binary", "Custom"]
-  const interestedInOptions = ["Men", "Women", "Everyone"]
+  const genderOptions = ["Male", "Female", "Non-binary", "Custom"];
+  const interestedInOptions = ["Men", "Women", "Everyone"];
 
   const handleInterestedInChange = (option: string) => {
-    let newInterestedIn
+    let newInterestedIn;
     if (option === "Everyone") {
       newInterestedIn = formData.interestedIn.includes("Everyone")
         ? []
-        : ["Everyone"]
+        : ["Everyone"];
     } else {
-      const filtered = formData.interestedIn.filter((i) => i !== "Everyone")
+      const filtered = formData.interestedIn.filter((i) => i !== "Everyone");
       if (filtered.includes(option)) {
-        newInterestedIn = filtered.filter((i) => i !== option)
+        newInterestedIn = filtered.filter((i) => i !== option);
       } else {
-        newInterestedIn = [...filtered, option]
+        newInterestedIn = [...filtered, option];
       }
     }
-    setFormData((prev) => ({ ...prev, interestedIn: newInterestedIn }))
-  }
+    setFormData((prev) => ({ ...prev, interestedIn: newInterestedIn }));
+  };
 
   return (
-    <div className="relative w-full flex justify-center">
-      <Card className="w-full max-w-lg p-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold mb-2 text-gray-900">
-            Tell us about <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">yourself</span>
-          </h2>
-          <p className="text-gray-600">We’ll help you find better matches 💫</p>
+    <div className="w-full flex flex-col items-center justify-center text-center px-4">
+      {/* Header */}
+      <div className="mb-10">
+        <h2 className="text-4xl font-extrabold mb-3 text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]">
+          Tell us about{" "}
+          <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">
+            yourself
+          </span>
+        </h2>
+        <p className="text-white/80 text-base">
+          We’ll help you find better matches 💫
+        </p>
+      </div>
+
+      {/* Form Fields */}
+      <div className="w-full max-w-lg space-y-8 text-left">
+        {/* Name */}
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 text-pink-200 font-medium">
+            <FaUser /> Your Name
+          </Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Enter your name"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
+          />
         </div>
 
-        <div className="space-y-6">
-          {/* Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-sm font-medium flex items-center gap-2">
-              <FaUser className="text-pink-500" /> Your Name
-            </Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="Enter your first name"
-              value={formData.name}
-              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-              className="h-12 text-base rounded-full border-gray-300 focus:border-pink-500 focus:ring-pink-500"
-            />
-          </div>
-
-          {/* DOB */}
-          <div className="space-y-2">
-            <Label htmlFor="dob" className="text-sm font-medium flex items-center gap-2">
-              <FaBirthdayCake className="text-purple-500" /> Date of Birth
-            </Label>
-            <Input
-              id="dob"
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={(e) => setFormData((prev) => ({ ...prev, dateOfBirth: e.target.value }))}
-              className="h-12 text-base rounded-full border-gray-300 focus:border-pink-500 focus:ring-pink-500"
-            />
-            {formData.dateOfBirth && (
-              <div className="flex gap-2 mt-2">
-                <span className="px-3 py-1 rounded-full text-xs bg-pink-100 text-pink-600 font-medium">
-                  🎂 {getAge(formData.dateOfBirth)} yrs
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs bg-purple-100 text-purple-600 font-medium">
-                  ✨ {getZodiacSign(formData.dateOfBirth)}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Gender */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium flex items-center gap-2">
-              <FaVenusMars className="text-rose-500" /> Gender
-            </Label>
-            <div className="grid grid-cols-2 gap-3">
-              {genderOptions.map((gender) => (
-                <Button
-                  key={gender}
-                  variant={formData.gender === gender ? "romantic" : "outline"}
-                  onClick={() => setFormData((prev) => ({ ...prev, gender }))}
-                  className={`h-12 text-base rounded-full transition-all ${
-                    formData.gender === gender ? "shadow-lg scale-105" : ""
-                  }`}
-                >
-                  {gender}
-                </Button>
-              ))}
+        {/* DOB */}
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 text-pink-200 font-medium">
+            <FaBirthdayCake /> Date of Birth
+          </Label>
+          <Input
+            id="dob"
+            type="date"
+            value={formData.dateOfBirth}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                dateOfBirth: e.target.value,
+              }))
+            }
+            className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
+          />
+          {formData.dateOfBirth && (
+            <div className="flex gap-2 mt-2">
+              <span className="px-3 py-1 rounded-full text-xs bg-pink-200/20 text-pink-100 font-medium">
+                🎂 {getAge(formData.dateOfBirth)} yrs
+              </span>
+              <span className="px-3 py-1 rounded-full text-xs bg-purple-200/20 text-purple-100 font-medium">
+                ✨ {getZodiacSign(formData.dateOfBirth)}
+              </span>
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* Interested In */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium flex items-center gap-2">
-              <FaHeart className="text-pink-500" /> Interested In
-            </Label>
-            <div className="flex flex-wrap gap-3">
-              {interestedInOptions.map((option) => (
-                <Button
-                  key={option}
-                  variant={formData.interestedIn.includes(option) ? "romantic" : "outline"}
-                  onClick={() => handleInterestedInChange(option)}
-                  className={`h-12 px-6 text-base rounded-full transition-all ${
-                    formData.interestedIn.includes(option) ? "shadow-lg scale-105" : ""
-                  }`}
-                >
-                  {option}
-                </Button>
-              ))}
-            </div>
+        {/* Gender */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-pink-200 font-medium">
+            <FaVenusMars /> Gender
+          </Label>
+          <div className="grid grid-cols-2 gap-3">
+            {genderOptions.map((gender) => (
+              <Button
+                key={gender}
+                variant="outline"
+                onClick={() => setFormData((prev) => ({ ...prev, gender }))}
+                className={`h-12 rounded-full border border-white/30 text-white transition-all backdrop-blur-md
+                ${
+                  formData.gender === gender
+                    ? "bg-gradient-to-r from-pink-400 to-purple-500 shadow-lg scale-105"
+                    : "hover:bg-white/10"
+                }`}
+              >
+                {gender}
+              </Button>
+            ))}
           </div>
         </div>
-      </Card>
+
+        {/* Interested In */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-pink-200 font-medium">
+            <FaHeart /> Interested In
+          </Label>
+          <div className="flex flex-wrap gap-3">
+            {interestedInOptions.map((option) => (
+              <Button
+                key={option}
+                variant="outline"
+                onClick={() => handleInterestedInChange(option)}
+                className={`h-12 px-6 rounded-full border border-white/30 text-white transition-all backdrop-blur-md
+                ${
+                  formData.interestedIn.includes(option)
+                    ? "bg-gradient-to-r from-pink-400 to-purple-500 shadow-lg scale-105"
+                    : "hover:bg-white/10"
+                }`}
+              >
+                {option}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default BasicInfoStep
+export default BasicInfoStep;

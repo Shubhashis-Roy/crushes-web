@@ -1,9 +1,15 @@
 /** @type {import('tailwindcss').Config} */
-import daisyui from "daisyui"
-import tailwindScrollbarHide from "tailwind-scrollbar-hide"
+import daisyui from "daisyui";
+import tailwindScrollbarHide from "tailwind-scrollbar-hide";
+import flowbite from "flowbite/plugin";
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}", // 👈 Required for Flowbite React
+    "node_modules/flowbite/**/*.{js,jsx,ts,tsx}", // 👈 Required for Flowbite core styles
+  ],
   theme: {
     extend: {
       keyframes: {
@@ -29,5 +35,9 @@ export default {
       },
     },
   },
-  plugins: [daisyui, tailwindScrollbarHide],
-}
+  plugins: [
+    daisyui,
+    tailwindScrollbarHide,
+    flowbite, // 👈 Enables Flowbite utilities and component classes
+  ],
+};

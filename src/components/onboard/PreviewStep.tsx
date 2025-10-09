@@ -1,10 +1,17 @@
-import React from 'react';
-import { Card } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
-import { MapPin, Briefcase, GraduationCap, Heart, Calendar, Users, Star } from 'lucide-react';
-import { OnboardingData } from './OnboardingFlow';
+import React from "react";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
+import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import {
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  Heart,
+  Star,
+  Users,
+  Calendar,
+} from "lucide-react";
+import { OnboardingData } from "./OnboardingFlow";
 
 interface PreviewStepProps {
   data: OnboardingData;
@@ -15,113 +22,129 @@ interface PreviewStepProps {
 
 const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
   const handleFinish = () => {
-    // Here you would typically save the data to backend/database
-    alert('Profile created successfully! 🎉');
+    alert("🎉 Profile created successfully!");
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
+  const getInitials = (name: string) =>
+    name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
       .toUpperCase();
-  };
 
-  const mainPhotoUrl = data.photos.length > 0 ? URL.createObjectURL(data.photos[0]) : null;
+  const mainPhotoUrl =
+    data.photos.length > 0 ? URL.createObjectURL(data.photos[0]) : null;
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-foreground mb-2">Your Profile Preview</h2>
-        <p className="text-muted-foreground">This is how other users will see you</p>
+    <div className="w-full flex flex-col items-center justify-center text-center px-4">
+      {/* Header */}
+      <div className="mb-10">
+        <h2 className="text-4xl font-extrabold mb-3 text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]">
+          Profile{" "}
+          <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">
+            Preview
+          </span>
+        </h2>
+        <p className="text-white/80 text-base">
+          Here’s how your profile will look to others ✨
+        </p>
       </div>
 
-      {/* Profile Card - Similar to dating app style */}
-      <Card className="overflow-hidden shadow-romantic bg-gradient-card">
+      {/* Profile Card */}
+      <div className="relative w-full max-w-md rounded-3xl overflow-hidden backdrop-blur-xl border border-white/20 shadow-[0_0_40px_-10px_rgba(255,255,255,0.2)] bg-white/10">
         {/* Main Photo */}
-        <div className="relative h-80 bg-gradient-subtle">
+        <div className="relative h-80 overflow-hidden">
           {mainPhotoUrl ? (
             <img
               src={mainPhotoUrl}
               alt="Profile"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-700 ease-out"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-secondary/30">
-              <Avatar className="w-24 h-24">
-                <AvatarFallback className="text-2xl bg-primary/20 text-primary">
-                  {getInitials(data.name || 'User')}
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-400/20 to-purple-600/20">
+              <Avatar className="w-28 h-28">
+                <AvatarFallback className="text-3xl bg-pink-500/20 text-white">
+                  {getInitials(data.name || "U")}
                 </AvatarFallback>
               </Avatar>
             </div>
           )}
-          
-          {/* Photo Count Indicator */}
+
+          {/* Photo count */}
           {data.photos.length > 1 && (
-            <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+            <div className="absolute bottom-4 right-4 bg-black/40 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
               1/{data.photos.length}
             </div>
           )}
+
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
 
-        {/* Profile Info */}
-        <div className="p-6">
-          {/* Name, Age, Distance */}
+        {/* Info */}
+        <div className="p-6 text-left">
+          {/* Name & location */}
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-2xl font-bold text-foreground">
-                {data.name}, {data.age}
+              <h3 className="text-2xl font-bold text-white">
+                {data.name || "User"}{" "}
+                {data.dateOfBirth && (
+                  <span className="text-white/70 text-lg">
+                    • {new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear()}
+                  </span>
+                )}
               </h3>
               {data.zodiacSign && (
-                <p className="text-sm text-muted-foreground">
-                  ♑ {data.zodiacSign}
-                </p>
+                <p className="text-sm text-pink-300">♑ {data.zodiacSign}</p>
               )}
             </div>
-            <div className="flex items-center text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4 mr-1" />
+            <div className="flex items-center text-sm text-white/70">
+              <MapPin className="w-4 h-4 mr-1 text-pink-300" />
               <span>5 km away</span>
             </div>
           </div>
 
           {/* Bio */}
           {data.bio && (
-            <p className="text-foreground mb-4 leading-relaxed">
-              {data.bio}
+            <p className="text-white/90 mb-4 text-[15px] leading-relaxed">
+              “{data.bio}”
             </p>
           )}
 
-          {/* Work & Education */}
+          {/* Profession & Education */}
           <div className="space-y-2 mb-4">
             {data.profession && (
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Briefcase className="w-4 h-4 mr-2 flex-shrink-0" />
+              <div className="flex items-center text-sm text-white/70">
+                <Briefcase className="w-4 h-4 mr-2 text-purple-300" />
                 <span>
                   {data.profession}
                   {data.company && ` at ${data.company}`}
                 </span>
               </div>
             )}
-            
             {data.education && (
-              <div className="flex items-center text-sm text-muted-foreground">
-                <GraduationCap className="w-4 h-4 mr-2 flex-shrink-0" />
+              <div className="flex items-center text-sm text-white/70">
+                <GraduationCap className="w-4 h-4 mr-2 text-indigo-300" />
                 <span>{data.education}</span>
               </div>
             )}
           </div>
 
-          {/* Looking For */}
+          {/* Looking for */}
           {data.lookingFor.length > 0 && (
             <div className="mb-4">
-              <div className="flex items-center text-sm text-muted-foreground mb-2">
-                <Heart className="w-4 h-4 mr-2" />
+              <div className="flex items-center text-sm text-white/70 mb-2">
+                <Heart className="w-4 h-4 mr-2 text-pink-300" />
                 <span>Looking for</span>
               </div>
-              <div className="flex flex-wrap gap-1">
-                {data.lookingFor.map((item, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
-                    {item.replace('-', ' ')}
+              <div className="flex flex-wrap gap-2">
+                {data.lookingFor.map((item, i) => (
+                  <Badge
+                    key={i}
+                    variant="outline"
+                    className="border-white/30 text-white text-xs bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm"
+                  >
+                    {item.replace("-", " ")}
                   </Badge>
                 ))}
               </div>
@@ -131,18 +154,22 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
           {/* Interests */}
           {data.hobbies.length > 0 && (
             <div className="mb-4">
-              <div className="flex items-center text-sm text-muted-foreground mb-2">
-                <Star className="w-4 h-4 mr-2" />
+              <div className="flex items-center text-sm text-white/70 mb-2">
+                <Star className="w-4 h-4 mr-2 text-yellow-300" />
                 <span>Interests</span>
               </div>
-              <div className="flex flex-wrap gap-1">
-                {data.hobbies.slice(0, 6).map((hobby, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
+              <div className="flex flex-wrap gap-2">
+                {data.hobbies.slice(0, 6).map((hobby, i) => (
+                  <Badge
+                    key={i}
+                    variant="outline"
+                    className="border-white/20 text-white/90 text-xs bg-white/5 px-3 py-1 rounded-full"
+                  >
                     {hobby}
                   </Badge>
                 ))}
                 {data.hobbies.length > 6 && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs bg-white/10 text-white">
                     +{data.hobbies.length - 6} more
                   </Badge>
                 )}
@@ -150,38 +177,37 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
             </div>
           )}
 
-          {/* Age Preferences */}
-          <div className="flex items-center text-xs text-muted-foreground">
-            <Users className="w-3 h-3 mr-1" />
+          {/* Preferences */}
+          <div className="flex items-center text-xs text-white/60 mt-4">
+            <Users className="w-3 h-3 mr-2 text-purple-300" />
             <span>
-              Interested in {data.interestedIn.join(', ')} • 
-              Ages {data.ageRange[0]}-{data.ageRange[1]} • 
-              Within {data.distanceRange}km
+              Interested in {data.interestedIn.join(", ") || "All"} • Ages{" "}
+              {data.ageRange[0]}–{data.ageRange[1]} • Within {data.distanceRange}
+              km
             </span>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Action Buttons */}
-      <div className="flex space-x-4 mt-8">
+      {/* Buttons */}
+      <div className="flex gap-4 mt-10 w-full max-w-md">
         <Button
           variant="outline"
           onClick={onPrev}
-          className="flex-1"
+          className="flex-1 border border-white/30 text-white hover:bg-white/10 rounded-full"
         >
           Edit Profile
         </Button>
         <Button
-          variant="romantic"
           onClick={handleFinish}
-          className="flex-1"
+          className="flex-1 rounded-full font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 shadow-lg shadow-pink-400/30"
         >
           Complete Setup
         </Button>
       </div>
 
-      <p className="text-xs text-muted-foreground text-center mt-4">
-        You can always edit your profile later in settings
+      <p className="text-xs text-white/60 text-center mt-4">
+        ✨ You can always edit your profile later in Settings
       </p>
     </div>
   );

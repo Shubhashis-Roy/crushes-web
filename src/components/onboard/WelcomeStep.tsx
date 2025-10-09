@@ -1,212 +1,211 @@
-import React, { useState } from "react";
-import { Button } from "../../components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { FaHeart, FaStar, FaUserFriends } from "react-icons/fa";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { Heart, Sparkles, Users } from "lucide-react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { OnboardingData } from "./OnboardingFlow";
+import { Button } from "../ui/button";
+import { THEME } from "../../utils/constants";
 
-import WelcomeStep from "./WelcomeStep";
-import BasicInfoStep from "./BasicInfoStep";
-import CareerEducationStep from "./CareerEducationStep";
-import ProfileSetupStep from "./ProfileSetupStep";
-import InterestsStep from "./InterestsStep";
-import PreferencesStep from "./PreferencesStep";
-import PermissionsStep from "./PermissionsStep";
-import PreviewStep from "./PreviewStep";
-
-export interface OnboardingData {
-  name: string;
-  dateOfBirth: string;
-  age?: number;
-  zodiacSign?: string;
-  gender: string;
-  interestedIn: string[];
-  profession: string;
-  company?: string;
-  education: string;
-  photos: File[];
-  bio: string;
-  hobbies: string[];
-  lifestyle: string[];
-  personality: string[];
-  lookingFor: string[];
-  ageRange: [number, number];
-  distanceRange: number;
-  locationPermission: boolean;
-  notificationPermission: boolean;
+interface WelcomeStepProps {
+  data: OnboardingData;
+  updateData: (data: Partial<OnboardingData>) => void;
+  onNext: () => void;
+  onPrev: () => void;
 }
 
-const initialData: OnboardingData = {
-  name: "",
-  dateOfBirth: "",
-  gender: "",
-  interestedIn: [],
-  profession: "",
-  company: "",
-  education: "",
-  photos: [],
-  bio: "",
-  hobbies: [],
-  lifestyle: [],
-  personality: [],
-  lookingFor: [],
-  ageRange: [18, 35],
-  distanceRange: 50,
-  locationPermission: false,
-  notificationPermission: false,
+// ✨ Floating animation variants
+const floatVariants: Variants = {
+  float1: {
+    y: [0, -15, 0],
+    transition: { duration: 6, repeat: Infinity, ease: "easeInOut" as any },
+  },
+  float2: {
+    y: [0, -10, 0],
+    transition: {
+      duration: 5,
+      repeat: Infinity,
+      ease: "easeInOut" as any,
+      delay: 1,
+    },
+  },
+  float3: {
+    y: [0, -20, 0],
+    transition: {
+      duration: 7,
+      repeat: Infinity,
+      ease: "easeInOut" as any,
+      delay: 2,
+    },
+  },
 };
 
-const OnboardingFlow: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [direction, setDirection] = useState<1 | -1>(1);
-  const [data, setData] = useState<OnboardingData>(initialData);
+// ✨ Animated text variants
+const textVariants: Variants = {
+  enter: { opacity: 0, y: 20, scale: 0.95 },
+  center: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+  exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.4 } },
+};
 
-  const steps = [
-    { component: WelcomeStep, title: "Welcome", requiresData: false },
-    { component: BasicInfoStep, title: "Basic Info", requiresData: true },
-    { component: CareerEducationStep, title: "Career & Education", requiresData: true },
-    { component: ProfileSetupStep, title: "Profile Setup", requiresData: true },
-    { component: InterestsStep, title: "Interests & Lifestyle", requiresData: true },
-    { component: PreferencesStep, title: "Preferences", requiresData: true },
-    { component: PermissionsStep, title: "Permissions", requiresData: true },
-    { component: PreviewStep, title: "Preview Profile", requiresData: false },
-  ];
+const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
+  const words = ["perfect match", "true love", "real connection", "beautiful bond"];
+  const [index, setIndex] = useState(0);
 
-  const totalSteps = steps.length - 1;
-  const updateData = (newData: Partial<OnboardingData>) =>
-    setData((prev) => ({ ...prev, ...newData }));
-
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setDirection(1);
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setDirection(-1);
-      setCurrentStep((prev) => prev - 1);
-    }
-  };
-
-  const canProceed = () => {
-    const step = steps[currentStep];
-    if (!step.requiresData) return true;
-    switch (currentStep) {
-      case 1:
-        return data.name && data.dateOfBirth && data.gender && data.interestedIn.length > 0;
-      case 2:
-        return data.profession && data.education;
-      case 3:
-        return data.photos.length > 0 && data.bio;
-      case 4:
-        return data.hobbies.length > 0;
-      case 5:
-        return data.lookingFor.length > 0;
-      default:
-        return true;
-    }
-  };
-
-  const CurrentStepComponent = steps[currentStep].component;
-
-  const variants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 150 : -150,
-      opacity: 0,
-      position: "absolute" as const,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      position: "relative" as const,
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -150 : 150,
-      opacity: 0,
-      position: "absolute" as const,
-    }),
-  };
+  // ⏳ Cycle words every 2.5s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden">
-      {/* Background */}
+    <div
+      className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden"
+      style={{
+        fontFamily: THEME.fonts.primary,
+        color: THEME.colors.textPrimary,
+      }}
+    >
+      {/* 🌸 Floating Orbs */}
+      <motion.div
+        className="absolute top-20 left-16 w-20 h-20 rounded-full opacity-30 blur-2xl"
+        style={{ background: "#E1BEE7" }}
+        variants={floatVariants}
+        animate="float1"
+      />
+      <motion.div
+        className="absolute bottom-32 right-20 w-24 h-24 rounded-full opacity-30 blur-2xl"
+        style={{ background: "#F8BBD0" }}
+        variants={floatVariants}
+        animate="float2"
+      />
+      <motion.div
+        className="absolute top-1/3 right-1/4 w-16 h-16 rounded-full opacity-40 blur-lg"
+        style={{ background: "#F48FB1" }}
+        variants={floatVariants}
+        animate="float3"
+      />
 
-      {/* Floating Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <FaHeart className="animate-floatSlow absolute left-1/4 top-1/3 text-white/30 text-6xl" />
-        <FaStar className="animate-floatMedium absolute right-1/4 top-1/2 text-white/40 text-5xl" />
-        <FaUserFriends className="animate-floatSlow absolute left-1/3 bottom-1/4 text-white/20 text-7xl" />
+      {/* 💖 Icon Row */}
+      <div className="flex justify-center mb-10 space-x-8 z-10">
+        {[Heart, Sparkles, Users].map((Icon, i) => (
+          <motion.div
+            key={i}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: i * 0.25, type: "spring" }}
+            className="p-4 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-sm shadow-md transition-all"
+          >
+            <Icon size={38} color={THEME.colors.textPrimary} strokeWidth={1.6} />
+          </motion.div>
+        ))}
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col h-full">
-        {/* Progress bar */}
-        {currentStep > 0 && (
-          <div className="fixed top-14 left-0 right-0 z-40 flex flex-col items-center py-3">
-            <div className="flex gap-2">
-              {Array.from({ length: totalSteps }).map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-2 w-10 rounded-full transition-all ${
-                    index < currentStep ? "bg-white" : "bg-pink-300"
-                  }`}
-                />
-              ))}
-            </div>
-            <p className="mt-2 text-xs text-white">
-              Step {currentStep} of {totalSteps}
-            </p>
-          </div>
-        )}
-
-        {/* Step */}
-        <div className="flex-1 flex items-center justify-center relative pt-20 pb-28 px-4">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={currentStep}
-              custom={direction}
-              variants={variants}
+      {/* 🌈 Title + Animated Word */}
+      <motion.h1
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="font-bold mb-3 z-10 flex flex-wrap justify-center items-center gap-2"
+        style={{
+          fontFamily: THEME.fonts.heading,
+          fontSize: THEME.fontSize["4xl"],
+          lineHeight: 1.2,
+          textShadow: "0 2px 8px rgba(0,0,0,0.25)",
+        }}
+      >
+        <span>Find your</span>
+        <span className="relative inline-flex items-center justify-center min-h-[1.5em] ml-2">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={words[index]}
+              variants={textVariants}
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="w-full max-w-xl"
+              style={{
+                color: "#FFE6F2",
+                fontWeight: 700,
+                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
+                whiteSpace: "nowrap",
+                display: "inline-block",
+              }}
             >
-              <CurrentStepComponent
-                data={data}
-                updateData={updateData}
-                onNext={nextStep}
-                onPrev={prevStep}
-              />
-            </motion.div>
+              {words[index]}
+            </motion.span>
           </AnimatePresence>
-        </div>
+        </span>
+      </motion.h1>
 
-        {/* Navigation */}
-        {currentStep > 0 && currentStep < steps.length - 1 && (
-          <div className="fixed bottom-16 left-0 right-0 z-40 py-3 px-6 flex justify-between items-center">
-            <Button
-              variant="outline"
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              className="flex items-center gap-2 text-gray-700 border-gray-300 hover:bg-gray-100"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <Button
-              onClick={nextStep}
-              disabled={!canProceed()}
-              className="flex items-center gap-2 px-8 bg-pink-600 hover:bg-pink-700 text-white shadow-lg"
-            >
-              Continue
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-      </div>
+      {/* 💬 Subtitle */}
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        style={{
+          fontSize: THEME.fontSize.lg,
+          color: THEME.colors.textSecondary,
+          maxWidth: 460,
+        }}
+        className="mb-10 leading-relaxed z-10"
+      >
+        Connect with amazing people who share your interests and values.  
+        Your journey to meaningful connections starts here.
+      </motion.p>
+
+      {/* 🚀 CTA */}
+     {/* 🚀 CTA */}
+<motion.div
+  initial={{ scale: 0.9, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  transition={{ delay: 0.5 }}
+  className="z-10"
+>
+  <button
+    onClick={onNext}
+    className="
+      relative px-10 py-3 text-lg font-semibold rounded-full 
+      transition-all duration-300 
+      border-[3px] border-purple-300
+      text-purple-200 
+      shadow-[0_0_20px_rgba(217,176,255,0.5),inset_0_0_10px_rgba(217,176,255,0.5)]
+      hover:bg-purple-200 hover:text-purple-900
+      hover:shadow-[0_0_25px_rgba(217,176,255,0.9),0_0_60px_rgba(191,123,255,0.8),inset_0_0_15px_rgba(217,176,255,0.7)]
+      active:shadow-[0_0_10px_rgba(217,176,255,0.7),0_0_40px_rgba(191,123,255,0.6),inset_0_0_8px_rgba(217,176,255,0.5)]
+      bg-[rgb(100,61,136)]
+    "
+    style={{
+      textShadow: "0 0 6px rgba(217,176,255,0.8)",
+      boxShadow: `
+        0 0 1em 0.25em rgb(217,176,255),
+        0 0 3em 1em rgba(191,123,255,0.7),
+        inset 0 0 0.75em 0.25em rgb(217,176,255)
+      `,
+    }}
+  >
+    Get Started
+    <span className="absolute top-[120%] left-0 w-full h-full bg-[rgba(191,123,255,0.5)] blur-3xl opacity-70 scale-y-50 rounded-full" />
+  </button>
+</motion.div>
+
+      {/* 🛡️ Bottom Text */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="flex justify-center items-center mt-12 space-x-6 text-sm z-10"
+        style={{ color: THEME.colors.muted }}
+      >
+        <span>• Safe & Secure</span>
+        <span>• Verified Profiles</span>
+        <span>• Real Connections</span>
+      </motion.div>
     </div>
   );
 };
 
-export default OnboardingFlow;
+export default WelcomeStep;

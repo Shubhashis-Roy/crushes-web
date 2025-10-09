@@ -8,26 +8,27 @@ import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import Chat from "./components/Chat";
-import OnboardingFlow from "./components/onboard/OnboardingFlow";
+import OnboardingFlow from "./components/onboard/OnboardingFlow"; // ✅ import onboarding flow
 
 function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename="/">
         <Routes>
-          {/* ✅ Onboarding screen is the default landing */}
-          <Route path="/" element={<OnboardingFlow />} />
+          {/* Wrap all routes inside Body */}
+          <Route path="/" element={<Body />}>
+            {/* ✅ FIRST screen: Onboarding flow */}
+            <Route index element={<OnboardingFlow />} />
 
-          {/* ✅ Login screen after onboarding */}
-          <Route path="/login" element={<Login />} />
+            {/* ✅ Login page (after onboarding or direct access) */}
+            <Route path="login" element={<Login />} />
 
-          {/* ✅ App routes after login */}
-          <Route path="/app" element={<Body />}>
-            <Route index element={<Feed />} />
+            {/* ✅ Other routes */}
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="requests" element={<Requests />} />
             <Route path="chat" element={<Chat />} />
+            <Route path="feed" element={<Feed />} />
           </Route>
         </Routes>
       </BrowserRouter>

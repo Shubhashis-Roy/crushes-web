@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Card } from '../../components/ui/card';
-import { Label } from '../../components/ui/label';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { OnboardingData } from './OnboardingFlow';
+import React, { useState, useEffect } from "react";
+import { Label } from "../../components/ui/label";
+import { Button } from "../../components/ui/button";
+import { OnboardingData } from "./OnboardingFlow";
 
 interface InterestsStepProps {
   data: OnboardingData;
@@ -14,9 +12,9 @@ interface InterestsStepProps {
 
 const InterestsStep: React.FC<InterestsStepProps> = ({ data, updateData }) => {
   const [formData, setFormData] = useState({
-    hobbies: data.hobbies,
-    lifestyle: data.lifestyle,
-    personality: data.personality,
+    hobbies: data.hobbies || [],
+    lifestyle: data.lifestyle || [],
+    personality: data.personality || [],
   });
 
   useEffect(() => {
@@ -24,115 +22,114 @@ const InterestsStep: React.FC<InterestsStepProps> = ({ data, updateData }) => {
   }, [formData, updateData]);
 
   const hobbiesOptions = [
-    'Music', 'Travel', 'Sports', 'Art', 'Photography', 'Cooking',
-    'Reading', 'Gaming', 'Dancing', 'Hiking', 'Yoga', 'Movies',
-    'Theater', 'Fashion', 'Technology', 'Writing', 'Swimming', 'Cycling'
+    "Music", "Travel", "Sports", "Art", "Photography", "Cooking",
+    "Reading", "Gaming", "Dancing", "Hiking", "Yoga", "Movies",
+    "Theater", "Fashion", "Technology", "Writing", "Swimming", "Cycling",
   ];
 
   const lifestyleOptions = [
-    'Fitness Enthusiast', 'Foodie', 'Night Owl', 'Early Bird', 'Pet Lover',
-    'Social Butterfly', 'Homebody', 'Adventurer', 'Beach Lover', 'City Life',
-    'Nature Lover', 'Party Goer', 'Quiet Nights', 'Coffee Addict'
+    "Fitness Enthusiast", "Foodie", "Night Owl", "Early Bird", "Pet Lover",
+    "Social Butterfly", "Homebody", "Adventurer", "Beach Lover", "City Life",
+    "Nature Lover", "Party Goer", "Quiet Nights", "Coffee Addict",
   ];
 
   const personalityOptions = [
-    'Outgoing', 'Introvert', 'Creative', 'Analytical', 'Spontaneous',
-    'Organized', 'Funny', 'Romantic', 'Ambitious', 'Laid-back',
-    'Empathetic', 'Independent', 'Family-oriented', 'Career-focused'
+    "Outgoing", "Introvert", "Creative", "Analytical", "Spontaneous",
+    "Organized", "Funny", "Romantic", "Ambitious", "Laid-back",
+    "Empathetic", "Independent", "Family-oriented", "Career-focused",
   ];
 
+  // ✅ Selection toggle (same logic as BasicInfo)
   const toggleOption = (category: keyof typeof formData, option: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [category]: prev[category].includes(option)
-        ? prev[category].filter(item => item !== option)
-        : [...prev[category], option]
-    }));
+    setFormData((prev) => {
+      const selected = prev[category];
+      const isSelected = selected.includes(option);
+      return {
+        ...prev,
+        [category]: isSelected
+          ? selected.filter((item) => item !== option)
+          : [...selected, option],
+      };
+    });
   };
 
-  const ChipSection = ({ 
-    title, 
-    options, 
-    selected, 
+  // ✅ Shared reusable section component
+  const Section = ({
+    title,
+    options,
+    selected,
     category,
-    maxSelection = 10
   }: {
     title: string;
     options: string[];
     selected: string[];
     category: keyof typeof formData;
-    maxSelection?: number;
   }) => (
     <div className="space-y-3">
-      <div className="flex justify-between items-center">
-        <Label className="text-sm font-medium">{title}</Label>
-        <Badge variant="secondary" className="text-xs">
-          {selected.length}/{maxSelection}
-        </Badge>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => {
-          const isSelected = selected.includes(option);
-          const canSelect = selected.length < maxSelection;
-          
-          return (
-            <Button
-              key={option}
-              variant={isSelected ? 'romantic' : 'soft'}
-              size="sm"
-              onClick={() => toggleOption(category, option)}
-              disabled={!isSelected && !canSelect}
-              className="h-8 text-xs rounded-full"
-            >
-              {option}
-            </Button>
-          );
-        })}
+      <Label className="text-pink-200 font-medium">{title}</Label>
+      <div className="flex flex-wrap gap-3 mt-2">
+        {options.map((option) => (
+          <Button
+            key={option}
+            variant="outline"
+            size="sm"
+            onClick={() => toggleOption(category, option)}
+            className={`px-5 py-2 rounded-full border border-white/30 text-white text-sm transition-all backdrop-blur-md
+              ${
+                selected.includes(option)
+                  ? "bg-gradient-to-r from-pink-400 to-purple-500 shadow-lg scale-105"
+                  : "hover:bg-white/10"
+              }`}
+          >
+            {option}
+          </Button>
+        ))}
       </div>
     </div>
   );
 
   return (
-    <div className="max-w-lg mx-auto">
-      <Card className="p-8 shadow-soft bg-gradient-card">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-foreground mb-2">Interests & Lifestyle</h2>
-          <p className="text-muted-foreground">Help others discover what makes you unique</p>
+    <div className="w-full flex flex-col items-center justify-center text-center px-4 pt-24">
+      {/* Header */}
+      <div className="mb-10">
+        <h2 className="text-4xl font-extrabold mb-3 text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]">
+          Discover Your{" "}
+          <span className="bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text text-transparent">
+            Vibe
+          </span>
+        </h2>
+        <p className="text-white/80 text-base">
+          Share your passions, lifestyle, and personality ✨
+        </p>
+      </div>
+
+      {/* Selection Sections */}
+      <div className="w-full max-w-2xl text-left space-y-10">
+        <Section
+          title="Hobbies & Interests"
+          options={hobbiesOptions}
+          selected={formData.hobbies}
+          category="hobbies"
+        />
+        <Section
+          title="Lifestyle"
+          options={lifestyleOptions}
+          selected={formData.lifestyle}
+          category="lifestyle"
+        />
+        <Section
+          title="Personality Traits"
+          options={personalityOptions}
+          selected={formData.personality}
+          category="personality"
+        />
+
+        {/* Info Box */}
+        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 text-center text-white/70 text-sm shadow-sm">
+          Select the options that best describe you — they’ll help others
+          understand your vibe and find better matches 💞
         </div>
-
-        <div className="space-y-8">
-          <ChipSection
-            title="Hobbies & Interests"
-            options={hobbiesOptions}
-            selected={formData.hobbies}
-            category="hobbies"
-            maxSelection={8}
-          />
-
-          <ChipSection
-            title="Lifestyle"
-            options={lifestyleOptions}
-            selected={formData.lifestyle}
-            category="lifestyle"
-            maxSelection={6}
-          />
-
-          <ChipSection
-            title="Personality Traits"
-            options={personalityOptions}
-            selected={formData.personality}
-            category="personality"
-            maxSelection={5}
-          />
-
-          <div className="bg-secondary/30 rounded-lg p-4">
-            <p className="text-xs text-muted-foreground text-center">
-              Select the options that best describe you. These will help us find compatible matches
-              and give others a better sense of who you are.
-            </p>
-          </div>
-        </div>
-      </Card>
+      </div>
     </div>
   );
 };
