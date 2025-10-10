@@ -1,6 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Body from "./components/Body";
-import Login from "./components/Login";
 import Profile from "./components/Profile";
 import { Provider } from "react-redux";
 import appStore from "./redux/appStore";
@@ -8,27 +7,35 @@ import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import Chat from "./components/Chat";
-import OnboardingFlow from "./components/onboard/OnboardingFlow"; // ✅ import onboarding flow
+import OnboardingFlow from "./components/onboard/OnboardingFlow";
 
 function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename="/">
         <Routes>
-          {/* Wrap all routes inside Body */}
           <Route path="/" element={<Body />}>
-            {/* ✅ FIRST screen: Onboarding flow */}
+            {/* ✅ Default onboarding route */}
             <Route index element={<OnboardingFlow />} />
 
-            {/* ✅ Login page (after onboarding or direct access) */}
-            <Route path="login" element={<Login />} />
-
-            {/* ✅ Other routes */}
+            {/* ✅ Authenticated main app routes */}
+            <Route path="feed" element={<Feed />} />
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="requests" element={<Requests />} />
             <Route path="chat" element={<Chat />} />
-            <Route path="feed" element={<Feed />} />
+
+            {/* ✅ Redirect unknown routes */}
+            <Route
+              path="*"
+              element={
+                localStorage.getItem("onboardingDone") ? (
+                  <Navigate to="/feed" replace />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

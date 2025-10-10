@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../redux/userSlice";
+import { THEME, BASE_URL } from "../../utils/constants";
 
 import WelcomeStep from "./WelcomeStep";
 import BasicInfoStep from "./BasicInfoStep";
@@ -11,16 +15,11 @@ import ProfileSetupStep from "./ProfileSetupStep";
 import PreferencesStep from "./PreferencesStep";
 import PermissionsStep from "./PermissionsStep";
 import PreviewStep from "./PreviewStep";
-import { THEME } from "../../utils/constants";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../redux/userSlice";
-import InputField from "../InputField";
-import { Eye, EyeOff } from "lucide-react";
-import { BASE_URL } from "../../utils/constants";
 
 export interface OnboardingData {
   name: string;
+  email: string;
+  password: string;
   dateOfBirth: string;
   age?: number;
   zodiacSign?: string;
@@ -43,6 +42,8 @@ export interface OnboardingData {
 
 export const initialData: OnboardingData = {
   name: "",
+  email: "",
+  password: "",
   dateOfBirth: "",
   gender: "",
   interestedIn: [],
@@ -65,182 +66,48 @@ const OnboardingFlow: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [data, setData] = useState<OnboardingData>(initialData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // ✅ Skip if onboarding already done
+  // ✅ Redirect to /feed if already onboarded
   useEffect(() => {
     const done = localStorage.getItem("onboardingDone");
     if (done) navigate("/feed");
   }, [navigate]);
 
-  // ✅ --- LoginStep definition inline ---
-  const LoginStep = () => {
-    const [emailId, setEmailId] = useState("shub@gmail.in");
-    const [password, setPassword] = useState("Subhashis@9");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [city, setCity] = useState("");
-    const [isLoginForm, setIsLoginForm] = useState(true);
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-
-    const handleLogin = async () => {
-      if (!emailId || !password) {
-        setError("Please fill in all fields");
-        return;
-      }
-      try {
-        setLoading(true);
-        const res = await axios.post(
-          BASE_URL + "/login",
-          { emailId, password },
-          { withCredentials: true }
-        );
-        dispatch(addUser(res.data));
-        localStorage.setItem("onboardingDone", "true");
-        navigate("/feed");
-      } catch (err: any) {
-        console.error(err);
-        setError(
-          err?.response?.data || "Something went wrong, please try again"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const handleSignUp = async () => {
-      if (!firstName || !lastName || !emailId || !password) {
-        setError("Please fill in all fields");
-        return;
-      }
-      try {
-        setLoading(true);
-        const res = await axios.post(
-          BASE_URL + "/signup",
-          { firstName, lastName, city, emailId, password },
-          { withCredentials: true }
-        );
-        dispatch(addUser(res.data.data));
-        // Continue to next onboarding step
-        nextStep();
-      } catch (err: any) {
-        console.error(err);
-        setError(
-          err?.response?.data || "Something went wrong, please try again"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    return (
-      <div className="max-w-md mx-auto mt-16 p-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl">
-        <h2 className="text-3xl font-bold text-white text-center mb-4 drop-shadow">
-          {isLoginForm ? "Welcome Back 💕" : "Create Account"}
-        </h2>
-
-        {!isLoginForm && (
-          <>
-            <InputField
-              label="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First Name"
-            />
-            <InputField
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last Name"
-            />
-            <InputField
-              label="City"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="City"
-            />
-          </>
-        )}
-
-        <InputField
-          label="Email"
-          type="email"
-          value={emailId}
-          onChange={(e) => setEmailId(e.target.value)}
-          placeholder="Email"
-          icon="mail"
-        />
-        <InputField
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          icon="lock"
-          showToggle
-          toggleValue={showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          onToggle={() => setShowPassword((prev) => !prev)}
-        />
-
-        {error && (
-          <p className="text-red-300 text-sm text-center mt-3">{error}</p>
-        )}
-
-        <Button
-          onClick={isLoginForm ? handleLogin : handleSignUp}
-          disabled={loading}
-          className="w-full mt-4 py-3 font-semibold text-white rounded-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-opacity"
-        >
-          {loading
-            ? isLoginForm
-              ? "Logging in..."
-              : "Creating account..."
-            : isLoginForm
-            ? "Login"
-            : "Sign Up"}
-        </Button>
-
-        <p
-          className="text-center mt-6 text-white text-sm hover:text-pink-300 transition cursor-pointer"
-          onClick={() => {
-            setIsLoginForm((prev) => !prev);
-            setError("");
-          }}
-        >
-          {isLoginForm ? "New here? " : "Already have an account? "}
-          <span className="underline font-semibold">
-            {isLoginForm ? "Create account" : "Log in"}
-          </span>
-        </p>
-      </div>
-    );
-  };
-
-  // ✅ Onboarding steps (login is step 1)
-  const steps = [
-    { component: WelcomeStep, title: "Welcome", requiresData: false },
-    { component: LoginStep, title: "Login / Signup", requiresData: false },
-    { component: BasicInfoStep, title: "Basic Info", requiresData: true },
-    {
-      component: CareerEducationStep,
-      title: "Career & Education",
-      requiresData: true,
-    },
-    { component: ProfileSetupStep, title: "Profile Setup", requiresData: true },
-    { component: PreferencesStep, title: "Preferences", requiresData: true },
-    { component: PermissionsStep, title: "Permissions", requiresData: true },
-    { component: PreviewStep, title: "Preview Profile", requiresData: false },
-  ];
-
-  const totalSteps = steps.length - 1;
   const updateData = (newData: Partial<OnboardingData>) =>
     setData((prev) => ({ ...prev, ...newData }));
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
+  // ✅ Handle sign-up automatically when BasicInfoStep completes
+  const nextStep = async () => {
+    setError("");
+    if (currentStep === 1) {
+      const { email, password, name, dateOfBirth, gender, interestedIn } = data;
+      if (!email || !password || !name || !dateOfBirth || !gender || !interestedIn.length) {
+        setError("Please fill in all required fields before continuing.");
+        return;
+      }
+      try {
+        setLoading(true);
+        const res = await axios.post(
+          `${BASE_URL}/signup`,
+          { email, password, name, dateOfBirth, gender, interestedIn },
+          { withCredentials: true }
+        );
+        dispatch(addUser(res.data.data));
+        console.log("✅ User created:", res.data.data);
+      } catch (err: any) {
+        console.error(err);
+        setError(err?.response?.data || "Signup failed. Try again.");
+        return;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (currentStep < steps.length - 1) {
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
     } else {
@@ -259,21 +126,21 @@ const OnboardingFlow: React.FC = () => {
   const skipStep = () => nextStep();
 
   const canProceed = () => {
-    const step = steps[currentStep];
-    if (!step.requiresData) return true;
     switch (currentStep) {
-      case 2:
+      case 1:
         return (
+          data.email &&
+          data.password &&
           data.name &&
           data.dateOfBirth &&
           data.gender &&
           data.interestedIn.length > 0
         );
-      case 3:
+      case 2:
         return data.profession && data.education;
-      case 4:
+      case 3:
         return data.photos.length > 0 && data.bio;
-      case 5:
+      case 4:
         return (
           data.lookingFor.length > 0 ||
           data.ageRange[0] !== 18 ||
@@ -285,6 +152,17 @@ const OnboardingFlow: React.FC = () => {
     }
   };
 
+  const steps = [
+    { component: WelcomeStep, title: "Welcome" },
+    { component: BasicInfoStep, title: "Basic Info" },
+    { component: CareerEducationStep, title: "Career & Education" },
+    { component: ProfileSetupStep, title: "Profile Setup" },
+    { component: PreferencesStep, title: "Preferences" },
+    { component: PermissionsStep, title: "Permissions" },
+    { component: PreviewStep, title: "Preview" },
+  ];
+
+  const totalSteps = steps.length - 1;
   const CurrentStepComponent = steps[currentStep].component;
 
   const variants = {
@@ -306,7 +184,7 @@ const OnboardingFlow: React.FC = () => {
       className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden flex flex-col items-center"
       style={{ background: THEME.colors.backgroundGradient }}
     >
-      {/* Progress Bar */}
+      {/* Progress bar */}
       {currentStep > 0 && (
         <div className="sticky top-0 z-20 bg-gradient-to-b from-black/10 to-transparent backdrop-blur-sm pb-4 pt-20">
           <div className="flex flex-col items-center">
@@ -327,7 +205,7 @@ const OnboardingFlow: React.FC = () => {
         </div>
       )}
 
-      {/* Step Content */}
+      {/* Step content */}
       <div className="relative w-full max-w-2xl flex-1 flex items-start justify-center px-4">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -346,11 +224,14 @@ const OnboardingFlow: React.FC = () => {
               onNext={nextStep}
               onPrev={prevStep}
             />
+            {error && (
+              <p className="text-center text-red-300 text-sm mt-4">{error}</p>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Navigation */}
       {currentStep > 0 && currentStep < steps.length && (
         <div className="sticky bottom-0 w-full flex justify-between max-w-2xl px-8 py-6 z-30">
           {currentStep > 1 && (
@@ -375,20 +256,22 @@ const OnboardingFlow: React.FC = () => {
               </Button>
             )}
 
-            {currentStep !== 1 && (
-              <Button
-                onClick={nextStep}
-                disabled={!canProceed()}
-                className="flex items-center gap-2 px-8 py-2 font-semibold text-white rounded-full transition-transform hover:scale-105"
-                style={{
-                  background: `linear-gradient(90deg, ${THEME.colors.primary}, ${THEME.colors.secondary})`,
-                  boxShadow: THEME.shadows.soft,
-                }}
-              >
-                {currentStep === steps.length - 1 ? "Finish" : "Continue"}
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            )}
+            <Button
+              onClick={nextStep}
+              disabled={!canProceed() || loading}
+              className="flex items-center gap-2 px-8 py-2 font-semibold text-white rounded-full transition-transform hover:scale-105"
+              style={{
+                background: `linear-gradient(90deg, ${THEME.colors.primary}, ${THEME.colors.secondary})`,
+                boxShadow: THEME.shadows.soft,
+              }}
+            >
+              {loading
+                ? "Processing..."
+                : currentStep === steps.length - 1
+                ? "Finish"
+                : "Continue"}
+              <ArrowRight className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       )}
