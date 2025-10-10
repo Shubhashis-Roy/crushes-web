@@ -58,7 +58,7 @@ const Profile = () => {
 
   return (
     user && (
-      <div className="relative min-h-screen bg-gradient-to-br from-[#2a0e45] via-[#3d176a] to-[#5e2d91] text-white flex flex-col items-center px-4 py-10">
+      <div className="relative min-h-screen bg-gradient-to-br from-[#2a0e45] via-[#3d176a] to-[#5e2d91] text-white flex flex-col items-center px-4 py-10 pt-28">
         {/* 🔮 Header */}
         <div className="text-center mb-10">
           <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../../redux/userSlice";
 import { THEME, BASE_URL } from "../../utils/constants";
 
+// Steps
 import WelcomeStep from "./WelcomeStep";
 import BasicInfoStep from "./BasicInfoStep";
 import CareerEducationStep from "./CareerEducationStep";
@@ -15,6 +16,7 @@ import ProfileSetupStep from "./ProfileSetupStep";
 import PreferencesStep from "./PreferencesStep";
 import PermissionsStep from "./PermissionsStep";
 import PreviewStep from "./PreviewStep";
+import Login from "../Login"; // 👈 your existing login component
 
 export interface OnboardingData {
   name: string;
@@ -45,7 +47,7 @@ export const initialData: OnboardingData = {
   name: "",
   email: "",
   password: "",
-  city: "", // ✅ added
+  city: "",
   dateOfBirth: "",
   gender: "",
   interestedIn: [],
@@ -70,10 +72,11 @@ const OnboardingFlow: React.FC = () => {
   const [data, setData] = useState<OnboardingData>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showLogin, setShowLogin] = useState(false); // 👈 controls login screen
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // ✅ Skip if already done
+  // ✅ Redirect if onboarding already done
   useEffect(() => {
     const done = localStorage.getItem("onboardingDone");
     if (done) navigate("/feed");
@@ -82,10 +85,24 @@ const OnboardingFlow: React.FC = () => {
   const updateData = (newData: Partial<OnboardingData>) =>
     setData((prev) => ({ ...prev, ...newData }));
 
+  const steps = [
+    { component: WelcomeStep, title: "Welcome" },
+    { component: BasicInfoStep, title: "Basic Info" },
+    { component: CareerEducationStep, title: "Career & Education" },
+    { component: ProfileSetupStep, title: "Profile Setup" },
+    { component: PreferencesStep, title: "Preferences" },
+    { component: PermissionsStep, title: "Permissions" },
+    { component: PreviewStep, title: "Preview" },
+  ];
+
+  const totalSteps = steps.length - 1;
+  const CurrentStepComponent = steps[currentStep].component;
+
+  // ✅ Handle Next / Continue
   const nextStep = async () => {
     setError("");
 
-    // Step 1 (Basic Info) → create account
+    // Step 1 (Create Account)
     if (currentStep === 1) {
       const { email, password, name, dateOfBirth, gender, interestedIn, city } =
         data;
@@ -112,7 +129,7 @@ const OnboardingFlow: React.FC = () => {
             password,
             firstName: name,
             lastName: "",
-            city, // ✅ send city from form
+            city,
             dateOfBirth,
             gender,
             interestedIn,
@@ -122,9 +139,9 @@ const OnboardingFlow: React.FC = () => {
 
         dispatch(addUser(res.data.data));
         console.log("✅ Account created:", res.data.data);
-      } catch (err: any) {
+      } catch (err) {
         console.error(err);
-        setError(err?.response?.data || "Signup failed. Try again.");
+        setError("Signup failed. Try again.");
         setLoading(false);
         return;
       } finally {
@@ -132,7 +149,6 @@ const OnboardingFlow: React.FC = () => {
       }
     }
 
-    // Move to next step
     if (currentStep < steps.length - 1) {
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
@@ -142,6 +158,7 @@ const OnboardingFlow: React.FC = () => {
     }
   };
 
+  // ✅ Handle Back
   const prevStep = () => {
     if (currentStep > 0) {
       setDirection(-1);
@@ -149,9 +166,12 @@ const OnboardingFlow: React.FC = () => {
     }
   };
 
-  // Skip allowed only on later steps
-  const canShowSkip = currentStep > 1;
+  // ✅ Visibility logic
+  const canShowBack = currentStep > 0 && !showLogin;
+  const canShowSkip =
+    currentStep > 1 && currentStep < steps.length - 1 && !showLogin;
 
+  // ✅ Button enable/disable logic
   const canProceed = () => {
     switch (currentStep) {
       case 1:
@@ -161,36 +181,17 @@ const OnboardingFlow: React.FC = () => {
           data.name &&
           data.dateOfBirth &&
           data.gender &&
+          data.city &&
           data.interestedIn.length > 0
         );
       case 2:
         return data.profession && data.education;
       case 3:
         return data.photos.length > 0 && data.bio;
-      case 4:
-        return (
-          data.lookingFor.length > 0 ||
-          data.ageRange[0] !== 18 ||
-          data.ageRange[1] !== 35 ||
-          data.distanceRange !== 50
-        );
       default:
         return true;
     }
   };
-
-  const steps = [
-    { component: WelcomeStep, title: "Welcome" },
-    { component: BasicInfoStep, title: "Basic Info" },
-    { component: CareerEducationStep, title: "Career & Education" },
-    { component: ProfileSetupStep, title: "Profile Setup" },
-    { component: PreferencesStep, title: "Preferences" },
-    { component: PermissionsStep, title: "Permissions" },
-    { component: PreviewStep, title: "Preview" },
-  ];
-
-  const totalSteps = steps.length - 1;
-  const CurrentStepComponent = steps[currentStep].component;
 
   const variants = {
     enter: (direction: number) => ({
@@ -211,9 +212,9 @@ const OnboardingFlow: React.FC = () => {
       className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden flex flex-col items-center"
       style={{ background: THEME.colors.backgroundGradient }}
     >
-      {/* ✅ Progress Bar */}
-      {currentStep > 0 && (
-        <div className="sticky top-0 z-20 bg-gradient-to-b from-black/10 to-transparent backdrop-blur-sm pb-4 pt-20">
+      {/* 🌟 Progress Bar (hide on Welcome & Login) */}
+      {!showLogin && currentStep > 0 && (
+        <div className="sticky top-0 z-20 pb-4 pt-20">
           <div className="flex flex-col items-center">
             <div className="flex gap-2 mb-2">
               {Array.from({ length: totalSteps }).map((_, index) => (
@@ -232,11 +233,11 @@ const OnboardingFlow: React.FC = () => {
         </div>
       )}
 
-      {/* ✅ Step Content */}
+      {/* 🧭 Step Content / Login toggle */}
       <div className="relative w-full max-w-2xl flex-1 flex items-start justify-center px-4">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
-            key={currentStep}
+            key={showLogin ? "login" : currentStep}
             custom={direction}
             variants={variants}
             initial="enter"
@@ -245,12 +246,19 @@ const OnboardingFlow: React.FC = () => {
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="w-full"
           >
-            <CurrentStepComponent
-              data={data}
-              updateData={updateData}
-              onNext={nextStep}
-              onPrev={prevStep}
-            />
+            {showLogin ? (
+              <Login />
+            ) : (
+              <CurrentStepComponent
+                data={data}
+                updateData={updateData}
+                onNext={nextStep}
+                onPrev={prevStep}
+                // 👇 Pass function to open login
+                openLogin={() => setShowLogin(true)}
+              />
+            )}
+
             {error && (
               <p className="text-center text-red-300 text-sm mt-4">{error}</p>
             )}
@@ -258,10 +266,15 @@ const OnboardingFlow: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      {/* ✅ Navigation Buttons */}
-      {currentStep > 0 && currentStep < steps.length && (
-        <div className="sticky bottom-0 w-full flex justify-between max-w-2xl px-8 py-6 z-30">
-          {currentStep > 1 && (
+      {/* ✅ Navigation Buttons (hidden on login) */}
+      {!showLogin && currentStep < steps.length && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="sticky bottom-0 w-full flex justify-between max-w-2xl px-8 py-6 z-30"
+        >
+          {canShowBack && (
             <Button
               variant="outline"
               onClick={prevStep}
@@ -273,8 +286,7 @@ const OnboardingFlow: React.FC = () => {
           )}
 
           <div className="flex gap-4 ml-auto">
-            {/* ❌ Skip hidden for BasicInfo (step 1) */}
-            {canShowSkip && currentStep < totalSteps && (
+            {canShowSkip && (
               <Button
                 variant="ghost"
                 onClick={nextStep}
@@ -301,7 +313,7 @@ const OnboardingFlow: React.FC = () => {
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

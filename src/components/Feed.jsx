@@ -65,7 +65,7 @@ const Feed = () => {
           return (
             <div
               key={user._id}
-              className={`absolute w-96 h-[660px] transition-all duration-500 ${
+              className={`absolute w-96 h-[660px] transition-all duration-500 pt-14 ${
                 isSelected ? "z-40" : "z-20"
               }`}
               style={{
