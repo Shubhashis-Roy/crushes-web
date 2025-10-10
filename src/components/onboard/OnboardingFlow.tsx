@@ -20,6 +20,7 @@ export interface OnboardingData {
   name: string;
   email: string;
   password: string;
+  city: string;
   dateOfBirth: string;
   age?: number;
   zodiacSign?: string;
@@ -44,6 +45,7 @@ export const initialData: OnboardingData = {
   name: "",
   email: "",
   password: "",
+  city: "", // ✅ added
   dateOfBirth: "",
   gender: "",
   interestedIn: [],
@@ -71,7 +73,7 @@ const OnboardingFlow: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // ✅ Redirect to /feed if already onboarded
+  // ✅ Skip if already done
   useEffect(() => {
     const done = localStorage.getItem("onboardingDone");
     if (done) navigate("/feed");
@@ -80,33 +82,57 @@ const OnboardingFlow: React.FC = () => {
   const updateData = (newData: Partial<OnboardingData>) =>
     setData((prev) => ({ ...prev, ...newData }));
 
-  // ✅ Handle sign-up automatically when BasicInfoStep completes
   const nextStep = async () => {
     setError("");
+
+    // Step 1 (Basic Info) → create account
     if (currentStep === 1) {
-      const { email, password, name, dateOfBirth, gender, interestedIn } = data;
-      if (!email || !password || !name || !dateOfBirth || !gender || !interestedIn.length) {
+      const { email, password, name, dateOfBirth, gender, interestedIn, city } =
+        data;
+
+      if (
+        !email ||
+        !password ||
+        !name ||
+        !city ||
+        !dateOfBirth ||
+        !gender ||
+        !interestedIn.length
+      ) {
         setError("Please fill in all required fields before continuing.");
         return;
       }
+
       try {
         setLoading(true);
         const res = await axios.post(
           `${BASE_URL}/signup`,
-          { email, password, name, dateOfBirth, gender, interestedIn },
+          {
+            emailId: email,
+            password,
+            firstName: name,
+            lastName: "",
+            city, // ✅ send city from form
+            dateOfBirth,
+            gender,
+            interestedIn,
+          },
           { withCredentials: true }
         );
+
         dispatch(addUser(res.data.data));
-        console.log("✅ User created:", res.data.data);
+        console.log("✅ Account created:", res.data.data);
       } catch (err: any) {
         console.error(err);
         setError(err?.response?.data || "Signup failed. Try again.");
+        setLoading(false);
         return;
       } finally {
         setLoading(false);
       }
     }
 
+    // Move to next step
     if (currentStep < steps.length - 1) {
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
@@ -123,7 +149,8 @@ const OnboardingFlow: React.FC = () => {
     }
   };
 
-  const skipStep = () => nextStep();
+  // Skip allowed only on later steps
+  const canShowSkip = currentStep > 1;
 
   const canProceed = () => {
     switch (currentStep) {
@@ -184,7 +211,7 @@ const OnboardingFlow: React.FC = () => {
       className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden flex flex-col items-center"
       style={{ background: THEME.colors.backgroundGradient }}
     >
-      {/* Progress bar */}
+      {/* ✅ Progress Bar */}
       {currentStep > 0 && (
         <div className="sticky top-0 z-20 bg-gradient-to-b from-black/10 to-transparent backdrop-blur-sm pb-4 pt-20">
           <div className="flex flex-col items-center">
@@ -205,7 +232,7 @@ const OnboardingFlow: React.FC = () => {
         </div>
       )}
 
-      {/* Step content */}
+      {/* ✅ Step Content */}
       <div className="relative w-full max-w-2xl flex-1 flex items-start justify-center px-4">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -231,7 +258,7 @@ const OnboardingFlow: React.FC = () => {
         </AnimatePresence>
       </div>
 
-      {/* Navigation */}
+      {/* ✅ Navigation Buttons */}
       {currentStep > 0 && currentStep < steps.length && (
         <div className="sticky bottom-0 w-full flex justify-between max-w-2xl px-8 py-6 z-30">
           {currentStep > 1 && (
@@ -246,10 +273,11 @@ const OnboardingFlow: React.FC = () => {
           )}
 
           <div className="flex gap-4 ml-auto">
-            {currentStep < totalSteps && (
+            {/* ❌ Skip hidden for BasicInfo (step 1) */}
+            {canShowSkip && currentStep < totalSteps && (
               <Button
                 variant="ghost"
-                onClick={skipStep}
+                onClick={nextStep}
                 className="text-white/70 hover:text-white hover:bg-white/10 rounded-full px-5"
               >
                 Skip

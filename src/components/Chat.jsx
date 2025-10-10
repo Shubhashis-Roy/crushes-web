@@ -1,16 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { createSocketConnection } from "../utils/socket";
-// import chatDark from "../assets/bg-chatUI.jpg";
-// import { IoSend } from "react-icons/io5";
-// import { FaBars } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import "./styles/ChatTheme.css";
 import ChatWindow from "./ChatWindow";
-import { useChatSocket } from "../hooks/useChatSocket";
 import ChatSidebar from "./ChatSidebar";
+import { useChatSocket } from "../hooks/useChatSocket";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -23,19 +18,16 @@ const Chat = () => {
   const [activeChatUserId, setActiveChatUserId] = useState(null);
 
   const typingTimeoutRef = useRef(null);
-
   const user = useSelector((store) => store.user);
   const userId = user?._id;
   const messagesEndRef = useRef(null);
 
   const fetchChatMessages = async (targetUserId) => {
     if (!targetUserId) return;
-
     try {
       const res = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
         withCredentials: true,
       });
-
       const chatMessages = res?.data?.messages.map((msg) => {
         const { senderId, text, createdAt } = msg;
         return {
@@ -90,16 +82,17 @@ const Chat = () => {
   });
 
   return (
-    <div className="chat-whatsapp-theme  flex-1 flex text-white mt-16 relative overflow-hidden rounded-md shadow-lg border border-gray-700  ">
-      {/* ============= ChatSidebar ============= */}
+    <div
+      className="mt-6  flex flex-1 overflow-hidden border border-white/20 
+                 bg-gradient-to-br from-[#15072b] via-[#2a0e4a] to-[#3e1b6b]
+                 shadow-[0_0_25px_rgba(236,72,153,0.25)] backdrop-blur-2xl"
+    >
       <ChatSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         chatList={chatList}
         handleChat={handleChat}
       />
-
-      {/* ============= Chat area ============= */}
       <ChatWindow
         messages={messages}
         newMessage={newMessage}

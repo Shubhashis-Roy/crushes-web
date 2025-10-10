@@ -4,8 +4,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL, THEME } from "../utils/constants";
 import { removeUser } from "../redux/userSlice";
 import { useState } from "react";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
-import { motion } from "framer-motion";
+import { IoChatbubbleEllipsesOutline, IoMenu, IoClose } from "react-icons/io5";
+import { motion, AnimatePresence } from "framer-motion";
 
 const NavBar = () => {
   const user = useSelector((store) => store.user);
@@ -14,35 +14,36 @@ const NavBar = () => {
   const location = useLocation();
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isProfilePage = location.pathname === "/profile";
-  const isChatPage = location.pathname.startsWith("/chat");
-  const isFeedPage = location.pathname === "/";
-  const isConnectionsPage = location.pathname === "/connections";
-  const isRequestsPage = location.pathname === "/requests";
+  const isFeedPage =
+    location.pathname === "/" ||
+    location.pathname === "/feed" ||
+    location.pathname.endsWith("/feed");
+  const isProfilePage = location.pathname.includes("/profile");
+  const isChatPage = location.pathname.includes("/chat");
+  const isConnectionsPage = location.pathname.includes("/connections");
+  const isRequestsPage = location.pathname.includes("/requests");
 
-  // ✅ Updated logout handler
   const handleLogout = async () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
-      localStorage.removeItem("onboardingDone"); // reset onboarding progress
-      navigate("/"); // ✅ Go back to Welcome Step (root = OnboardingFlow)
+      localStorage.removeItem("onboardingDone");
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
   };
 
   const getItemClasses = (active) =>
-    `px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium ${
+    `block px-4 py-2 rounded-lg transition-all duration-300 text-base font-medium ${
       active
         ? "bg-white text-pink-700 shadow-md"
         : "text-white/90 hover:text-yellow-300 hover:bg-white/10"
     }`;
 
-  const handleChatNavigate = () => {
-    navigate("/chat");
-  };
+  const handleChatNavigate = () => navigate("/chat");
 
   return (
     <>
@@ -58,101 +59,154 @@ const NavBar = () => {
         }}
       >
         <div className="max-w-7xl mx-auto px-3 py-3 flex justify-between items-center">
-          {/* Brand */}
-          <Link
-            to="/"
-            className="text-2xl font-bold tracking-wide text-white drop-shadow-md hover:text-yellow-300 transition"
-          >
-            Cr<span className="text-yellow-300">ushes</span>
-          </Link>
+          {/* Brand + Hamburger */}
+          <div className="flex items-center gap-3">
+            {/* ✅ Hamburger visible for all authenticated routes */}
+            {user && (
+              <IoMenu
+                onClick={() => setSidebarOpen(true)}
+                className="text-3xl text-white cursor-pointer hover:text-yellow-300 transition-all"
+              />
+            )}
+
+            <Link
+              to="/feed"
+              className="text-2xl font-bold tracking-wide text-white drop-shadow-md hover:text-yellow-300 transition"
+            >
+              Cr<span className="text-yellow-300">ushes</span>
+            </Link>
+          </div>
 
           {/* Authenticated User Section */}
           {user && (
             <div className="flex items-center gap-4">
               {/* Chat Icon */}
-              {!isConnectionsPage && !isChatPage && (
+              {!isChatPage && (
                 <IoChatbubbleEllipsesOutline
                   onClick={handleChatNavigate}
                   className="text-3xl cursor-pointer font-extrabold text-yellow-300 hover:text-pink-200 transition-all duration-300 hover:scale-110"
                 />
               )}
 
-              {/* Welcome */}
               <span className="text-sm font-semibold text-white/90 hidden sm:block">
-                Hi, {user.firstName}
+                Hi, {user.firstName?.toUpperCase()}
               </span>
 
-              {/* Avatar Dropdown */}
-              <div className="relative group">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-300 shadow-lg cursor-pointer"
-                >
-                  <img
-                    src={
-                      Array.isArray(user.photoUrl)
-                        ? user.photoUrl[0]
-                        : user.photoUrl
-                    }
-                    alt="User"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Dropdown Menu */}
-                <ul
-                  className={`absolute right-0 mt-3 w-48 rounded-xl p-3 hidden group-focus-within:flex group-hover:flex flex-col gap-y-2 shadow-2xl border backdrop-blur-xl transition-all duration-300 ${
-                    isProfilePage || isChatPage
-                      ? "bg-white text-gray-800 border-gray-200"
-                      : "bg-white/10 border-white/20 text-white"
-                  }`}
-                >
-                  <li>
-                    <Link to="/profile" className={getItemClasses(isProfilePage)}>
-                      Profile
-                    </Link>
-                  </li>
-
-                  {!isFeedPage && (
-                    <li>
-                      <Link to="/" className={getItemClasses(isFeedPage)}>
-                        Discover
-                      </Link>
-                    </li>
-                  )}
-
-                  <li>
-                    <Link
-                      to="/connections"
-                      className={getItemClasses(isConnectionsPage)}
-                    >
-                      Connections
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/requests"
-                      className={getItemClasses(isRequestsPage)}
-                    >
-                      Requests
-                    </Link>
-                  </li>
-
-                  <li>
-                    <button
-                      onClick={() => setShowLogoutModal(true)}
-                      className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition"
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
+              {/* Avatar Only (No Dropdown) */}
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-300 shadow-lg cursor-pointer">
+                <img
+                  src={
+                    Array.isArray(user.photoUrl)
+                      ? user.photoUrl[0]
+                      : user.photoUrl
+                  }
+                  alt="User"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           )}
         </div>
       </motion.header>
+
+      {/* ✅ Sidebar (for all authenticated pages) */}
+      <AnimatePresence>
+        {sidebarOpen && user && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              key="overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black z-[80]"
+              onClick={() => setSidebarOpen(false)}
+            />
+
+            {/* Sidebar Panel */}
+            <motion.div
+              key="sidebar"
+              initial={{ x: -300 }}
+              animate={{ x: 0 }}
+              exit={{ x: -300 }}
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
+              className="fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-[#1a082d] to-[#2d1557] text-white shadow-2xl z-[90] flex flex-col justify-between"
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center px-5 py-4 border-b border-white/20">
+                <h2 className="text-xl font-bold">
+                  <span className="text-yellow-300">Your</span> Space{" "}
+                </h2>
+                <IoClose
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-2xl cursor-pointer hover:text-pink-400 transition"
+                />
+              </div>
+
+              {/* Menu List */}
+              <ul className="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
+                <li>
+                  <Link
+                    to="/feed"
+                    onClick={() => setSidebarOpen(false)}
+                    className={getItemClasses(isFeedPage)}
+                  >
+                    Discover
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/profile"
+                    onClick={() => setSidebarOpen(false)}
+                    className={getItemClasses(isProfilePage)}
+                  >
+                    Profile
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/connections"
+                    onClick={() => setSidebarOpen(false)}
+                    className={getItemClasses(isConnectionsPage)}
+                  >
+                    Connections
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/requests"
+                    onClick={() => setSidebarOpen(false)}
+                    className={getItemClasses(isRequestsPage)}
+                  >
+                    Requests
+                  </Link>
+                </li>
+
+                <li>
+                  <button
+                    onClick={() => {
+                      setSidebarOpen(false);
+                      setShowLogoutModal(true);
+                    }}
+                    className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+
+              {/* Footer */}
+              <div className="px-5 py-4 border-t border-white/10 text-sm text-center text-white/60">
+                © {new Date().getFullYear()} Crushes
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ✅ Logout Modal */}
       {showLogoutModal && (
@@ -176,7 +230,7 @@ const NavBar = () => {
               <button
                 onClick={() => {
                   setShowLogoutModal(false);
-                  handleLogout(); // ✅ Navigate to Welcome
+                  handleLogout();
                 }}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               >

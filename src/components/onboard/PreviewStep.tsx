@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import {
@@ -9,7 +8,6 @@ import {
   Heart,
   Star,
   Users,
-  Calendar,
 } from "lucide-react";
 import { OnboardingData } from "./OnboardingFlow";
 
@@ -20,11 +18,7 @@ interface PreviewStepProps {
   onPrev: () => void;
 }
 
-const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
-  const handleFinish = () => {
-    alert("🎉 Profile created successfully!");
-  };
-
+const PreviewStep: React.FC<PreviewStepProps> = ({ data }) => {
   const getInitials = (name: string) =>
     name
       .split(" ")
@@ -77,7 +71,7 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
             </div>
           )}
 
-          {/* Subtle gradient overlay */}
+          {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
 
@@ -90,17 +84,21 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
                 {data.name || "User"}{" "}
                 {data.dateOfBirth && (
                   <span className="text-white/70 text-lg">
-                    • {new Date().getFullYear() - new Date(data.dateOfBirth).getFullYear()}
+                    •{" "}
+                    {new Date().getFullYear() -
+                      new Date(data.dateOfBirth).getFullYear()}
                   </span>
                 )}
               </h3>
               {data.zodiacSign && (
-                <p className="text-sm text-pink-300">♑ {data.zodiacSign}</p>
+                <p className="text-sm text-pink-300">
+                  ♑ {data.zodiacSign}
+                </p>
               )}
             </div>
             <div className="flex items-center text-sm text-white/70">
               <MapPin className="w-4 h-4 mr-1 text-pink-300" />
-              <span>5 km away</span>
+              <span>{data.city || "Unknown"}</span>
             </div>
           </div>
 
@@ -189,24 +187,8 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data, onPrev }) => {
         </div>
       </div>
 
-      {/* Buttons */}
-      <div className="flex gap-4 mt-10 w-full max-w-md">
-        <Button
-          variant="outline"
-          onClick={onPrev}
-          className="flex-1 border border-white/30 text-white hover:bg-white/10 rounded-full"
-        >
-          Edit Profile
-        </Button>
-        <Button
-          onClick={handleFinish}
-          className="flex-1 rounded-full font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 shadow-lg shadow-pink-400/30"
-        >
-          Complete Setup
-        </Button>
-      </div>
-
-      <p className="text-xs text-white/60 text-center mt-4">
+      {/* ✨ Note only (no buttons) */}
+      <p className="text-xs text-white/60 text-center mt-6">
         ✨ You can always edit your profile later in Settings
       </p>
     </div>

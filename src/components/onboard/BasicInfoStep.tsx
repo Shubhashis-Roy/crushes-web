@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { addUser } from "../../redux/userSlice";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { OnboardingData } from "./OnboardingFlow";
-import { BASE_URL } from "../../utils/constants";
 import {
   FaUser,
   FaBirthdayCake,
@@ -15,6 +10,7 @@ import {
   FaHeart,
   FaEnvelope,
   FaLock,
+  FaCity,
 } from "react-icons/fa";
 
 interface BasicInfoStepProps {
@@ -52,9 +48,9 @@ const getZodiacSign = (date: string): string => {
   return "Unknown";
 };
 
-const getAge = (dateOfBirth: string): number => {
+const getAge = (dob: string): number => {
   const today = new Date();
-  const birthDate = new Date(dateOfBirth);
+  const birthDate = new Date(dob);
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()))
@@ -62,20 +58,16 @@ const getAge = (dateOfBirth: string): number => {
   return age;
 };
 
-const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData, onNext }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
   const [formData, setFormData] = useState({
     name: data.name,
     email: data.email,
     password: data.password,
+    city: data.city || "",
     dateOfBirth: data.dateOfBirth,
     gender: data.gender,
     interestedIn: data.interestedIn,
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     if (formData.dateOfBirth) {
@@ -102,55 +94,11 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData, onNext 
     setFormData((prev) => ({ ...prev, interestedIn: newInterestedIn }));
   };
 
-  // ✅ Create account function (signup API)
-  const handleCreateAccount = async () => {
-    setError("");
-    const { email, password, name, dateOfBirth, gender, interestedIn } = formData;
-
-    if (!email || !password || !name || !dateOfBirth || !gender || !interestedIn.length) {
-      setError("Please fill in all required fields.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `${BASE_URL}/signup`,
-        {
-          emailId: email,
-          password,
-          firstName: name,
-          lastName: "", // optional
-          city: "", // optional for now
-          dateOfBirth,
-          gender,
-          interestedIn,
-        },
-        { withCredentials: true }
-      );
-
-      dispatch(addUser(res.data.data));
-      localStorage.setItem("onboardingDone", "true");
-      console.log("✅ Account created successfully:", res.data.data);
-
-      if (onNext) onNext();
-      else navigate("/feed");
-    } catch (err: any) {
-      console.error(err);
-      setError(
-        err?.response?.data || "Something went wrong, please try again later."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const genderOptions = ["Male", "Female", "Non-binary", "Custom"];
   const interestedInOptions = ["Men", "Women", "Everyone"];
 
   return (
     <div className="w-full flex flex-col items-center justify-center text-center px-4">
-      {/* Header */}
       <div className="mb-10">
         <h2 className="text-4xl font-extrabold mb-3 text-white drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]">
           Create your{" "}
@@ -161,7 +109,7 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData, onNext 
         <p className="text-white/80 text-base">Let’s get to know you better 💫</p>
       </div>
 
-      {/* Form Fields */}
+      {/* Form */}
       <div className="w-full max-w-lg space-y-8 text-left">
         {/* Email */}
         <div className="space-y-2">
@@ -173,7 +121,9 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData, onNext 
             type="email"
             placeholder="Enter your email"
             value={formData.email}
-            onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, email: e.target.value }))
+            }
             className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
           />
         </div>
@@ -203,9 +153,28 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData, onNext 
           <Input
             id="name"
             type="text"
-            placeholder="Enter your name"
+            placeholder="Enter your full name"
             value={formData.name}
-            onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
+          />
+        </div>
+
+        {/* City */}
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 text-pink-200 font-medium">
+            <FaCity /> City
+          </Label>
+          <Input
+            id="city"
+            type="text"
+            placeholder="Enter your city"
+            value={formData.city}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, city: e.target.value }))
+            }
             className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
           />
         </div>
@@ -283,18 +252,6 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData, onNext 
               </Button>
             ))}
           </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="pt-6">
-          {error && <p className="text-red-300 text-sm mb-2">{error}</p>}
-          <Button
-            onClick={handleCreateAccount}
-            disabled={loading}
-            className="w-full py-3 font-semibold text-white rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-opacity"
-          >
-            {loading ? "Creating Account..." : "Create Account & Continue"}
-          </Button>
         </div>
       </div>
     </div>
