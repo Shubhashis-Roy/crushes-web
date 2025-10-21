@@ -6,29 +6,45 @@ import { removeUserFromFeed } from "../redux/feedSlice";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { useState } from "react";
-import { FaHeart, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaHeart,
+  FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 
 const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
   const dispatch = useDispatch();
   const { _id, firstName, age, city, photoUrl } = user;
 
-  const photos =
-    Array.isArray(photoUrl) && photoUrl.length > 0 ? photoUrl : [photoUrl];
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  // ✅ Normalize image array — handles strings, objects, or missing photos
+  const photos = Array.isArray(photoUrl)
+    ? photoUrl
+        .map((p) => (typeof p === "string" ? p : p?.url))
+        .filter(Boolean)
+    : photoUrl
+    ? [photoUrl]
+    : [];
 
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [showLove, setShowLove] = useState(false);
   const [showNo, setShowNo] = useState(false);
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
   const handleSendRequest = async (status) => {
     try {
-      await axios.post(`${BASE_URL}/request/send/${status}/${_id}`, {}, { withCredentials: true });
+      await axios.post(
+        `${BASE_URL}/request/send/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
       dispatch(removeUserFromFeed(_id));
     } catch (err) {
-      console.log(err);
+      console.log("Request send error:", err);
     }
   };
 
+  // 🧠 Gesture for swipe
   const bind = useGesture({
     onDrag: ({ down, movement: [mx] }) => {
       api.start({ x: down ? mx : 0, rot: down ? mx / 20 : 0, immediate: down });
@@ -68,19 +84,23 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
 
   return (
     <div className="relative flex items-center justify-center">
-      {/* 💖 Overlays */}
+      {/* 💖 Swipe feedback */}
       {showLove && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-          <div className="text-pink-400 text-4xl font-bold drop-shadow-glow">💖 Crush!</div>
+          <div className="text-pink-400 text-4xl font-bold drop-shadow-glow">
+            💖 Crush!
+          </div>
         </div>
       )}
       {showNo && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-          <div className="text-red-400 text-4xl font-bold drop-shadow-glow">💔 Not Interested</div>
+          <div className="text-red-400 text-4xl font-bold drop-shadow-glow">
+            💔 Not Interested
+          </div>
         </div>
       )}
 
-      {/* 🔹 Swipe Card */}
+      {/* 🪄 Swipe Card */}
       <animated.div
         {...bind()}
         style={{
@@ -91,26 +111,28 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
         className="relative w-[380px] h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
                    bg-black/40 backdrop-blur-md cursor-grab"
       >
-        {/* Photo Progress Bar */}
-        <div className="absolute top-3 left-3 right-3 z-20 flex gap-2 justify-center">
-          {photos.map((_, idx) => (
-            <div
-              key={idx}
-              className={`h-1 flex-1 rounded-full overflow-hidden ${
-                idx === currentPhotoIndex ? "bg-pink-600" : "bg-white/30"
-              }`}
-            >
+        {/* 🔸 Photo Progress Bar */}
+        {photos.length > 1 && (
+          <div className="absolute top-3 left-3 right-3 z-20 flex gap-2 justify-center">
+            {photos.map((_, idx) => (
               <div
-                className="h-full bg-pink-400 transition-all duration-300"
-                style={{
-                  width: idx === currentPhotoIndex ? "100%" : "0%",
-                }}
-              />
-            </div>
-          ))}
-        </div>
+                key={idx}
+                className={`h-1 flex-1 rounded-full overflow-hidden ${
+                  idx === currentPhotoIndex ? "bg-pink-600" : "bg-white/30"
+                }`}
+              >
+                <div
+                  className="h-full bg-pink-400 transition-all duration-300"
+                  style={{
+                    width: idx === currentPhotoIndex ? "100%" : "0%",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Arrows */}
+        {/* ⬅️➡️ Photo Arrows */}
         {photos.length > 1 && (
           <>
             <button
@@ -128,14 +150,23 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           </>
         )}
 
-        {/* Main Image */}
-        <img
-          src={photos[currentPhotoIndex]}
-          alt={firstName}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-        />
+        {/* 🖼️ Main Image */}
+        {photos.length > 0 ? (
+          <img
+            src={
+              photos[currentPhotoIndex] ||
+              "https://res.cloudinary.com/demo/image/upload/v1710000000/default-avatar.jpg"
+            }
+            alt={firstName}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-800 to-pink-700 text-white text-lg font-semibold">
+            No photo available 😔
+          </div>
+        )}
 
-        {/* Overlay Info */}
+        {/* ✨ Info Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
           <div className="flex justify-between items-center">
             <div>
@@ -147,7 +178,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* ❤️ Action Buttons */}
           <div className="mt-4 flex justify-center gap-6">
             <button
               onClick={() => {
@@ -172,7 +203,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
             </button>
           </div>
 
-          {/* Details Button */}
+          {/* 📜 Details Button */}
           <div className="mt-4 flex justify-center">
             {!isDetailsVisible ? (
               <button

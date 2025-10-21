@@ -9,24 +9,26 @@ import UserCard from "./UserCard";
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const getFeed = async () => {
-    if (feed) return;
     try {
       const res = await axios.get(`${BASE_URL}/feed`, { withCredentials: true });
       dispatch(addFeed(res?.data?.data));
+      setUsers(res?.data?.data || []);
     } catch (err) {
-      console.log(err);
+      console.error("Feed fetch failed:", err);
     }
   };
 
   useEffect(() => {
-    getFeed();
+    if (!feed || feed.length === 0) getFeed();
+    else setUsers(feed);
     // eslint-disable-next-line
-  }, []);
+  }, [feed]);
 
-  if (!feed || feed.length === 0) {
+  if (!users || users.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-white bg-gradient-to-br from-purple-900 to-pink-800">
         <p className="text-lg font-semibold">No more users to show 💖</p>
@@ -34,7 +36,11 @@ const Feed = () => {
     );
   }
 
-  const currentUser = feed[0]; // ✅ Only show one user at a time
+  const handleSwipe = (direction, swipedUser) => {
+    // remove the top user (simulate swipe)
+    setUsers((prev) => prev.slice(1));
+    console.log(`Swiped ${direction} on ${swipedUser.firstName}`);
+  };
 
   return (
     <div
@@ -54,14 +60,46 @@ const Feed = () => {
         transition={{ duration: 25, repeat: Infinity, repeatType: "mirror" }}
       />
 
-      {/* 💖 Single Centered Card */}
+      {/* 🪄 Card Stack */}
       <div className="relative w-full h-full flex items-center justify-center">
-        <UserCard
-          user={currentUser}
-          onShowDetails={() => setSelectedUser(currentUser)}
-          onHideDetails={() => setSelectedUser(null)}
-          isDetailsVisible={!!selectedUser}
-        />
+        <AnimatePresence>
+          {users.map((user, index) => {
+            const isTop = index === 0;
+            const scale = 1 - index * 0.05;
+            const yOffset = index * 15;
+
+            return (
+              <motion.div
+                key={user._id}
+                className="absolute"
+                style={{ zIndex: users.length - index }}
+                initial={{ scale, y: yOffset, opacity: 1 }}
+                animate={{ scale, y: yOffset, opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.9, y: -50 }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div
+                  drag={isTop ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={1}
+                  onDragEnd={(e, info) => {
+                    if (info.offset.x > 150) handleSwipe("right", user);
+                    else if (info.offset.x < -150) handleSwipe("left", user);
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="cursor-grab active:cursor-grabbing"
+                >
+                  <UserCard
+                    user={user}
+                    onShowDetails={() => setSelectedUser(user)}
+                    onHideDetails={() => setSelectedUser(null)}
+                    isDetailsVisible={selectedUser?._id === user._id}
+                  />
+                </motion.div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
 
         {/* 🪄 Details Side Panel */}
         <AnimatePresence>
