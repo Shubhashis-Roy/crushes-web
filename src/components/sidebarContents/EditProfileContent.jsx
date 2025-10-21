@@ -8,19 +8,14 @@ import PropTypes from "prop-types";
 const EditProfileContent = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
-  // const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
   const [age, setAge] = useState(user.age || "");
   const [gender, setGender] = useState(user.gender || "");
-  // const [gender, setGender] = useState(user.gender || "");
-
   const [about, setAbout] = useState(user.about || "");
   const [showToast, setShowToast] = useState(false);
-  const [showAgeToast, setShowAgeToast] = useState(false); // 👈 New state
+  const [showAgeToast, setShowAgeToast] = useState(false);
   const dispatch = useDispatch();
-  // const fileInputRef = useRef(null);
 
   const saveProfile = async () => {
-    // Age validation
     const ageNumber = parseInt(age);
     if (isNaN(ageNumber) || ageNumber < 18 || ageNumber > 100) {
       setShowAgeToast(true);
@@ -34,7 +29,6 @@ const EditProfileContent = ({ user }) => {
         {
           firstName,
           lastName,
-          // photoUrl,
           age,
           gender: gender.toLowerCase(),
           about,
@@ -52,115 +46,133 @@ const EditProfileContent = ({ user }) => {
   const isEdited =
     firstName !== user.firstName ||
     lastName !== user.lastName ||
-    // photoUrl !== user.photoUrl ||
     age !== (user.age || "") ||
     gender !== (user.gender || "") ||
     about !== (user.about || "");
 
   return (
-    <div className="flex overflow-hidden">
-      <div className="flex-1 overflow-y-auto">
-        <div className=" mx-auto bg-white p-3">
-          <div className="flex flex-col items-center relative">
-            <img
-              src={
-                Array.isArray(user.photoUrl)
-                  ? user.photoUrl[0] || "/default-avatar.png"
-                  : user.photoUrl || "/default-avatar.png"
-              }
-              alt="User"
-              className="w-36 h-36 rounded-full object-cover border-4 border-pink-300 shadow-lg"
-            />
+    <div className="flex flex-col items-center w-full text-white">
+      {/* 🌸 Avatar */}
+      <div className="flex flex-col items-center mb-8">
+        <img
+          src={
+            Array.isArray(user.photoUrl)
+              ? user.photoUrl[0] || "/default-avatar.png"
+              : user.photoUrl || "/default-avatar.png"
+          }
+          alt="User"
+          className="w-36 h-36 rounded-full object-cover border-4 border-pink-400 shadow-[0_0_25px_rgba(236,72,153,0.6)]"
+        />
+        <p className="text-sm text-white/70 mt-4">
+          Let the world know who you are 🌸
+        </p>
+      </div>
 
-            <p className="text-sm p-3 text-gray-500">
-              Let the world know who you are 🌸
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
-            />
-            <input
-              type="number"
-              placeholder="Age"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              min="18"
-              max="100"
-              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
-            />
-            <select
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-              className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
-            >
-              <option value="" disabled>
-                Select your gender
-              </option>
-              <option value="male">Man</option>
-              <option value="female">Woman</option>
-              <option value="other">Other</option>
-            </select>
-            <div className="col-span-1 sm:col-span-2">
-              <textarea
-                placeholder="About You"
-                value={about}
-                onChange={(e) => {
-                  const inputValue = e.target.value;
-                  if (inputValue.length <= 40) {
-                    setAbout(inputValue);
-                  } else {
-                    setAbout(inputValue.slice(0, 40));
-                  }
-                }}
-                rows={4}
-                className="w-full bg-pink-50 text-black font-semibold px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none"
-              />
-              <p className="text-right text-xs text-gray-400 mt-1">
-                {about.length} / 40 characters
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={saveProfile}
-            disabled={!isEdited}
-            className={`mt-6 w-full py-3 rounded-lg font-semibold transition ${
-              isEdited
-                ? "bg-pink-500 text-white hover:bg-pink-600"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
+      {/* 📝 Form */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-3xl">
+        <input
+          type="text"
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+        <input
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+        <input
+          type="number"
+          placeholder="Age"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+          min="18"
+          max="100"
+          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+        {/* 🌸 Custom Gender Dropdown */}
+        <div className="relative w-full">
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="appearance-none w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400 pr-10 cursor-pointer"
           >
-            Save Profile
-          </button>
+            <option value="" disabled className="text-gray-400">
+              Select your gender
+            </option>
+            <option value="male" className="text-gray-800">
+              Man
+            </option>
+            <option value="female" className="text-gray-800">
+              Woman
+            </option>
+            <option value="other" className="text-gray-800">
+              Other
+            </option>
+          </select>
+
+          {/* Custom dropdown arrow */}
+          <svg
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-300 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 9l6 6 6-6"
+            />
+          </svg>
         </div>
 
-        {/* ✅ Success Toast */}
-        {showToast && (
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-pink-200 shadow-lg px-6 py-3 rounded-xl text-pink-700 font-medium z-50 animate-fadeInUp">
-            Profile saved successfully 🎉
-          </div>
-        )}
-
-        {/* ❌ Age Error Toast */}
-        {showAgeToast && (
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-red-200 shadow-lg px-6 py-3 rounded-xl text-red-700 font-medium z-50 animate-fadeInUp">
-            Age must be between 18 and 100 🚫
-          </div>
-        )}
+        <div className="col-span-1 sm:col-span-2">
+          <textarea
+            placeholder="About You"
+            value={about}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              if (inputValue.length <= 40) setAbout(inputValue);
+            }}
+            rows={4}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
+          />
+          <p className="text-right text-xs text-white/50 mt-1">
+            {about.length} / 40 characters
+          </p>
+        </div>
       </div>
+
+      {/* 💾 Save Button */}
+      <button
+        onClick={saveProfile}
+        disabled={!isEdited}
+        className={`mt-8 w-full max-w-3xl py-3 rounded-lg font-semibold transition-all ${
+          isEdited
+            ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg hover:opacity-90"
+            : "bg-white/10 text-white/50 cursor-not-allowed"
+        }`}
+      >
+        Save Profile
+      </button>
+
+      {/* ✅ Success Toast */}
+      {showToast && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-pink-300/50 shadow-lg px-6 py-3 rounded-xl text-pink-100 font-medium z-50 animate-fadeInUp">
+          Profile saved successfully 🎉
+        </div>
+      )}
+
+      {/* ❌ Age Error Toast */}
+      {showAgeToast && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white/20 backdrop-blur-md border border-red-300/50 shadow-lg px-6 py-3 rounded-xl text-red-100 font-medium z-50 animate-fadeInUp">
+          Age must be between 18 and 100 🚫
+        </div>
+      )}
     </div>
   );
 };

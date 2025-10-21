@@ -2,8 +2,6 @@ import { useRef, useState } from "react";
 import {
   FaTimes,
   FaBars,
-  FaUser,
-  // FaLock,
   FaSignOutAlt,
   FaEdit,
   FaTrash,
@@ -12,11 +10,9 @@ import {
 import PropTypes from "prop-types";
 
 const menuItems = [
-  { label: "My Match", icon: <FaUser /> },
-  // { label: "Personal Information", icon: <FaCogs /> },
+
   { label: "Edit Personal Info", icon: <FaEdit /> },
   { label: "Manage Images", icon: <FaImages /> },
-  // { label: "Change Password", icon: <FaLock /> },
   { label: "Delete Account", icon: <FaTrash />, danger: true },
   { label: "Logout", icon: <FaSignOutAlt />, danger: true },
 ];
