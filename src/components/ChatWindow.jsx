@@ -13,12 +13,13 @@ const ChatWindow = ({
   user,
   isTyping,
   isOnline,
+  loading,
 }) => {
   const hasChat = !!chatPartner;
 
   return (
     <div
-      className="flex-1 flex flex-col h-[calc(100vh-4rem)] relative text-white"
+      className="flex-1 flex flex-col h-[calc(100vh-5rem)] relative text-white"
       style={{
         backgroundImage: `linear-gradient(160deg, #1a052c 0%, #2c0b45 50%, #3e1862 100%), url(${chatDark})`,
         backgroundBlendMode: "overlay",
@@ -26,19 +27,9 @@ const ChatWindow = ({
         backgroundSize: "contain",
       }}
     >
-      {/* 🔮 Gradient Overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background:
-            "radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 60%)",
-          backdropFilter: "blur(4px)",
-        }}
-      ></div>
-
-      {/* ✅ Show header only if chat is selected */}
+      {/* Header */}
       {hasChat && (
-        <header className="py-2 px-4 border-b border-white/10 flex items-center gap-3 bg-[#2a0e4a]/60 relative z-10">
+        <header className="py-2 px-4 border-b border-white/10 flex items-center gap-3 bg-[#2a0e4a]/70 relative z-10">
           <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
             {chatPartner?.photoUrl?.length > 0 ? (
               <img
@@ -64,10 +55,14 @@ const ChatWindow = ({
       )}
 
       {/* Messages */}
-      <main className="flex-1 overflow-y-auto px-6 py-4 space-y-3 relative z-10">
+      <main className="flex-1 overflow-y-auto px-6 py-4 space-y-3 relative z-10 scrollbar-thin scrollbar-thumb-pink-400/30 scrollbar-track-transparent">
         {!hasChat ? (
           <div className="flex h-full items-center justify-center text-white/50 italic">
             💬 Start chatting to see messages here...
+          </div>
+        ) : loading ? (
+          <div className="flex h-full items-center justify-center text-white/50 italic animate-pulse">
+            Loading messages...
           </div>
         ) : messages.length === 0 ? (
           <div className="flex h-full items-center justify-center text-white/50 italic">
@@ -105,10 +100,10 @@ const ChatWindow = ({
         <div ref={messagesEndRef} />
       </main>
 
-      {/* Input — disabled until chat selected */}
+      {/* Input */}
       <footer className="px-4 pb-2 bg-transparent relative z-10">
         <div
-          className={`flex items-center px-3 py-[6px] w-full rounded-full ${
+          className={`flex items-center px-3 py-[6px] w-full rounded-full transition-all ${
             hasChat
               ? "bg-white/10 border border-white/10 backdrop-blur-md shadow-[0_0_10px_rgba(236,72,153,0.25)]"
               : "bg-white/5 border border-white/5 opacity-50 cursor-not-allowed"
@@ -117,7 +112,9 @@ const ChatWindow = ({
           <input
             type="text"
             placeholder={
-              hasChat ? "Type your message..." : "Select a chat to start messaging..."
+              hasChat
+                ? "Type your message..."
+                : "Select a chat to start messaging..."
             }
             value={newMessage}
             disabled={!hasChat}
@@ -135,7 +132,7 @@ const ChatWindow = ({
           />
           <button
             onClick={() => {
-              if (!hasChat) return;
+              if (!hasChat || !newMessage.trim()) return;
               sendMessage(newMessage);
               setNewMessage("");
             }}
@@ -165,6 +162,7 @@ ChatWindow.propTypes = {
   user: PropTypes.object.isRequired,
   isTyping: PropTypes.bool.isRequired,
   isOnline: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default ChatWindow;

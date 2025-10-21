@@ -16,15 +16,31 @@ const Chat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
   const [activeChatUserId, setActiveChatUserId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const typingTimeoutRef = useRef(null);
   const user = useSelector((store) => store.user);
   const userId = user?._id;
   const messagesEndRef = useRef(null);
 
+  // 🟢 Fetch chat list (recent chats)
+  const fetchChatList = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/chat/users-list`, {
+        withCredentials: true,
+      });
+      const users = res?.data?.users || [];
+      setChatList(users);
+    } catch (err) {
+      console.error("Failed to fetch chat list", err);
+    }
+  };
+
+  // 🟢 Fetch messages for selected chat
   const fetchChatMessages = async (targetUserId) => {
     if (!targetUserId) return;
     try {
+      setLoading(true);
       const res = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
         withCredentials: true,
       });
@@ -42,20 +58,12 @@ const Chat = () => {
       scrollToBottom();
     } catch (err) {
       console.error("Failed to fetch chat messages", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchChatList = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/chat/users-list`, {
-        withCredentials: true,
-      });
-      setChatList(res?.data?.users);
-    } catch (err) {
-      console.error("Failed to fetch chat list", err);
-    }
-  };
-
+  // 🟣 Fetch chats on mount
   useEffect(() => {
     fetchChatList();
   }, []);
@@ -65,9 +73,10 @@ const Chat = () => {
   };
 
   const handleChat = (userDetails) => {
-    fetchChatMessages(userDetails._id);
+    setMessages([]); // clear previous messages
     setChatPartner(userDetails);
     setActiveChatUserId(userDetails._id);
+    fetchChatMessages(userDetails._id);
   };
 
   const { sendMessage, handleTyping } = useChatSocket({
@@ -83,16 +92,18 @@ const Chat = () => {
 
   return (
     <div
-      className="mt-6  flex flex-1 overflow-hidden border border-white/20 
-                 bg-gradient-to-br from-[#15072b] via-[#2a0e4a] to-[#3e1b6b]
-                 shadow-[0_0_25px_rgba(236,72,153,0.25)] backdrop-blur-2xl"
+      className="mt-16 flex flex-1 overflow-hidden border border-white/20 
+      bg-gradient-to-br from-[#15072b] via-[#2a0e4a] to-[#3e1b6b]
+      shadow-[0_0_25px_rgba(236,72,153,0.25)] backdrop-blur-2xl"
     >
       <ChatSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         chatList={chatList}
         handleChat={handleChat}
+        activeChatUserId={activeChatUserId}
       />
+
       <ChatWindow
         messages={messages}
         newMessage={newMessage}
@@ -104,6 +115,7 @@ const Chat = () => {
         user={user}
         isTyping={isTyping}
         isOnline={isOnline}
+        loading={loading}
       />
     </div>
   );
