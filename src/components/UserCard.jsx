@@ -68,7 +68,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
   };
 
   return (
-    <div className="relative w-full h-[600px] flex items-center justify-center">
+<div className="relative flex items-center justify-center z-20 mt-8 mb-8">
       {/* ❤️ or ❌ overlays */}
       {showLove && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">

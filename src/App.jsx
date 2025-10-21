@@ -13,49 +13,28 @@ import OnboardingFlow from "./components/onboard/OnboardingFlow";
 import Login from "./components/Login";
 
 function App() {
-  const onboardingDone = localStorage.getItem("onboardingDone");
-  const user = localStorage.getItem("user");
-
   return (
     <Provider store={appStore}>
       <BrowserRouter basename="/">
         <Routes>
-          {/* 🌟 App shell with Navbar + Footer */}
+          {/* ✅ Everything inside Body (includes NavBar + Footer) */}
           <Route path="/" element={<Body />}>
-            {/* ✅ Default route: Onboarding or Feed */}
-            <Route
-              index
-              element={
-                onboardingDone || user ? (
-                  <Navigate to="/feed" replace />
-                ) : (
-                  <OnboardingFlow />
-                )
-              }
-            />
+            {/* 🌟 Onboarding (Footer visible here) */}
+            <Route index element={<OnboardingFlow />} />
 
-            {/* ✅ Authenticated routes */}
+            {/* 🌟 Login (no footer) */}
+            <Route path="login" element={<Login />} />
+
+            {/* 🌟 Main app routes (no footer) */}
             <Route path="feed" element={<Feed />} />
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="requests" element={<Requests />} />
             <Route path="chat" element={<Chat />} />
-
-            {/* ✅ Login route (separate for returning users) */}
-            <Route path="login" element={<Login />} />
-
-            {/* ✅ Fallback redirect */}
-            <Route
-              path="*"
-              element={
-                onboardingDone || user ? (
-                  <Navigate to="/feed" replace />
-                ) : (
-                  <Navigate to="/" replace />
-                )
-              }
-            />
           </Route>
+
+          {/* 🚨 Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -3,13 +3,13 @@ import { Heart, Sparkles, Users } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { OnboardingData } from "./OnboardingFlow";
 import { THEME } from "../../utils/constants";
-import { Link } from "react-router-dom";
 
 interface WelcomeStepProps {
   data: OnboardingData;
   updateData: (data: Partial<OnboardingData>) => void;
   onNext: () => void;
   onPrev: () => void;
+  openLogin: () => void; // ✅ added
 }
 
 // ✨ Floating animation variants
@@ -50,7 +50,7 @@ const textVariants: Variants = {
   exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.4 } },
 };
 
-const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
+const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext, openLogin }) => {
   const words = [
     "perfect match",
     "true love",
@@ -126,7 +126,6 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
           lineHeight: 1.2,
         }}
       >
-        {/* Static text */}
         <span
           style={{
             color: THEME.colors.highlight,
@@ -135,8 +134,6 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
         >
           Find your
         </span>
-
-        {/* Animated word */}
         <span className="relative inline-flex items-center justify-center min-h-[1.5em] ml-2">
           <AnimatePresence mode="wait">
             <motion.span
@@ -184,21 +181,16 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="z-10"
+        className="z-10 flex flex-col items-center space-y-4"
       >
         <button
           onClick={onNext}
-          className="
-          relative px-10 py-3 text-lg font-semibold rounded-full 
-          transition-all duration-300 
-          border-[3px] border-purple-300
-          text-purple-200 
-          shadow-[0_0_20px_rgba(217,176,255,0.5),inset_0_0_10px_rgba(217,176,255,0.5)]
+          className="relative px-10 py-3 text-lg font-semibold rounded-full 
+          transition-all duration-300 border-[3px] border-purple-300
+          text-purple-200 shadow-[0_0_20px_rgba(217,176,255,0.5),inset_0_0_10px_rgba(217,176,255,0.5)]
           hover:bg-purple-200 hover:text-purple-900
           hover:shadow-[0_0_25px_rgba(217,176,255,0.9),0_0_60px_rgba(191,123,255,0.8),inset_0_0_15px_rgba(217,176,255,0.7)]
-          active:shadow-[0_0_10px_rgba(217,176,255,0.7),0_0_40px_rgba(191,123,255,0.6),inset_0_0_8px_rgba(217,176,255,0.5)]
-          bg-[rgb(100,61,136)]
-        "
+          bg-[rgb(100,61,136)]"
           style={{
             textShadow: "0 0 6px rgba(217,176,255,0.8)",
             boxShadow: `
@@ -209,7 +201,14 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
           }}
         >
           Get Started
-          <span className="absolute top-[120%] left-0 w-full h-full bg-[rgba(191,123,255,0.5)] blur-3xl opacity-70 scale-y-50 rounded-full" />
+        </button>
+
+        {/* 👇 Already a user? Login */}
+        <button
+          onClick={openLogin}
+          className="text-pink-300 hover:text-pink-100 underline font-semibold text-sm transition-all duration-200"
+        >
+          Already a member? Log in
         </button>
       </motion.div>
 
@@ -218,27 +217,12 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="flex flex-col items-center mt-12 space-y-3 text-sm z-10"
+        className="flex justify-center items-center mt-12 space-x-6 text-sm z-10"
         style={{ color: THEME.colors.muted }}
       >
-        <div className="flex justify-center items-center space-x-6">
-          <span>• Safe & Secure</span>
-          <span>• Verified Profiles</span>
-          <span>• Real Connections</span>
-        </div>
-
-        {/* 👇 Already a user? Login */}
-        <div className="mt-4">
-          <p className="text-white/80">
-            Already a member?{" "}
-            <Link
-              to="/login"
-              className="text-pink-300 hover:text-pink-100 underline font-semibold transition"
-            >
-              Log in
-            </Link>
-          </p>
-        </div>
+        <span>• Safe & Secure</span>
+        <span>• Verified Profiles</span>
+        <span>• Real Connections</span>
       </motion.div>
     </div>
   );
