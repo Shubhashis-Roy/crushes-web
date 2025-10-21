@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../../redux/userSlice";
 import { THEME, BASE_URL } from "../../utils/constants";
 import { useToast } from "../../utils/use-toast";
-import NavBar from "../NavBar"; // ✅ Added NavBar import
+import NavBar from "../NavBar";
 
 // Steps
 import WelcomeStep from "./WelcomeStep";
@@ -81,22 +81,15 @@ const OnboardingFlow: React.FC = () => {
   const [error, setError] = useState("");
   const [showLogin, setShowLogin] = useState(false);
 
-  // ✅ Go back to welcome step if coming from login
+  // ✅ Reset onboarding when coming from login
   useEffect(() => {
-    if (location.state?.goToWelcome) {
+    const onboardingDone = localStorage.getItem("onboardingDone");
+    if (location.state?.goToWelcome && onboardingDone !== "true") {
       setShowLogin(false);
       setCurrentStep(0);
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
-
-  // ✅ Redirect logged-in users
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const onboardingDone = localStorage.getItem("onboardingDone");
-    const user = localStorage.getItem("user");
-    if (token && onboardingDone && user) navigate("/feed");
-  }, [navigate]);
 
   const updateData = (newData: Partial<OnboardingData>) =>
     setData((prev) => ({ ...prev, ...newData }));
@@ -118,12 +111,26 @@ const OnboardingFlow: React.FC = () => {
   const nextStep = async () => {
     setError("");
 
+    // ✅ Handle signup step
     if (currentStep === 1) {
-      const { email, password, name, city, dateOfBirth, gender, interestedIn } = data;
+      const { email, password, name, city, dateOfBirth, gender, interestedIn } =
+        data;
 
-      if (!email || !password || !name || !city || !dateOfBirth || !gender || !interestedIn.length) {
+      if (
+        !email ||
+        !password ||
+        !name ||
+        !city ||
+        !dateOfBirth ||
+        !gender ||
+        !interestedIn.length
+      ) {
         const msg = "Please fill in all required fields.";
-        toast({ title: "Missing Information", description: msg, type: "error" });
+        toast({
+          title: "Missing Information",
+          description: msg,
+          type: "error",
+        });
         setError(msg);
         return;
       }
@@ -146,13 +153,20 @@ const OnboardingFlow: React.FC = () => {
         );
 
         dispatch(addUser(res.data.data));
-        toast({ title: "Signup Successful!", description: "Your account has been created.", type: "success" });
-      } catch (err: any) {
+        toast({
+          title: "Signup Successful!",
+          description: "Your account has been created.",
+          type: "success",
+        });
+      } catch (err) {
         console.error("Signup error:", err);
-        const msg =
-          err?.response?.data?.message ||
-          err?.response?.data ||
-          "Signup failed. Please try again.";
+
+        let msg = "Signup failed. Please try again.";
+
+        if (axios.isAxiosError(err)) {
+          msg = err.response?.data?.message || err.response?.data || msg;
+        }
+
         toast({ title: "Signup Failed", description: msg, type: "error" });
         setError(msg);
         setLoading(false);
@@ -162,12 +176,23 @@ const OnboardingFlow: React.FC = () => {
       }
     }
 
+    // ✅ Move to next onboarding step
     if (currentStep < totalSteps) {
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
     } else {
+      // ✅ Final step - onboarding complete
       localStorage.setItem("onboardingDone", "true");
-      navigate("/feed");
+      toast({
+        title: "Onboarding Complete!",
+        description: "Redirecting to your feed 🎉",
+        type: "success",
+      });
+
+      // Delay navigation slightly so user sees success message
+      setTimeout(() => {
+        navigate("/feed");
+      }, 1000);
     }
   };
 
@@ -218,7 +243,6 @@ const OnboardingFlow: React.FC = () => {
       className="relative min-h-screen w-full overflow-y-auto flex flex-col items-center"
       style={{ background: THEME.colors.backgroundGradient }}
     >
-      {/* ✅ Navbar visible even on onboarding */}
       <NavBar showMinimal />
 
       {/* 🌟 Progress Bar */}

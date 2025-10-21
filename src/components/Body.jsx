@@ -16,7 +16,7 @@ const Body = () => {
   const userData = useSelector((store) => store.user);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch user profile
+  // ✅ Fetch user profile only if token exists
   const fetchUser = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/profile/view`, {
@@ -25,32 +25,26 @@ const Body = () => {
       if (res?.data) {
         dispatch(addUser(res.data));
         localStorage.setItem("user", JSON.stringify(res.data));
-        localStorage.setItem("onboardingDone", "true");
-      } else {
-        navigate("/");
       }
     } catch (err) {
-      navigate("/");
+      console.error("Profile fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ Check login state
   useEffect(() => {
     const token = getCookie("token");
     const savedUser = localStorage.getItem("user");
-    const onboardingDone = localStorage.getItem("onboardingDone");
-
-    if (onboardingDone && location.pathname === "/") {
-      navigate("/feed");
-      setLoading(false);
-      return;
-    }
 
     if (savedUser) {
       dispatch(addUser(JSON.parse(savedUser)));
       setLoading(false);
+
+      // 🚀 Redirect to feed if not already there
+      if (location.pathname === "/" || location.pathname === "/login") {
+        navigate("/feed", { replace: true });
+      }
       return;
     }
 

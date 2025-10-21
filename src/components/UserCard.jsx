@@ -12,7 +12,6 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
   const dispatch = useDispatch();
   const { _id, firstName, age, city, photoUrl } = user;
 
-  // handle multiple photos
   const photos =
     Array.isArray(photoUrl) && photoUrl.length > 0 ? photoUrl : [photoUrl];
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
@@ -45,11 +44,11 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
 
       if (xDir > 0) {
         setShowLove(true);
-        setTimeout(() => setShowLove(false), 1200);
+        setTimeout(() => setShowLove(false), 1000);
         handleSendRequest("interested");
       } else {
         setShowNo(true);
-        setTimeout(() => setShowNo(false), 1200);
+        setTimeout(() => setShowNo(false), 1000);
         handleSendRequest("ignored");
       }
 
@@ -68,8 +67,8 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
   };
 
   return (
-<div className="relative flex items-center justify-center z-20 mt-8 mb-8">
-      {/* ❤️ or ❌ overlays */}
+    <div className="relative flex items-center justify-center">
+      {/* 💖 Overlays */}
       {showLove && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
           <div className="text-pink-400 text-4xl font-bold drop-shadow-glow">💖 Crush!</div>
@@ -81,7 +80,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
         </div>
       )}
 
-      {/* Swipe Card */}
+      {/* 🔹 Swipe Card */}
       <animated.div
         {...bind()}
         style={{
@@ -89,9 +88,10 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           rotateZ: rot,
           touchAction: "none",
         }}
-        className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/40 backdrop-blur-md cursor-grab"
+        className="relative w-[380px] h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
+                   bg-black/40 backdrop-blur-md cursor-grab"
       >
-        {/* 🔹 Photo Progress Bar */}
+        {/* Photo Progress Bar */}
         <div className="absolute top-3 left-3 right-3 z-20 flex gap-2 justify-center">
           {photos.map((_, idx) => (
             <div
@@ -101,7 +101,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
               }`}
             >
               <div
-                className={`h-full bg-pink-400 transition-all duration-300`}
+                className="h-full bg-pink-400 transition-all duration-300"
                 style={{
                   width: idx === currentPhotoIndex ? "100%" : "0%",
                 }}
@@ -110,7 +110,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           ))}
         </div>
 
-        {/* 🔹 Prev / Next Arrows */}
+        {/* Arrows */}
         {photos.length > 1 && (
           <>
             <button
@@ -128,22 +128,22 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           </>
         )}
 
-        {/* 🔹 Main Image */}
+        {/* Main Image */}
         <img
           src={photos[currentPhotoIndex]}
           alt={firstName}
-          className="w-full h-full object-cover pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
         />
 
         {/* Overlay Info */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold text-white">
                 {firstName}
                 {age && <span className="text-white/80 text-lg"> • {age}</span>}
               </h2>
-              {city && <p className="text-sm text-white text-pretty">{city}</p>}
+              {city && <p className="text-sm text-white/80">{city}</p>}
             </div>
           </div>
 
@@ -172,7 +172,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
             </button>
           </div>
 
-          {/* More Details */}
+          {/* Details Button */}
           <div className="mt-4 flex justify-center">
             {!isDetailsVisible ? (
               <button

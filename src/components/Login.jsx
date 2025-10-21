@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL, THEME } from "../utils/constants";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import InputField from "./InputField";
 import { motion } from "framer-motion";
-import { getCookie } from "../utils/getCookie";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("shub@gmail.in");
@@ -19,45 +18,53 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = getCookie("token");
-    const onboardingDone = localStorage.getItem("onboardingDone");
-    const user = localStorage.getItem("user");
+const handleLogin = async () => {
+  if (!emailId || !password) {
+    setError("Please fill in all fields");
+    return;
+  }
 
-    if (token && onboardingDone && user) {
+  try {
+    setLoading(true);
+    const res = await axios.post(
+      `${BASE_URL}/login`,
+      { emailId, password },
+      { withCredentials: true }
+    );
+
+    const userData = res.data;
+    dispatch(addUser(userData));
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    // 🕒 Wait for cookie to become readable
+    let attempts = 0;
+    while (!document.cookie.includes("token=") && attempts < 20) {
+      await new Promise((r) => setTimeout(r, 100));
+      attempts++;
+    }
+
+    const onboardingDone = localStorage.getItem("onboardingDone");
+
+    // 🧭 Navigate only after cookie exists
+    if (document.cookie.includes("token=")) {
+      navigate("/feed", { replace: true });
+    } else if (onboardingDone !== "true") {
+      navigate("/", { replace: true });
+    } else {
+      // fallback just in case
       navigate("/feed", { replace: true });
     }
-  }, [navigate]);
+  } catch (err) {
+    console.error("Login failed:", err);
+    setError(
+      err?.response?.data?.message ||
+        "Something went wrong. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const handleLogin = async () => {
-    if (!emailId || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `${BASE_URL}/login`,
-        { emailId, password },
-        { withCredentials: true }
-      );
-
-      const userData = res.data;
-      dispatch(addUser(userData));
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("onboardingDone", "true");
-
-      navigate("/feed");
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError(
-        err?.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden text-white">
