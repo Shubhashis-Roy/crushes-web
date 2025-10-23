@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
+import { BASE_URL } from "@services/axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../../redux/conectionSlice";
@@ -82,9 +82,7 @@ const MyMatchContent = () => {
                   {gender && <span className="text-white/60">• {gender}</span>}
                 </p>
                 {about && (
-                  <p className="text-sm text-white/60 italic mt-1">
-                    “{about}”
-                  </p>
+                  <p className="text-sm text-white/60 italic mt-1">“{about}”</p>
                 )}
               </div>
 

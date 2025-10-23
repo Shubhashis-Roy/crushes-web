@@ -8,7 +8,9 @@ const ManageImagesContent = ({ user }) => {
     ? [user.photoUrl]
     : [];
 
-  const imageSlots = Array.from({ length: 3 }).map((_, idx) => images[idx] || null);
+  const imageSlots = Array.from({ length: 3 }).map(
+    (_, idx) => images[idx] || null
+  );
 
   return (
     <div className="w-full flex flex-col items-center text-center text-white">
@@ -18,7 +20,9 @@ const ManageImagesContent = ({ user }) => {
           Manage Your Images
         </h2>
         <p className="text-white/70 text-sm">
-          Add up to <span className="text-pink-300 font-semibold">3 images</span> to showcase yourself 🌸
+          Add up to{" "}
+          <span className="text-pink-300 font-semibold">3 images</span> to
+          showcase yourself 🌸
         </p>
       </div>
 

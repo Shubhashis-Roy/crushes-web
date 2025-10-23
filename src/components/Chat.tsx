@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL } from "@services/axios";
 import "./styles/ChatTheme.css";
 import ChatWindow from "./ChatWindow";
 import ChatSidebar from "./ChatSidebar";
-import { useChatSocket } from "../hooks/useChatSocket";
+import { useChatSocket } from "@hooks/useChatSocket";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);

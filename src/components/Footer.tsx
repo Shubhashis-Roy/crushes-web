@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import {
   Footer,
   FooterBrand,
@@ -16,7 +16,7 @@ import {
   BsGithub,
   BsDribbble,
 } from "react-icons/bs";
-import { THEME } from "../utils/constants";
+import { THEME } from "@constants/colors";
 
 const AppFooter = () => {
   return (

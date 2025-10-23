@@ -6,8 +6,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../redux/userSlice";
-import { THEME, BASE_URL } from "../../utils/constants";
-import { useToast } from "../../utils/use-toast";
+import { THEME } from "@constants/colors";
+import { BASE_URL } from "@services/axios";
+import { useToast } from "@utils/use-toast";
 import NavBar from "../NavBar";
 
 // Steps

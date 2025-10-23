@@ -1,5 +1,5 @@
 import { IoSend } from "react-icons/io5";
-import chatDark from "../assets/bg-chatUI.jpg";
+import chatDark from "@assets/bg-chatUI.jpg";
 import PropTypes from "prop-types";
 
 const ChatWindow = ({

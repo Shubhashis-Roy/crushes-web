@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import { loveStories } from "../../schema/loveStories";
+import { loveStories } from "@schema/loveStories";
 
 // Import Swiper styles
 import "swiper/css";

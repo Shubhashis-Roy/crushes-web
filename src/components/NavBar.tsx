@@ -2,11 +2,12 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BASE_URL, THEME } from "../utils/constants";
+import { THEME } from "@constants/colors";
 import { removeUser } from "../redux/userSlice";
 import { useState } from "react";
 import { IoChatbubbleEllipsesOutline, IoMenu, IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+import { BASE_URL } from "@services/axios";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.user);
@@ -19,14 +20,13 @@ const NavBar = ({ showMinimal = false }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
     } catch (err) {
       console.error("Logout failed:", err);
     } finally {
       dispatch(removeUser());
       localStorage.clear();
-      document.cookie =
-        "token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;";
+      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;";
       navigate("/");
     }
   };
@@ -40,7 +40,7 @@ const NavBar = ({ showMinimal = false }) => {
   const isConnectionsPage = location.pathname.includes("/connections");
   const isRequestsPage = location.pathname.includes("/requests");
 
-  const getItemClasses = (active) =>
+  const getItemClasses = (active: boolean) =>
     `block px-4 py-2 rounded-lg transition-all duration-300 text-base font-medium ${
       active
         ? "bg-white text-pink-700 shadow-md"
@@ -200,55 +200,54 @@ const NavBar = ({ showMinimal = false }) => {
       </AnimatePresence>
 
       {/* ✅ Logout Modal */}
-{/* 🌸 Logout Modal (Refined UI) */}
-<AnimatePresence>
-  {showLogoutModal && (
-    <motion.div
-      key="logout-modal"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[999] flex items-center justify-center backdrop-blur-md bg-black/40"
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 150, damping: 20 }}
-        className="relative bg-white/90 dark:bg-[#1b102d]/90 rounded-2xl shadow-[0_8px_40px_rgba(248,109,132,0.35)] w-[90%] sm:w-[380px] backdrop-blur-xl border border-pink-200/60"
-      >
-        {/* Decorative gradient ring */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-400/10 to-purple-500/10 pointer-events-none" />
-
-        <div className="relative z-10 p-6 flex flex-col items-center text-center">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-pink-100 mb-3">
-            Are you sure you want to logout?
-          </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-            You’ll need to log in again to continue exploring 💖
-          </p>
-
-          <div className="flex gap-4 w-full justify-center">
-            <button
-              onClick={() => setShowLogoutModal(false)}
-              className="px-5 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium shadow-sm transition-all duration-300 hover:shadow-md"
+      {/* 🌸 Logout Modal (Refined UI) */}
+      <AnimatePresence>
+        {showLogoutModal && (
+          <motion.div
+            key="logout-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center backdrop-blur-md bg-black/40"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 150, damping: 20 }}
+              className="relative bg-white/90 dark:bg-[#1b102d]/90 rounded-2xl shadow-[0_8px_40px_rgba(248,109,132,0.35)] w-[90%] sm:w-[380px] backdrop-blur-xl border border-pink-200/60"
             >
-              Cancel
-            </button>
-            <button
-              onClick={handleLogout}
-              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 text-white font-medium shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
-            >
-              Yes, Logout
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
+              {/* Decorative gradient ring */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-400/10 to-purple-500/10 pointer-events-none" />
 
+              <div className="relative z-10 p-6 flex flex-col items-center text-center">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-pink-100 mb-3">
+                  Are you sure you want to logout?
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+                  You’ll need to log in again to continue exploring 💖
+                </p>
+
+                <div className="flex gap-4 w-full justify-center">
+                  <button
+                    onClick={() => setShowLogoutModal(false)}
+                    className="px-5 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium shadow-sm transition-all duration-300 hover:shadow-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 text-white font-medium shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
+                  >
+                    Yes, Logout
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

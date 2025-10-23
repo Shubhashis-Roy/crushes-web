@@ -2,12 +2,13 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import NavBar from "./NavBar";
 import AppFooter from "./Footer";
 import axios from "axios";
-import { BASE_URL, THEME } from "../utils/constants";
+import { THEME } from "@constants/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../redux/userSlice";
 import { useEffect, useState } from "react";
-import { getCookie } from "../utils/getCookie";
+import { getCookie } from "@utils/getCookie";
 import { motion } from "framer-motion";
+import { BASE_URL } from "@services/axios";
 
 const Body = () => {
   const dispatch = useDispatch();

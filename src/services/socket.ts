@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL } from "@services/axios";
 
 // for local it not work in production
 // export const createSocketConnection = () => {

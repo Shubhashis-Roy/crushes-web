@@ -11,7 +11,7 @@ import DeleteAccountContent from "./sidebarContents/DeleteAccountContent";
 import LogoutContent from "./sidebarContents/LogoutContent";
 
 import { removeUser } from "../redux/userSlice";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL } from "@services/axios";
 
 const Profile = () => {
   const user = useSelector((store) => store.user);

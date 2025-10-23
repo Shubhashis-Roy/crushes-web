@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createSocketConnection } from "../utils/socket";
+import { createSocketConnection } from "@services/socket";
 
 export const useChatSocket = ({
   user,

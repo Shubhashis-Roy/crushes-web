@@ -1,5 +1,6 @@
 import axios from "axios";
-import { BASE_URL, THEME } from "../utils/constants";
+import { THEME } from "@constants/colors";
+import { BASE_URL } from "@services/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../redux/feedSlice";
 import { useEffect, useState } from "react";
@@ -14,7 +15,9 @@ const Feed = () => {
 
   const getFeed = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/feed`, { withCredentials: true });
+      const res = await axios.get(`${BASE_URL}/feed`, {
+        withCredentials: true,
+      });
       dispatch(addFeed(res?.data?.data));
       setUsers(res?.data?.data || []);
     } catch (err) {

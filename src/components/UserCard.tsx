@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL } from "@services/axios";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../redux/feedSlice";
 import { useSpring, animated } from "@react-spring/web";
@@ -19,9 +19,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
 
   // ✅ Normalize image array — handles strings, objects, or missing photos
   const photos = Array.isArray(photoUrl)
-    ? photoUrl
-        .map((p) => (typeof p === "string" ? p : p?.url))
-        .filter(Boolean)
+    ? photoUrl.map((p) => (typeof p === "string" ? p : p?.url)).filter(Boolean)
     : photoUrl
     ? [photoUrl]
     : [];

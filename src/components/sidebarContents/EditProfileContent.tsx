@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
+import { BASE_URL } from "@services/axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../redux/userSlice";
 import PropTypes from "prop-types";
