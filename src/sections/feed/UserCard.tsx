@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import axios from "axios";
-import { BASE_URL } from "@services/axios";
+// import { BASE_URL } from "@services/axios";
 import { useDispatch } from "react-redux";
-import { removeUserFromFeed } from "../redux/feedSlice";
+// import { removeUserFromFeed } from "../redux/feedSlice";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { useState } from "react";
@@ -30,16 +30,16 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
   const handleSendRequest = async (status) => {
-    try {
-      await axios.post(
-        `${BASE_URL}/request/send/${status}/${_id}`,
-        {},
-        { withCredentials: true }
-      );
-      dispatch(removeUserFromFeed(_id));
-    } catch (err) {
-      console.log("Request send error:", err);
-    }
+    // try {
+    //   await axios.post(
+    //     `${BASE_URL}/request/send/${status}/${_id}`,
+    //     {},
+    //     { withCredentials: true }
+    //   );
+    //   dispatch(removeUserFromFeed(_id));
+    // } catch (err) {
+    //   console.log("Request send error:", err);
+    // }
   };
 
   // 🧠 Gesture for swipe

@@ -16,6 +16,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    navigate(PATH.FEED);
     // if (!emailId || !password) {
     //   setError("Please fill in all fields");
     //   return;
@@ -147,7 +148,7 @@ const Login = () => {
           New here?{" "}
           <span
             onClick={() =>
-              navigate(PATH.onboarding, { state: { goToWelcome: true } })
+              navigate(PATH.ONBOARDING, { state: { goToWelcome: true } })
             }
             className="underline text-pink-200 font-semibold cursor-pointer hover:text-pink-100 transition"
           >

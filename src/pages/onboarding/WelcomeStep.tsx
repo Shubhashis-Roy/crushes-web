@@ -70,10 +70,10 @@ const WelcomeStep = () => {
   }, []);
 
   const handleNext = () => {
-    navigate(PATH.onboarding);
+    navigate(PATH.ONBOARDING);
   };
   const openLogin = () => {
-    navigate(PATH.login);
+    navigate(PATH.LOGIN);
   };
 
   return (

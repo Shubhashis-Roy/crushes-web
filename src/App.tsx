@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "@redux/store";
 
 import Body from "@components/layout/Body";
-import Feed from "@components/Feed";
+import Feed from "@pages/feed/Feed";
 import Profile from "@components/Profile";
 import Connections from "@components/Connections";
 import Requests from "@components/Requests";
@@ -20,9 +20,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Body />}>
             <Route index element={<WelcomeStep />} />
-            <Route path={PATH.onboarding} element={<OnboardingFlow />} />
+            <Route path={PATH.ONBOARDING} element={<OnboardingFlow />} />
 
-            <Route path="login" element={<Login />} />
+            <Route path={PATH.LOGIN} element={<Login />} />
+            <Route path={PATH.FEED} element={<Feed />} />
 
             {/* <Route path="feed" element={<Feed />} />
             <Route path="profile" element={<Profile />} />

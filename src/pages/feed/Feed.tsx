@@ -1,35 +1,44 @@
-import axios from "axios";
 import { THEME } from "@constants/colors";
-import { BASE_URL } from "@services/axios";
+// import { BASE_URL } from "@services/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addFeed } from "../redux/feedSlice";
+// import { addFeed } from "../redux/feedSlice";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import UserCard from "./UserCard";
+import UserCard from "@sections/feed/UserCard";
 
 const Feed = () => {
-  const feed = useSelector((store) => store.feed);
+  // const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([
+    {
+      about: "This is a default about of user",
+      skills: ["default - JS"],
+      _id: "68fcdd490d7ad2e83ac546f1",
+      firstName: "shub",
+      lastName: "Roy",
+      city: "Siliguri",
+      photoUrl: [],
+    },
+  ]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const getFeed = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/feed`, {
-        withCredentials: true,
-      });
-      dispatch(addFeed(res?.data?.data));
-      setUsers(res?.data?.data || []);
-    } catch (err) {
-      console.error("Feed fetch failed:", err);
-    }
+    // try {
+    //   const res = await axios.get(`${BASE_URL}/feed`, {
+    //     withCredentials: true,
+    //   });
+    //   // dispatch(addFeed(res?.data?.data));
+    //   setUsers(res?.data?.data || []);
+    // } catch (err) {
+    //   console.error("Feed fetch failed:", err);
+    // }
   };
 
-  useEffect(() => {
-    if (!feed || feed.length === 0) getFeed();
-    else setUsers(feed);
-    // eslint-disable-next-line
-  }, [feed]);
+  // useEffect(() => {
+  //   if (!feed || feed.length === 0) getFeed();
+  //   else setUsers(feed);
+  //   // eslint-disable-next-line
+  // }, [feed]);
 
   if (!users || users.length === 0) {
     return (

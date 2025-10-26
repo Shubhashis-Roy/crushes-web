@@ -1,6 +1,6 @@
 export const PATH = {
-  onboarding: "/onboarding",
-  feed: "/feed",
-  login: "/login",
-  register: "/register",
+  ONBOARDING: "/onboarding",
+  FEED: "/feed",
+  LOGIN: "/login",
+  REGISTER: "/register",
 };
