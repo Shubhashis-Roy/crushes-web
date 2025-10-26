@@ -5,6 +5,8 @@ import { Eye, EyeOff } from "lucide-react";
 import InputField from "@components/InputField";
 import { motion } from "framer-motion";
 import { PATH } from "@constants/path";
+import { dispatch } from "@redux/store";
+import { login } from "@redux/slices/auth";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("shub@gmail.in");
@@ -16,47 +18,21 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    navigate(PATH.FEED);
-    // if (!emailId || !password) {
-    //   setError("Please fill in all fields");
-    //   return;
-    // }
-    // try {
-    //   setLoading(true);
-    //   // const res = await axios.post(
-    //   //   `${BASE_URL}/login`,
-    //   //   { emailId, password },
-    //   //   { withCredentials: true }
-    //   // );
-    //   const res = "";
-    //   const userData = res;
-    //   // dispatch(addUser(userData));
-    //   localStorage.setItem("user", JSON.stringify(userData));
-    //   // 🕒 Wait for cookie to become readable
-    //   let attempts = 0;
-    //   while (!document.cookie.includes("token=") && attempts < 20) {
-    //     await new Promise((r) => setTimeout(r, 100));
-    //     attempts++;
-    //   }
-    //   const onboardingDone = localStorage.getItem("onboardingDone");
-    //   // Navigate only after cookie exists
-    //   if (document.cookie.includes("token=")) {
-    //     navigate("/feed", { replace: true });
-    //   } else if (onboardingDone !== "true") {
-    //     navigate("/", { replace: true });
-    //   } else {
-    //     // fallback just in case
-    //     navigate("/feed", { replace: true });
-    //   }
-    // } catch (err) {
-    //   console.error("Login failed:", err);
-    //   setError(
-    //     err?.response?.data?.message ||
-    //       "Something went wrong. Please try again."
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
+    setLoading(true);
+    if (!emailId || !password) {
+      setError("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
+    const res = await dispatch(login({ emailId, password }));
+
+    if (res?._id && res?.firstName) {
+      navigate(PATH.FEED);
+      setLoading(false);
+    } else {
+      setError("Invalid login credentials. Please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,7 +49,7 @@ const Login = () => {
         transition={{ duration: 20, repeat: Infinity, repeatType: "mirror" }}
       />
 
-      {/* =========== Login Card =========== */}
+      {/* ================== Login Card ================== */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}

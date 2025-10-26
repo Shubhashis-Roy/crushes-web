@@ -22,7 +22,30 @@ const initialState: authStateTypes = {
     updatedAt: "",
     __v: 0,
   },
-  // statusCode: "",
+  loginUserDetails: {
+    _id: "",
+    firstName: "",
+    lastName: "",
+    emailId: "",
+    dateOfBirth: "",
+    city: "",
+    gender: "",
+    interest: "",
+    photoUrl: [],
+    bio: "",
+    education: "",
+    organization: "",
+    profession: "",
+    lookingFor: "",
+    preferredAge: {
+      min: 0,
+      max: 0,
+    },
+    preferredDistance: 0,
+    createdAt: "",
+    updatedAt: "",
+    __v: 0,
+  },
 };
 
 // ----------------------------------------------------------------------
@@ -46,6 +69,12 @@ const slice = createSlice({
       state.isLoading = false;
       state.userDetails = action.payload.userDetails;
     },
+
+    // LOGIN USER DETAILS
+    getLoginUserDetailsSuccess(state, action) {
+      state.isLoading = false;
+      state.loginUserDetails = action.payload.data;
+    },
   },
 });
 
@@ -61,8 +90,7 @@ export const signup = (payload: signUpPayloadTypes) => async () => {
   dispatch(slice.actions.startLoading());
   try {
     const response = await axiosInstance.post("/signup", payload);
-
-    console.log(response?.data, "signup response hlo ============");
+    // console.log(response?.data, "signup response hlo ============");
 
     // dispatch(
     //   slice.actions.getUserDetailsSuccess({
@@ -72,6 +100,31 @@ export const signup = (payload: signUpPayloadTypes) => async () => {
   } catch (error) {
     const axiosError = error as AxiosErrorResponseTypes;
     errorHandle({ error: axiosError, label: "signup API Error:" });
+    const errorData = axiosError?.response?.data as ErrorResponseTypes;
+    dispatch(
+      slice.actions.hasError({
+        error: axiosError?.response?.data || "Something went wrong",
+      })
+    );
+  }
+};
+
+// Login API call
+export const login = (payload: loginPayloadTypes) => async () => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const response = await axiosInstance.post("/login", payload);
+    // console.log(response?.data, "login response hlo ============");
+
+    dispatch(
+      slice.actions.getLoginUserDetailsSuccess({
+        data: response?.data,
+      })
+    );
+    return response?.data;
+  } catch (error) {
+    const axiosError = error as AxiosErrorResponseTypes;
+    errorHandle({ error: axiosError, label: "login API Error:" });
     const errorData = axiosError?.response?.data as ErrorResponseTypes;
     dispatch(
       slice.actions.hasError({

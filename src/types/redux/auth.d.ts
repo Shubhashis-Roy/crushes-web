@@ -2,6 +2,7 @@ declare interface authStateTypes {
   isLoading: boolean;
   error: string | ErrorType;
   userDetails: userDetailsTypes;
+  loginUserDetails: loginUserDetailsTypes;
   //   statusCode: number | string;
 }
 
@@ -20,6 +21,31 @@ declare interface userDetailsTypes {
   __v: number;
 }
 
+declare interface loginUserDetailsTypes {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  dateOfBirth: string;
+  city: string;
+  gender: string;
+  interest: string;
+  photoUrl: string[];
+  bio: string;
+  education: string;
+  organization: string;
+  profession: string;
+  lookingFor: string;
+  preferredAge: {
+    min: number;
+    max: number;
+  };
+  preferredDistance: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 declare interface signUpPayloadTypes {
   firstName: string;
   lastName: string;
@@ -29,4 +55,9 @@ declare interface signUpPayloadTypes {
   city: string;
   interest: string;
   gender: string;
+}
+
+declare interface loginPayloadTypes {
+  emailId: string;
+  password: string;
 }

@@ -27,7 +27,7 @@ const initialState: userStateTypes = {
 // ----------------------------------------------------------------------
 
 const slice = createSlice({
-  name: "auth",
+  name: "user",
   initialState,
   reducers: {
     // START LOADING

@@ -2,7 +2,8 @@ import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 // slices
-// import auth from './slices/auth';
+import auth from "./slices/auth";
+import user from "./slices/user";
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +33,8 @@ const rootPersistConfig = {
 };
 
 const rootReducer = combineReducers({
-  //   auth: auth,
+  auth: auth,
+  user: user,
 });
 
 export { rootPersistConfig, rootReducer };
