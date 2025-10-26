@@ -1,6 +1,6 @@
 // 🌐 Base URL
 export const BASE_URL =
-  location.hostname === "localhost" ? "http://localhost:3001" : "/api";
+  location.hostname === "localhost" ? "http://localhost:5000" : "/api";
 
 // 💖 Elegant Patina Gradient Palette for Love Date Crush
 export const THEME = {
