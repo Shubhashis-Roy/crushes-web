@@ -3,11 +3,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
-import { removeUser } from "../redux/userSlice";
+// import { removeUser } from "../redux/userSlice";
 import { useState } from "react";
 import { IoChatbubbleEllipsesOutline, IoMenu, IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
-import { BASE_URL } from "@services/axios";
+// import { BASE_URL } from "@services/axios";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.user);
@@ -19,16 +19,16 @@ const NavBar = ({ showMinimal = false }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
-    try {
-      await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
-    } catch (err) {
-      console.error("Logout failed:", err);
-    } finally {
-      dispatch(removeUser());
-      localStorage.clear();
-      document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;";
-      navigate("/");
-    }
+    // try {
+    //   await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
+    // } catch (err) {
+    //   console.error("Logout failed:", err);
+    // } finally {
+    //   dispatch(removeUser());
+    //   localStorage.clear();
+    //   document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;";
+    //   navigate("/");
+    // }
   };
 
   const isFeedPage =

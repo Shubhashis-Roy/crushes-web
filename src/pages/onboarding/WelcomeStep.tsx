@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Heart, Sparkles, Users } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { OnboardingData } from "./OnboardingFlow";
-import { THEME } from "../../utils/constants";
+import { THEME } from "@constants/colors";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "@constants/path";
 
-interface WelcomeStepProps {
-  data: OnboardingData;
-  updateData: (data: Partial<OnboardingData>) => void;
-  onNext: () => void;
-  onPrev: () => void;
-  openLogin: () => void; // ✅ added
-}
+// interface WelcomeStepProps {
+//   data: OnboardingData;
+//   updateData: (data: Partial<OnboardingData>) => void;
+//   onNext: () => void;
+//   onPrev: () => void;
+//   openLogin: () => void; // ✅ added
+// }
 
-// ✨ Floating animation variants
+// Floating animation variants
 const floatVariants: Variants = {
   float1: {
     y: [0, -15, 0],
@@ -38,7 +39,7 @@ const floatVariants: Variants = {
   },
 };
 
-// ✨ Animated text variants
+// Animated text variants
 const textVariants: Variants = {
   enter: { opacity: 0, y: 20, scale: 0.95 },
   center: {
@@ -50,7 +51,8 @@ const textVariants: Variants = {
   exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: 0.4 } },
 };
 
-const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext, openLogin }) => {
+const WelcomeStep = () => {
+  const navigate = useNavigate();
   const words = [
     "perfect match",
     "true love",
@@ -59,13 +61,20 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext, openLogin }) => {
   ];
   const [index, setIndex] = useState(0);
 
-  // ⏳ Cycle words every 2.5s
+  // Cycle words every 2.5s
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % words.length);
     }, 2500);
     return () => clearInterval(interval);
   }, []);
+
+  const handleNext = () => {
+    navigate(PATH.onboarding);
+  };
+  const openLogin = () => {
+    navigate(PATH.login);
+  };
 
   return (
     <div
@@ -184,7 +193,7 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext, openLogin }) => {
         className="z-10 flex flex-col items-center space-y-4"
       >
         <button
-          onClick={onNext}
+          onClick={handleNext}
           className="relative px-10 py-3 text-lg font-semibold rounded-full 
           transition-all duration-300 border-[3px] border-purple-300
           text-purple-200 shadow-[0_0_20px_rgba(217,176,255,0.5),inset_0_0_10px_rgba(217,176,255,0.5)]

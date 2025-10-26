@@ -2,14 +2,16 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "@redux/store";
 
-import Body from "@components/Body";
+import Body from "@components/layout/Body";
 import Feed from "@components/Feed";
 import Profile from "@components/Profile";
 import Connections from "@components/Connections";
 import Requests from "@components/Requests";
 import Chat from "@components/Chat";
-import OnboardingFlow from "@components/onboard/OnboardingFlow";
-import Login from "@components/Login";
+import OnboardingFlow from "@pages/onboarding/OnboardingFlow";
+import Login from "@pages/auth/Login";
+import WelcomeStep from "@pages/onboarding/WelcomeStep";
+import { PATH } from "@constants/path";
 
 function App() {
   return (
@@ -17,15 +19,16 @@ function App() {
       <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<Body />}>
-            <Route index element={<OnboardingFlow />} />
+            <Route index element={<WelcomeStep />} />
+            <Route path={PATH.onboarding} element={<OnboardingFlow />} />
 
             <Route path="login" element={<Login />} />
 
-            <Route path="feed" element={<Feed />} />
+            {/* <Route path="feed" element={<Feed />} />
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="requests" element={<Requests />} />
-            <Route path="chat" element={<Chat />} />
+            <Route path="chat" element={<Chat />} /> */}
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

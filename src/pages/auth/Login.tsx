@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { addUser } from "../redux/userSlice";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
-import { BASE_URL } from "@services/axios";
 import { Eye, EyeOff } from "lucide-react";
-import InputField from "./InputField";
+import InputField from "@components/InputField";
 import { motion } from "framer-motion";
+import { PATH } from "@constants/path";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("shub@gmail.in");
@@ -16,59 +13,54 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (!emailId || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `${BASE_URL}/login`,
-        { emailId, password },
-        { withCredentials: true }
-      );
-
-      const userData = res.data;
-      dispatch(addUser(userData));
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      // 🕒 Wait for cookie to become readable
-      let attempts = 0;
-      while (!document.cookie.includes("token=") && attempts < 20) {
-        await new Promise((r) => setTimeout(r, 100));
-        attempts++;
-      }
-
-      const onboardingDone = localStorage.getItem("onboardingDone");
-
-      // 🧭 Navigate only after cookie exists
-      if (document.cookie.includes("token=")) {
-        navigate("/feed", { replace: true });
-      } else if (onboardingDone !== "true") {
-        navigate("/", { replace: true });
-      } else {
-        // fallback just in case
-        navigate("/feed", { replace: true });
-      }
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError(
-        err?.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
+    // if (!emailId || !password) {
+    //   setError("Please fill in all fields");
+    //   return;
+    // }
+    // try {
+    //   setLoading(true);
+    //   // const res = await axios.post(
+    //   //   `${BASE_URL}/login`,
+    //   //   { emailId, password },
+    //   //   { withCredentials: true }
+    //   // );
+    //   const res = "";
+    //   const userData = res;
+    //   // dispatch(addUser(userData));
+    //   localStorage.setItem("user", JSON.stringify(userData));
+    //   // 🕒 Wait for cookie to become readable
+    //   let attempts = 0;
+    //   while (!document.cookie.includes("token=") && attempts < 20) {
+    //     await new Promise((r) => setTimeout(r, 100));
+    //     attempts++;
+    //   }
+    //   const onboardingDone = localStorage.getItem("onboardingDone");
+    //   // Navigate only after cookie exists
+    //   if (document.cookie.includes("token=")) {
+    //     navigate("/feed", { replace: true });
+    //   } else if (onboardingDone !== "true") {
+    //     navigate("/", { replace: true });
+    //   } else {
+    //     // fallback just in case
+    //     navigate("/feed", { replace: true });
+    //   }
+    // } catch (err) {
+    //   console.error("Login failed:", err);
+    //   setError(
+    //     err?.response?.data?.message ||
+    //       "Something went wrong. Please try again."
+    //   );
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden text-white">
-      {/* 🌈 Background Orbs */}
+      {/* ============== Background Orbs ============== */}
       <motion.div
         className="absolute w-[600px] h-[600px] bg-pink-600/25 rounded-full blur-[200px] top-[-7%] left-[-10%] -z-10"
         animate={{ x: [0, 50, 0], y: [0, 80, 0], opacity: [0.25, 0.4, 0.25] }}
@@ -80,7 +72,7 @@ const Login = () => {
         transition={{ duration: 20, repeat: Infinity, repeatType: "mirror" }}
       />
 
-      {/* 🧭 Login Card */}
+      {/* =========== Login Card =========== */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -102,7 +94,6 @@ const Login = () => {
           🔐 Demo credentials are pre-filled — just hit Login!
         </p>
 
-        {/* ✉️ Email */}
         <div className="w-full max-w-md">
           <InputField
             label="Email"
@@ -114,7 +105,6 @@ const Login = () => {
           />
         </div>
 
-        {/* 🔒 Password */}
         <div className="w-full max-w-md">
           <InputField
             label="Password"
@@ -135,7 +125,7 @@ const Login = () => {
           <p className="text-red-300 text-sm text-center mt-4">{error}</p>
         )}
 
-        {/* 🚀 Button */}
+        {/* ================== Button ================== */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.97 }}
@@ -152,14 +142,16 @@ const Login = () => {
           {loading ? "Logging in..." : "Login"}
         </motion.button>
 
-        {/* 🧭 Go to Onboarding */}
+        {/* ================== Go to Onboarding ================== */}
         <p className="text-center mt-8 text-sm text-white/75">
           New here?{" "}
           <span
-            onClick={() => navigate("/", { state: { goToWelcome: true } })}
+            onClick={() =>
+              navigate(PATH.onboarding, { state: { goToWelcome: true } })
+            }
             className="underline text-pink-200 font-semibold cursor-pointer hover:text-pink-100 transition"
           >
-            Go to Onboarding
+            Create an account
           </span>
         </p>
       </motion.div>

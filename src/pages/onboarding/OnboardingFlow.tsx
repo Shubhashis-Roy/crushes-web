@@ -1,0 +1,317 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Button } from "../../components/ui/button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+// import { useDispatch } from "react-redux";
+import { THEME } from "@constants/colors";
+import { useToast } from "@utils/use-toast";
+import NavBar from "@components/layout/NavBar";
+
+// Steps
+import BasicInfoStep from "@sections/onboarding/BasicInfoStep";
+import CareerEducationStep from "@sections/onboarding/CareerEducationStep";
+import ProfileSetupStep from "@sections/onboarding/ProfileSetupStep";
+import PreferencesStep from "@sections/onboarding/PreferencesStep";
+import PermissionsStep from "@sections/onboarding/PermissionsStep";
+import PreviewStep from "@sections/onboarding/PreviewStep";
+
+export interface OnboardingData {
+  name: string;
+  email: string;
+  password: string;
+  city: string;
+  dateOfBirth: string;
+  age?: number;
+  zodiacSign?: string;
+  gender: string;
+  interestedIn: string[];
+  profession: string;
+  company?: string;
+  education: string;
+  photos: File[];
+  bio: string;
+  hobbies: string[];
+  lifestyle: string[];
+  personality: string[];
+  lookingFor: string[];
+  ageRange: [number, number];
+  distanceRange: number;
+  locationPermission: boolean;
+  notificationPermission: boolean;
+}
+
+export const initialData: OnboardingData = {
+  name: "",
+  email: "",
+  password: "",
+  city: "",
+  dateOfBirth: "",
+  gender: "",
+  interestedIn: [],
+  profession: "",
+  company: "",
+  education: "",
+  photos: [],
+  bio: "",
+  hobbies: [],
+  lifestyle: [],
+  personality: [],
+  lookingFor: [],
+  ageRange: [18, 35],
+  distanceRange: 50,
+  locationPermission: false,
+  notificationPermission: false,
+};
+
+const OnboardingFlow: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const [data, setData] = useState<OnboardingData>(initialData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showLogin, setShowLogin] = useState(false);
+
+  // Reset onboarding when coming from login
+  useEffect(() => {
+    const onboardingDone = localStorage.getItem("onboardingDone");
+    if (location.state?.goToWelcome && onboardingDone !== "true") {
+      setShowLogin(false);
+      setCurrentStep(0);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  const updateData = (newData: Partial<OnboardingData>) =>
+    setData((prev) => ({ ...prev, ...newData }));
+
+  const steps = [
+    { component: BasicInfoStep, title: "Basic Info" },
+    { component: CareerEducationStep, title: "Career & Education" },
+    { component: ProfileSetupStep, title: "Profile Setup" },
+    { component: PreferencesStep, title: "Preferences" },
+    { component: PermissionsStep, title: "Permissions" },
+    { component: PreviewStep, title: "Preview" },
+  ];
+
+  const totalSteps = steps.length - 1;
+  const CurrentStepComponent = steps[currentStep].component;
+
+  // Next Step Handler
+  const nextStep = () => {
+    setError("");
+
+    // Handle signup step
+    // if (currentStep === 1) {
+    //   const { email, password, name, city, dateOfBirth, gender, interestedIn } =
+    //     data;
+
+    //   if (
+    //     !email ||
+    //     !password ||
+    //     !name ||
+    //     !city ||
+    //     !dateOfBirth ||
+    //     !gender ||
+    //     !interestedIn.length
+    //   ) {
+    //     const msg = "Please fill in all required fields.";
+    //     toast({
+    //       title: "Missing Information",
+    //       description: msg,
+    //       type: "error",
+    //     });
+    //     setError(msg);
+    //     return;
+    //   }
+
+    //   try {
+    //     setLoading(true);
+
+    //     toast({
+    //       title: "Signup Successful!",
+    //       description: "Your account has been created.",
+    //       type: "success",
+    //     });
+    //   } catch (err) {
+    //     console.error("Signup error:", err);
+
+    //     let msg = "Signup failed. Please try again.";
+
+    //     if (axios.isAxiosError(err)) {
+    //       msg = err.response?.data?.message || err.response?.data || msg;
+    //     }
+
+    //     toast({ title: "Signup Failed", description: msg, type: "error" });
+    //     setError(msg);
+    //     setLoading(false);
+    //     return;
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
+
+    // Move to next onboarding step
+    if (currentStep < totalSteps) {
+      setDirection(1);
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      // Final step - onboarding complete
+      localStorage.setItem("onboardingDone", "true");
+      toast({
+        title: "Onboarding Complete!",
+        description: "Redirecting to your feed 🎉",
+        type: "success",
+      });
+
+      // Delay navigation slightly so user sees success message
+      setTimeout(() => {
+        navigate("/feed");
+      }, 1000);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep === 0) {
+      navigate("/");
+      return;
+    }
+
+    if (currentStep > 0) {
+      setDirection(-1);
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  // const canProceed = () => {
+  //   switch (currentStep) {
+  //     case 1:
+  //       return (
+  //         data.email &&
+  //         data.password &&
+  //         data.name &&
+  //         data.dateOfBirth &&
+  //         data.gender &&
+  //         data.city &&
+  //         data.interestedIn.length > 0
+  //       );
+  //     case 2:
+  //       return data.profession && data.education;
+  //     case 3:
+  //       return data.photos.length > 0 && data.bio;
+  //     default:
+  //       return true;
+  //   }
+  // };
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 150 : -150,
+      opacity: 0,
+      position: "absolute" as const,
+    }),
+    center: { x: 0, opacity: 1, position: "relative" as const },
+    exit: (direction: number) => ({
+      x: direction > 0 ? -150 : 150,
+      opacity: 0,
+      position: "absolute" as const,
+    }),
+  };
+
+  return (
+    <div
+      className="relative min-h-screen w-full overflow-y-auto flex flex-col items-center"
+      style={{ background: THEME.colors.backgroundGradient }}
+    >
+      <NavBar showMinimal />
+
+      {/* ========= Progress Bar ===================== */}
+      <div className="sticky top-0 z-20 pb-4 pt-24">
+        <div className="flex flex-col items-center">
+          <div className="flex gap-2 mb-2">
+            {Array.from({ length: totalSteps }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 w-10 rounded-full ${
+                  i < currentStep ? "bg-white" : "bg-pink-200/60"
+                }`}
+              />
+            ))}
+          </div>
+          <p className="text-xs text-white opacity-90">
+            Step {currentStep} of {totalSteps}
+          </p>
+        </div>
+      </div>
+
+      {/* ============= Step Content ============== */}
+      <div className="relative w-full max-w-2xl flex-1 flex items-start justify-center px-4">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={showLogin ? "login" : currentStep}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.4 }}
+            className="w-full"
+          >
+            <CurrentStepComponent
+              data={data}
+              updateData={updateData}
+              onNext={nextStep}
+              onPrev={prevStep}
+            />
+
+            {error && (
+              <p className="text-center text-red-300 text-sm mt-4">{error}</p>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* =================== Bottom Navigation ============= */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="sticky bottom-0 w-full flex justify-between max-w-2xl px-8 py-6 z-30"
+      >
+        <Button
+          variant="outline"
+          onClick={prevStep}
+          className="flex items-center gap-2 text-gray-100 border border-white/40 hover:bg-white/10 rounded-full px-6 py-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Button>
+
+        <div className="flex gap-4 ml-auto">
+          <Button
+            onClick={nextStep}
+            // disabled={!canNavBarProceed() || loading}
+            className="flex items-center gap-2 px-8 py-2 font-semibold text-white rounded-full"
+            style={{
+              background: `linear-gradient(90deg, ${THEME.colors.primary}, ${THEME.colors.secondary})`,
+              boxShadow: THEME.shadows.soft,
+            }}
+          >
+            {loading
+              ? "Processing..."
+              : currentStep === steps.length - 1
+              ? "Finish"
+              : "Continue"}
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+export default OnboardingFlow;
