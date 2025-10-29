@@ -5,29 +5,16 @@ import errorHandle from "@services/api-services/errorHandle";
 
 // ----------------------------------------------------------------------
 
-const initialState: userStateTypes = {
+const initialState: feedStateTypes = {
   isLoading: false,
   error: "",
-  profileDetails: {
-    _id: "",
-    firstName: "",
-    lastName: "",
-    emailId: "",
-    dateOfBirth: "",
-    city: "",
-    gender: "",
-    interest: "",
-    photoUrl: [],
-    createdAt: "",
-    updatedAt: "",
-    __v: 0,
-  },
+  feedDetails: [],
 };
 
 // ----------------------------------------------------------------------
 
 const slice = createSlice({
-  name: "user",
+  name: "feed",
   initialState,
   reducers: {
     // START LOADING
@@ -40,10 +27,10 @@ const slice = createSlice({
       state.error = action.payload.error;
     },
 
-    // PROFILE DETAILS
-    getProfileSuccess(state, action) {
+    // FEED DETAILS
+    getFeedSuccess(state, action) {
       state.isLoading = false;
-      state.profileDetails = action.payload.profileDetails;
+      state.feedDetails = action.payload.data;
     },
   },
 });
@@ -53,22 +40,23 @@ export default slice.reducer;
 
 // ----------------------------------------------------------------------------
 
-// Profile API call
-export const getProfile = () => async () => {
+// Feed API call
+export const getFeed = () => async () => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await axiosInstance.get("/profile/view");
+    const response = await axiosInstance.get("/user/feed");
+    // console.log(response?.data, "feed response hlo ============");
 
-    console.log(response?.data, "profile response hlo ============");
+    dispatch(
+      slice.actions.getFeedSuccess({
+        data: response?.data?.data,
+      })
+    );
 
-    // dispatch(
-    //   slice.actions.getProfileSuccess({
-    //     profileDetails: response?.data?.response?.user,
-    //   })
-    // );
+    return response?.data?.data;
   } catch (error) {
     const axiosError = error as AxiosErrorResponseTypes;
-    errorHandle({ error: axiosError, label: "profile API Error:" });
+    errorHandle({ error: axiosError, label: "feed API Error:" });
     const errorData = axiosError?.response?.data as ErrorResponseTypes;
     dispatch(
       slice.actions.hasError({

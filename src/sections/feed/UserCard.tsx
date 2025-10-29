@@ -1,11 +1,7 @@
-import PropTypes from "prop-types";
-import axios from "axios";
-// import { BASE_URL } from "@services/axios";
-import { useDispatch } from "react-redux";
-// import { removeUserFromFeed } from "../redux/feedSlice";
+import React, { useEffect, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
-import { useState } from "react";
+import { calculateAge } from "@utils/date";
 import {
   FaHeart,
   FaTimes,
@@ -13,13 +9,33 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 
-const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
-  const dispatch = useDispatch();
-  const { _id, firstName, age, city, photoUrl } = user;
+interface UserCardProps {
+  user: feedDetailsTypes;
+  onShowDetails: () => void;
+  onHideDetails: () => void;
+  isDetailsVisible: boolean;
+}
 
-  // ✅ Normalize image array — handles strings, objects, or missing photos
+const UserCard: React.FC<UserCardProps> = ({
+  user,
+  onShowDetails,
+  onHideDetails,
+  isDetailsVisible,
+}) => {
+  const { _id, firstName, dateOfBirth, city, photoUrl } = user;
+
+  const [age, setAge] = useState<number | null>(null);
+
+  useEffect(() => {
+    setAge(calculateAge(user?.dateOfBirth || ""));
+  }, [dateOfBirth]);
+
   const photos = Array.isArray(photoUrl)
-    ? photoUrl.map((p) => (typeof p === "string" ? p : p?.url)).filter(Boolean)
+    ? photoUrl
+        .map((p: string | { url: string }) =>
+          typeof p === "string" ? p : p?.url
+        )
+        .filter(Boolean)
     : photoUrl
     ? [photoUrl]
     : [];
@@ -29,20 +45,9 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
   const [showNo, setShowNo] = useState(false);
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
-  const handleSendRequest = async (status) => {
-    // try {
-    //   await axios.post(
-    //     `${BASE_URL}/request/send/${status}/${_id}`,
-    //     {},
-    //     { withCredentials: true }
-    //   );
-    //   dispatch(removeUserFromFeed(_id));
-    // } catch (err) {
-    //   console.log("Request send error:", err);
-    // }
-  };
+  const handleSendRequest = (status: string) => {};
 
-  // 🧠 Gesture for swipe
+  // Gesture for swipe
   const bind = useGesture({
     onDrag: ({ down, movement: [mx] }) => {
       api.start({ x: down ? mx : 0, rot: down ? mx / 20 : 0, immediate: down });
@@ -51,7 +56,11 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
       const swipeThreshold = 120;
       const velocityThreshold = 0.4;
 
-      if (Math.abs(mx) < swipeThreshold || velocity < velocityThreshold) {
+      // if (Math.abs(mx) < swipeThreshold || velocity < velocityThreshold) {
+      if (
+        Math.abs(mx) < swipeThreshold ||
+        Number(velocity) < velocityThreshold
+      ) {
         api.start({ x: 0, rot: 0 });
         return;
       }
@@ -70,19 +79,19 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
     },
   });
 
-  const nextPhoto = (e) => {
+  const nextPhoto = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentPhotoIndex((i) => (i + 1) % photos.length);
   };
 
-  const prevPhoto = (e) => {
+  const prevPhoto = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentPhotoIndex((i) => (i - 1 + photos.length) % photos.length);
   };
 
   return (
     <div className="relative flex items-center justify-center">
-      {/* 💖 Swipe feedback */}
+      {/* ============== Swipe feedback ============== */}
       {showLove && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
           <div className="text-pink-400 text-4xl font-bold drop-shadow-glow">
@@ -98,7 +107,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
         </div>
       )}
 
-      {/* 🪄 Swipe Card */}
+      {/* ============== Swipe Card ============== */}
       <animated.div
         {...bind()}
         style={{
@@ -109,7 +118,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
         className="relative w-[380px] h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
                    bg-black/40 backdrop-blur-md cursor-grab"
       >
-        {/* 🔸 Photo Progress Bar */}
+        {/* ============== Photo Progress Bar ============== */}
         {photos.length > 1 && (
           <div className="absolute top-3 left-3 right-3 z-20 flex gap-2 justify-center">
             {photos.map((_, idx) => (
@@ -130,7 +139,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           </div>
         )}
 
-        {/* ⬅️➡️ Photo Arrows */}
+        {/* ============== Photo Arrows ============== */}
         {photos.length > 1 && (
           <>
             <button
@@ -148,7 +157,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           </>
         )}
 
-        {/* 🖼️ Main Image */}
+        {/* ============== Main Image ============== */}
         {photos.length > 0 ? (
           <img
             src={
@@ -164,7 +173,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
           </div>
         )}
 
-        {/* ✨ Info Overlay */}
+        {/* ============== Info Overlay ============== */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
           <div className="flex justify-between items-center">
             <div>
@@ -176,7 +185,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
             </div>
           </div>
 
-          {/* ❤️ Action Buttons */}
+          {/* ============== Action Buttons ============== */}
           <div className="mt-4 flex justify-center gap-6">
             <button
               onClick={() => {
@@ -201,7 +210,7 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
             </button>
           </div>
 
-          {/* 📜 Details Button */}
+          {/* ============== Details Button ============== */}
           <div className="mt-4 flex justify-center">
             {!isDetailsVisible ? (
               <button
@@ -223,13 +232,6 @@ const UserCard = ({ user, onShowDetails, onHideDetails, isDetailsVisible }) => {
       </animated.div>
     </div>
   );
-};
-
-UserCard.propTypes = {
-  user: PropTypes.object.isRequired,
-  onShowDetails: PropTypes.func.isRequired,
-  onHideDetails: PropTypes.func.isRequired,
-  isDetailsVisible: PropTypes.bool.isRequired,
 };
 
 export default UserCard;

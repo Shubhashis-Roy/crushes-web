@@ -1,16 +1,17 @@
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
 // import { removeUser } from "../redux/userSlice";
 import { useState } from "react";
 import { IoChatbubbleEllipsesOutline, IoMenu, IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+import { store, useSelector } from "@redux/store";
 // import { BASE_URL } from "@services/axios";
 
 const NavBar = ({ showMinimal = false }) => {
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store) => store.auth.loginUserDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();

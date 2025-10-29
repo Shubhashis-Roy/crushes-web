@@ -21,11 +21,10 @@ function App() {
           <Route path="/" element={<Body />}>
             <Route index element={<WelcomeStep />} />
             <Route path={PATH.ONBOARDING} element={<OnboardingFlow />} />
-
             <Route path={PATH.LOGIN} element={<Login />} />
             <Route path={PATH.FEED} element={<Feed />} />
-
-            {/* <Route path="feed" element={<Feed />} />
+            <Route path={PATH.PROFILE} element={<Profile />} />
+            {/* 
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="requests" element={<Requests />} />
