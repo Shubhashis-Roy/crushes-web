@@ -4,8 +4,9 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 // slices
 import auth from "./slices/auth";
 import user from "./slices/user";
-import connection from "./slices/connection";
 import feed from "./slices/feed";
+import connection from "./slices/connection";
+import request from "./slices/request";
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   user: user,
   connection: connection,
   feed: feed,
+  request: request,
 });
 
 export { rootPersistConfig, rootReducer };

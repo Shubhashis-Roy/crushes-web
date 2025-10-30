@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "@redux/store";
-
+// Pages
 import Body from "@components/layout/Body";
 import Feed from "@pages/feed/Feed";
-import Connections from "@components/Connections";
-import Requests from "@components/Requests";
-import Chat from "@components/Chat";
+// import Chat from "@components/Chat";
 import OnboardingFlow from "@pages/onboarding/OnboardingFlow";
 import Login from "@pages/auth/Login";
 import WelcomeStep from "@pages/onboarding/WelcomeStep";
 import { PATH } from "@constants/path";
 import Profile from "@pages/profile/Profile";
+import Connections from "@pages/connection/Connections";
+import Requests from "@pages/request/Requests";
 
 function App() {
   return (
@@ -24,10 +24,9 @@ function App() {
             <Route path={PATH.LOGIN} element={<Login />} />
             <Route path={PATH.FEED} element={<Feed />} />
             <Route path={PATH.PROFILE} element={<Profile />} />
+            <Route path={PATH.CONNECTION} element={<Connections />} />
+            <Route path={PATH.REQUEST} element={<Requests />} />
             {/* 
-            <Route path="profile" element={<Profile />} />
-            <Route path="connections" element={<Connections />} />
-            <Route path="requests" element={<Requests />} />
             <Route path="chat" element={<Chat />} /> */}
           </Route>
 

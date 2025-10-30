@@ -23,6 +23,7 @@
       "@assets/*": ["assets/*"],
       "@components/*": ["components/*"],
       "@constants/*": ["constants/*"],
+      "@enum/*": ["enum/*"],
       "@hooks/*": ["hooks/*"],
       "@pages/*": ["pages/*"],
       "@redux/*": ["redux/*"],

@@ -93,7 +93,7 @@ export const getProfile = () => async () => {
     const errorData = axiosError?.response?.data as ErrorResponseTypes;
     dispatch(
       slice.actions.hasError({
-        error: axiosError?.response?.data || "Something went wrong",
+        error: errorData || "Something went wrong",
       })
     );
   }
@@ -119,7 +119,7 @@ export const updateUserProfile =
       const errorData = axiosError?.response?.data as ErrorResponseTypes;
       dispatch(
         slice.actions.hasError({
-          error: axiosError?.response?.data || "Something went wrong",
+          error: errorData || "Something went wrong",
         })
       );
     }

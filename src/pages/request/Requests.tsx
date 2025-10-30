@@ -1,46 +1,30 @@
-import axios from "axios";
-import { BASE_URL } from "@services/axios";
-import { useDispatch, useSelector } from "react-redux";
-import { addRequests, removeRequest } from "../redux/requestSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getAllRequests, reviewConnectionRequest } from "@redux/slices/request";
+import { dispatch } from "@redux/store";
+import { connectionEnum } from "@enum/connectionEnum";
 
 const Requests = () => {
-  const requests = useSelector((store) => store.requests);
-  const dispatch = useDispatch();
+  const [requests, setRequests] = useState([]);
 
-  const reviewRequest = async (status, _id) => {
-    try {
-      axios.post(
-        BASE_URL + "/request/review/" + status + "/" + _id,
-        {},
-        { withCredentials: true }
-      );
-      dispatch(removeRequest(_id));
-    } catch (err) {
-      console.log(err, "review error.");
-    }
-  };
-
-  const fetchRequests = async () => {
-    try {
-      const res = await axios.get(BASE_URL + "/user/requests/received", {
-        withCredentials: true,
-      });
-
-      dispatch(addRequests(res.data.data));
-    } catch (err) {
-      console.log(err, "reqest error.");
-    }
+  const reviewRequest = async (status: string, _id: string) => {
+    dispatch(
+      reviewConnectionRequest({
+        status,
+        requestId: _id,
+      })
+    );
   };
 
   useEffect(() => {
+    async function fetchRequests() {
+      const res = await dispatch(getAllRequests());
+      setRequests(res);
+    }
+
     fetchRequests();
-    // eslint-disable-next-line
   }, []);
 
-  if (!requests) return;
-
-  if (requests.length === 0)
+  if (!requests || requests?.length === 0)
     return (
       <h1 className="flex justify-center mt-72 sm:mt-52"> No Requests Found</h1>
     );
@@ -49,9 +33,10 @@ const Requests = () => {
     <div className="text-center mb-10 mt-20 ">
       <h1 className="text-bold text-white text-3xl">Connection Requests</h1>
 
-      {requests.map((request) => {
-        const { _id, firstName, lastName, photoUrl, age, gender, about } =
+      {requests.map((request: requestsDetailsTypes) => {
+        const { _id, firstName, lastName, photoUrl, gender, bio } =
           request.fromUserId;
+        const age = 24;
 
         return (
           <div
@@ -74,18 +59,22 @@ const Requests = () => {
                 {gender && <p> ,</p>}
                 <p className="pl-2"> {gender}</p>
               </div>
-              <p>{about}</p>
+              <p>{bio}</p>
             </div>
             <div>
               <button
                 className="btn btn-neutral mx-2 mt-4"
-                onClick={() => reviewRequest("rejected", request._id)}
+                onClick={() =>
+                  reviewRequest(connectionEnum.REJECTED, request._id)
+                }
               >
                 Reject
               </button>
               <button
                 className="btn btn-secondary mx-2 mt-4"
-                onClick={() => reviewRequest("accepted", request._id)}
+                onClick={() =>
+                  reviewRequest(connectionEnum.ACCEPTED, request._id)
+                }
               >
                 Accept
               </button>

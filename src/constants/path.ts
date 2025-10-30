@@ -4,4 +4,7 @@ export const PATH = {
   LOGIN: "/login",
   REGISTER: "/register",
   PROFILE: "/profile",
+  CONNECTION: "/connections",
+  REQUEST: "/requests",
+  CHAT: "/chat",
 };

@@ -1,28 +1,18 @@
-import axios from "axios";
-import { BASE_URL } from "@services/axios";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addConnections } from "../redux/conectionSlice";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { dispatch } from "@redux/store";
+import { getAllConnections } from "@redux/slices/connection";
 
 const Connections = () => {
-  const connections = useSelector((store) => store.connections);
-  const dispatch = useDispatch();
-  const fetchConnections = async () => {
-    try {
-      const res = await axios.get(BASE_URL + "/user/connections", {
-        withCredentials: true,
-      });
-      dispatch(addConnections(res.data.data));
-    } catch (err) {
-      // Handle Error Case
-      console.error(err);
-    }
-  };
+  const [connections, setConnections] = useState([]);
 
   useEffect(() => {
+    async function fetchConnections() {
+      const res = await dispatch(getAllConnections());
+      setConnections(res);
+    }
+
     fetchConnections();
-    // eslint-disable-next-line
   }, []);
 
   if (!connections || connections.length === 0)
@@ -37,7 +27,7 @@ const Connections = () => {
     <div className="text-center mb-10 mt-20">
       <h1 className="text-bold text-white text-3xl">Connections</h1>
 
-      {connections.map((connection) => {
+      {connections?.map((connection) => {
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
           connection;
 
