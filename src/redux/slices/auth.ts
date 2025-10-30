@@ -133,3 +133,20 @@ export const login = (payload: loginPayloadTypes) => async () => {
     );
   }
 };
+
+export const logout = () => async () => {
+  try {
+    const response = await axiosInstance.post("/logout");
+    // console.log(response?.status, "logout successful hlo ============");
+    return response?.status;
+  } catch (error) {
+    const axiosError = error as AxiosErrorResponseTypes;
+    errorHandle({ error: axiosError, label: "logout API Error:" });
+    const errorData = axiosError?.response?.data as ErrorResponseTypes;
+    dispatch(
+      slice.actions.hasError({
+        error: axiosError?.response?.data || "Something went wrong",
+      })
+    );
+  }
+};

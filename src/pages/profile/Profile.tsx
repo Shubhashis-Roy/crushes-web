@@ -1,35 +1,26 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-import ManageImagesContent from "./sidebarContents/ManageImagesContent";
-import MyMatchContent from "./sidebarContents/MyMatchContent";
-import EditProfileContent from "./sidebarContents/EditProfileContent";
-import DeleteAccountContent from "./sidebarContents/DeleteAccountContent";
-import LogoutContent from "./sidebarContents/LogoutContent";
-
-import { removeUser } from "../redux/userSlice";
-import { BASE_URL } from "@services/axios";
+import { dispatch } from "@redux/store";
+import { getProfile } from "@redux/slices/user";
+import Logout from "@sections/profile/Logout";
+import EditProfile from "@sections/profile/EditProfile";
+import ManageImages from "@sections/profile/ManageImages";
+import MyMatch from "@sections/profile/MyMatch";
+import DeleteAccount from "@sections/profile/DeleteAccount";
 
 const Profile = () => {
-  const user = useSelector((store) => store.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+  const [user, setUser] = useState<profileDetailsTypes>();
   const [selectedScreen, setSelectedScreen] = useState("Edit Profile");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const handleLogout = async () => {
-    try {
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
-      dispatch(removeUser());
-      navigate("/login");
-    } catch (err) {
-      console.error(err);
+  useEffect(() => {
+    async function getProfileData() {
+      const res = await dispatch(getProfile());
+      setUser(res);
     }
-  };
+
+    getProfileData();
+  }, []);
 
   const menuOptions = [
     { label: "Edit Profile", emoji: "💫" },
@@ -42,13 +33,13 @@ const Profile = () => {
   const renderContent = () => {
     switch (selectedScreen) {
       case "Edit Profile":
-        return <EditProfileContent user={user} />;
+        return user && <EditProfile user={user} />;
       case "Manage Images":
-        return <ManageImagesContent user={user} />;
+        return user && <ManageImages user={user} />;
       case "My Matches":
-        return <MyMatchContent />;
+        return <MyMatch />;
       case "Delete Account":
-        return <DeleteAccountContent />;
+        return <DeleteAccount />;
       default:
         return (
           <p className="text-center text-white/70">Select an option above 🌸</p>
@@ -59,7 +50,7 @@ const Profile = () => {
   return (
     user && (
       <div className="relative min-h-screen bg-gradient-to-br from-[#2a0e45] via-[#3d176a] to-[#5e2d91] text-white flex flex-col items-center px-4 py-10 pt-28">
-        {/* 🔮 Header */}
+        {/* ============== Header ============== */}
         <div className="text-center mb-10">
           <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
             Your Cosmic Profile ✨
@@ -69,7 +60,7 @@ const Profile = () => {
           </p>
         </div>
 
-        {/* 🌈 Floating Menu Buttons */}
+        {/* ============== Floating Menu Buttons ============== */}
         <div className="flex flex-wrap justify-center gap-4 mb-10">
           {menuOptions.map((opt) => (
             <motion.button
@@ -93,7 +84,7 @@ const Profile = () => {
           ))}
         </div>
 
-        {/* 🌌 Glass Card Section */}
+        {/* ============== Glass Card Section ============== */}
         <motion.div
           key={selectedScreen}
           initial={{ opacity: 0, y: 30 }}
@@ -105,15 +96,9 @@ const Profile = () => {
           <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
         </motion.div>
 
-        {/* 🚪 Logout Confirmation */}
+        {/* ============== Logout Confirmation ============== */}
         {showLogoutConfirm && (
-          <LogoutContent
-            onConfirm={() => {
-              setShowLogoutConfirm(false);
-              handleLogout();
-            }}
-            onCancel={() => setShowLogoutConfirm(false)}
-          />
+          <Logout setShowLogoutConfirm={setShowLogoutConfirm} />
         )}
       </div>
     )

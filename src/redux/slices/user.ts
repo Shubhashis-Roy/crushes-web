@@ -22,6 +22,20 @@ const initialState: userStateTypes = {
     updatedAt: "",
     __v: 0,
   },
+  updatedProfileDetails: {
+    _id: "",
+    firstName: "",
+    lastName: "",
+    emailId: "",
+    dateOfBirth: "",
+    city: "",
+    gender: "",
+    interest: "",
+    photoUrl: [],
+    createdAt: "",
+    updatedAt: "",
+    __v: 0,
+  },
 };
 
 // ----------------------------------------------------------------------
@@ -43,7 +57,13 @@ const slice = createSlice({
     // PROFILE DETAILS
     getProfileSuccess(state, action) {
       state.isLoading = false;
-      state.profileDetails = action.payload.profileDetails;
+      state.profileDetails = action.payload.data;
+    },
+
+    //UPDATED PROFILE DETAILS
+    updateProfileSuccess(state, action) {
+      state.isLoading = false;
+      state.updatedProfileDetails = action.payload.data;
     },
   },
 });
@@ -59,16 +79,17 @@ export const getProfile = () => async () => {
   try {
     const response = await axiosInstance.get("/profile/view");
 
-    console.log(response?.data, "profile response hlo ============");
+    // console.log(response?.data, "profile response hlo ============");
 
-    // dispatch(
-    //   slice.actions.getProfileSuccess({
-    //     profileDetails: response?.data?.response?.user,
-    //   })
-    // );
+    dispatch(
+      slice.actions.getProfileSuccess({
+        date: response?.data,
+      })
+    );
+    return response?.data;
   } catch (error) {
     const axiosError = error as AxiosErrorResponseTypes;
-    errorHandle({ error: axiosError, label: "profile API Error:" });
+    errorHandle({ error: axiosError, label: "getProfile API Error:" });
     const errorData = axiosError?.response?.data as ErrorResponseTypes;
     dispatch(
       slice.actions.hasError({
@@ -77,3 +98,29 @@ export const getProfile = () => async () => {
     );
   }
 };
+
+// Update Profile API call
+export const updateUserProfile =
+  (payload: updateProfilePayloadTypes) => async () => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await axiosInstance.patch("/profile/edit", payload);
+
+      // console.log(response?.data, "update profile response hlo ============");
+
+      dispatch(
+        slice.actions.updateProfileSuccess({
+          data: response?.data,
+        })
+      );
+    } catch (error) {
+      const axiosError = error as AxiosErrorResponseTypes;
+      errorHandle({ error: axiosError, label: "updateUserProfile API Error:" });
+      const errorData = axiosError?.response?.data as ErrorResponseTypes;
+      dispatch(
+        slice.actions.hasError({
+          error: axiosError?.response?.data || "Something went wrong",
+        })
+      );
+    }
+  };

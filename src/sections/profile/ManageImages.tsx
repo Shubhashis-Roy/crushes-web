@@ -1,6 +1,7 @@
+import React from "react";
 import { FaEdit, FaPlus } from "react-icons/fa";
 
-const ManageImagesContent = ({ user }) => {
+const ManageImages: React.FC<{ user: profileDetailsTypes }> = ({ user }) => {
   // Normalize to array of up to 3 items
   const images = Array.isArray(user.photoUrl)
     ? user.photoUrl.slice(0, 3)
@@ -73,4 +74,4 @@ const ManageImagesContent = ({ user }) => {
   );
 };
 
-export default ManageImagesContent;
+export default ManageImages;

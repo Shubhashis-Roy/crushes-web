@@ -1,9 +1,11 @@
 import { combineReducers } from "redux";
-import { persistReducer } from "redux-persist";
+// import { persistReducer } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 // slices
 import auth from "./slices/auth";
 import user from "./slices/user";
+import connection from "./slices/connection";
+import feed from "./slices/feed";
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +37,8 @@ const rootPersistConfig = {
 const rootReducer = combineReducers({
   auth: auth,
   user: user,
+  connection: connection,
+  feed: feed,
 });
 
 export { rootPersistConfig, rootReducer };

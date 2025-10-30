@@ -2,7 +2,7 @@ declare interface userStateTypes {
   isLoading: boolean;
   error: string | ErrorType;
   profileDetails: profileDetailsTypes;
-  //   statusCode: number | string;
+  updatedProfileDetails: profileDetailsTypes;
 }
 
 declare interface profileDetailsTypes {
@@ -15,7 +15,18 @@ declare interface profileDetailsTypes {
   gender: string;
   interest: string;
   photoUrl: string[];
+  bio?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+declare interface updateProfilePayloadTypes {
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string;
+  city?: string;
+  gender?: string;
+  interest?: string;
+  bio?: string;
 }

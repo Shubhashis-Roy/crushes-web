@@ -4,7 +4,6 @@ import { store } from "@redux/store";
 
 import Body from "@components/layout/Body";
 import Feed from "@pages/feed/Feed";
-import Profile from "@components/Profile";
 import Connections from "@components/Connections";
 import Requests from "@components/Requests";
 import Chat from "@components/Chat";
@@ -12,6 +11,7 @@ import OnboardingFlow from "@pages/onboarding/OnboardingFlow";
 import Login from "@pages/auth/Login";
 import WelcomeStep from "@pages/onboarding/WelcomeStep";
 import { PATH } from "@constants/path";
+import Profile from "@pages/profile/Profile";
 
 function App() {
   return (
