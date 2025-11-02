@@ -12,7 +12,8 @@ import Logout from "@sections/profile/Logout";
 // import { BASE_URL } from "@services/axios";
 
 const NavBar = ({ showMinimal = false }) => {
-  const user = useSelector((store) => store.auth.loginUserDetails);
+  const user = useSelector((store) => store.auth.userDetails);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();

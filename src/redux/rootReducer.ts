@@ -7,6 +7,7 @@ import user from "./slices/user";
 import feed from "./slices/feed";
 import connection from "./slices/connection";
 import request from "./slices/request";
+import chat from "./slices/chat";
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +33,8 @@ const rootPersistConfig = {
   storage,
   keyPrefix: "redux-",
   blacklist: [],
-  //   whitelist: [],
+  // blacklist: ["connection", "user", "feed", "request", "chat"],
+  // whitelist: [],
 };
 
 const rootReducer = combineReducers({
@@ -41,6 +43,7 @@ const rootReducer = combineReducers({
   connection: connection,
   feed: feed,
   request: request,
+  chat: chat,
 });
 
 export { rootPersistConfig, rootReducer };

@@ -30,6 +30,7 @@
       "@schema/*": ["schema/*"],
       "@sections/*": ["sections/*"],
       "@services/*": ["services/*"],
+      "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"]
     },

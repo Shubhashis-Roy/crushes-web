@@ -17,6 +17,7 @@ export default defineConfig({
       "@schema": path.resolve(__dirname, "src/schema"),
       "@sections": path.resolve(__dirname, "src/sections"),
       "@services": path.resolve(__dirname, "src/services"),
+      "@styles": path.resolve(__dirname, "src/styles"),
       "@types": path.resolve(__dirname, "src/types"),
       "@utils": path.resolve(__dirname, "src/utils"),
     },

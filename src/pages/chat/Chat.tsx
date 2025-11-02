@@ -1,17 +1,15 @@
 import { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import axios from "axios";
-import { BASE_URL } from "@services/axios";
-import "./styles/ChatTheme.css";
-import ChatWindow from "./ChatWindow";
-import ChatSidebar from "./ChatSidebar";
+import "@styles/ChatTheme.css";
 import { useChatSocket } from "@hooks/useChatSocket";
+import ChatSidebar from "@sections/chat/ChatSidebar";
+import ChatWindow from "@sections/chat/ChatWindow";
+import { dispatch, useSelector } from "@redux/store";
+import { getChatMessages, getChatUserList } from "@redux/slices/chat";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [chatPartner, setChatPartner] = useState(null);
-  const [chatList, setChatList] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
@@ -19,68 +17,53 @@ const Chat = () => {
   const [loading, setLoading] = useState(false);
 
   const typingTimeoutRef = useRef(null);
-  const user = useSelector((store) => store.user);
-  const userId = user?._id;
+  const chatUserList = useSelector((store) => store.chat.chatUserList);
+  const userDetails = useSelector((state) => state.auth.userDetails);
+  const userId = userDetails?._id;
   const messagesEndRef = useRef(null);
 
-  // 🟢 Fetch chat list (recent chats)
-  const fetchChatList = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/chat/users-list`, {
-        withCredentials: true,
-      });
-      const users = res?.data?.users || [];
-      setChatList(users);
-    } catch (err) {
-      console.error("Failed to fetch chat list", err);
-    }
-  };
-
-  // 🟢 Fetch messages for selected chat
-  const fetchChatMessages = async (targetUserId) => {
-    if (!targetUserId) return;
-    try {
-      setLoading(true);
-      const res = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
-        withCredentials: true,
-      });
-      const chatMessages = res?.data?.messages.map((msg) => {
-        const { senderId, text, createdAt } = msg;
-        return {
-          firstName: senderId?.firstName,
-          lastName: senderId?.lastName,
-          userId: senderId?._id,
-          text,
-          createdAt,
-        };
-      });
-      setMessages(chatMessages);
-      scrollToBottom();
-    } catch (err) {
-      console.error("Failed to fetch chat messages", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 🟣 Fetch chats on mount
   useEffect(() => {
-    fetchChatList();
+    // async function fetchChatUsers() {
+    //   const users = await dispatch(getChatUserList());
+    //   setChatList(users);
+    // }
+    // fetchChatUsers();
+    dispatch(getChatUserList());
   }, []);
+
+  // Fetch messages for selected chat
+  const fetchChatMessages = async (targetUserId: string) => {
+    if (!targetUserId) return;
+    const res = await dispatch(getChatMessages(targetUserId));
+
+    const chatMessages = res?.map((msg) => {
+      const { senderId, text, createdAt } = msg;
+      return {
+        firstName: senderId?.firstName,
+        lastName: senderId?.lastName,
+        userId: senderId?._id,
+        text,
+        createdAt,
+      };
+    });
+    setMessages(chatMessages);
+    scrollToBottom();
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleChat = (userDetails) => {
-    setMessages([]); // clear previous messages
+    if (!userDetails?._id) return;
+    setMessages([]);
     setChatPartner(userDetails);
     setActiveChatUserId(userDetails._id);
     fetchChatMessages(userDetails._id);
   };
 
   const { sendMessage, handleTyping } = useChatSocket({
-    user,
+    user: userDetails,
     userId,
     targetUserId: activeChatUserId,
     setMessages,
@@ -99,7 +82,7 @@ const Chat = () => {
       <ChatSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        chatList={chatList}
+        chatList={chatUserList}
         handleChat={handleChat}
         activeChatUserId={activeChatUserId}
       />
@@ -112,7 +95,7 @@ const Chat = () => {
         handleTyping={handleTyping}
         messagesEndRef={messagesEndRef}
         chatPartner={chatPartner}
-        user={user}
+        user={userDetails}
         isTyping={isTyping}
         isOnline={isOnline}
         loading={loading}

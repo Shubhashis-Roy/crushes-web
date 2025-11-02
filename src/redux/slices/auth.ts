@@ -18,20 +18,6 @@ const initialState: authStateTypes = {
     gender: "",
     interest: "",
     photoUrl: [],
-    createdAt: "",
-    updatedAt: "",
-    __v: 0,
-  },
-  loginUserDetails: {
-    _id: "",
-    firstName: "",
-    lastName: "",
-    emailId: "",
-    dateOfBirth: "",
-    city: "",
-    gender: "",
-    interest: "",
-    photoUrl: [],
     bio: "",
     education: "",
     organization: "",
@@ -46,6 +32,30 @@ const initialState: authStateTypes = {
     updatedAt: "",
     __v: 0,
   },
+  // loginUserDetails: {
+  //   _id: "",
+  //   firstName: "",
+  //   lastName: "",
+  //   emailId: "",
+  //   dateOfBirth: "",
+  //   city: "",
+  //   gender: "",
+  //   interest: "",
+  //   photoUrl: [],
+  //   bio: "",
+  //   education: "",
+  //   organization: "",
+  //   profession: "",
+  //   lookingFor: "",
+  //   preferredAge: {
+  //     min: 0,
+  //     max: 0,
+  //   },
+  //   preferredDistance: 0,
+  //   createdAt: "",
+  //   updatedAt: "",
+  //   __v: 0,
+  // },
 };
 
 // ----------------------------------------------------------------------
@@ -71,10 +81,10 @@ const slice = createSlice({
     },
 
     // LOGIN USER DETAILS
-    getLoginUserDetailsSuccess(state, action) {
-      state.isLoading = false;
-      state.loginUserDetails = action.payload.data;
-    },
+    // getLoginUserDetailsSuccess(state, action) {
+    //   state.isLoading = false;
+    //   state.loginUserDetails = action.payload.data;
+    // },
   },
 });
 
@@ -117,8 +127,8 @@ export const login = (payload: loginPayloadTypes) => async () => {
     // console.log(response?.data, "login response hlo ============");
 
     dispatch(
-      slice.actions.getLoginUserDetailsSuccess({
-        data: response?.data,
+      slice.actions.getUserDetailsSuccess({
+        userDetails: response?.data,
       })
     );
     return response?.data;
@@ -128,7 +138,7 @@ export const login = (payload: loginPayloadTypes) => async () => {
     const errorData = axiosError?.response?.data as ErrorResponseTypes;
     dispatch(
       slice.actions.hasError({
-        error: axiosError?.response?.data || "Something went wrong",
+        error: errorData || "Something went wrong",
       })
     );
   }

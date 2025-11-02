@@ -1,9 +1,22 @@
 import { IoSend } from "react-icons/io5";
 import chatDark from "@assets/bg-chatUI.jpg";
-import PropTypes from "prop-types";
 
-const ChatWindow = ({
-  messages,
+interface ChatWindowProps {
+  messages: string[];
+  newMessage: () => void;
+  setNewMessage: (msg: string) => void;
+  sendMessage: () => void;
+  handleTyping: () => void;
+  messagesEndRef: React.RefObject<HTMLDivElement>;
+  chatPartner: any;
+  user: any;
+  isTyping: boolean;
+  isOnline: boolean;
+  loading: boolean;
+}
+
+const ChatWindow: React.FC<ChatWindowProps> = ({
+  messages = [],
   newMessage,
   setNewMessage,
   sendMessage,
@@ -16,6 +29,10 @@ const ChatWindow = ({
   loading,
 }) => {
   const hasChat = !!chatPartner;
+
+  // console.log(messages, "messages hlo");
+  // console.log(newMessage, "newMessage hlo ");
+  // console.log(chatPartner, "chatPartner hlo ");
 
   return (
     <div
@@ -149,20 +166,6 @@ const ChatWindow = ({
       </footer>
     </div>
   );
-};
-
-ChatWindow.propTypes = {
-  messages: PropTypes.array.isRequired,
-  newMessage: PropTypes.string.isRequired,
-  setNewMessage: PropTypes.func.isRequired,
-  sendMessage: PropTypes.func.isRequired,
-  handleTyping: PropTypes.func.isRequired,
-  messagesEndRef: PropTypes.object,
-  chatPartner: PropTypes.object,
-  user: PropTypes.object.isRequired,
-  isTyping: PropTypes.bool.isRequired,
-  isOnline: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default ChatWindow;
