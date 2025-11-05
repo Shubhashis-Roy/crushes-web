@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { createSocketConnection } from "@services/socket";
+import { createSocketConnection } from "@services/socket/socket";
 
 export const useChatSocket = ({
   user,
@@ -11,24 +11,24 @@ export const useChatSocket = ({
   messagesEndRef,
   typingTimeoutRef,
 }) => {
-  const socketRef = useRef(null);
+  const socketRef = useRef<any>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // ✅ only init once (not on every user change)
   useEffect(() => {
     if (!userId) return;
+
     socketRef.current = createSocketConnection();
 
-    socketRef.current.emit("joinChat", {
-      firstName: user.firstName,
-      userId,
-      targetUserId,
-    });
+    socketRef.current.on("connect", () =>
+      console.log("🟢 Socket connected:", socketRef.current.id)
+    );
 
-    socketRef.current.on("messageReceived", ({ firstName, lastName, text }) => {
-      setMessages((prev) => [...prev, { firstName, lastName, text }]);
+    socketRef.current.on("messageReceived", (msg) => {
+      setMessages((prev) => (Array.isArray(prev) ? [...prev, msg] : [msg]));
       scrollToBottom();
     });
 
@@ -36,26 +36,29 @@ export const useChatSocket = ({
       if (typingUserId !== userId) {
         setIsTyping(true);
         clearTimeout(typingTimeoutRef.current);
-
         typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 2000);
       }
     });
 
     socketRef.current.on("userStatus", ({ userId: statusUserId, status }) => {
-      if (statusUserId === targetUserId) {
-        setIsOnline(status === "online");
-      }
+      if (statusUserId === targetUserId) setIsOnline(status === "online");
     });
 
-    return () => {
-      socketRef.current?.disconnect();
-    };
-    // eslint-disable-next-line
+    return () => socketRef.current?.disconnect();
+  }, [userId]); // ✅ only reinit when your own user changes
+
+  // ✅ rejoin when chat partner changes
+  useEffect(() => {
+    if (socketRef.current && userId && targetUserId) {
+      socketRef.current.emit("joinChat", {
+        firstName: user.firstName,
+        userId,
+        targetUserId,
+      });
+    }
   }, [userId, targetUserId]);
 
-  const sendMessage = (newMessage) => {
-    console.log(newMessage, "newMessage hook hlo ");
-
+  const sendMessage = (newMessage: string) => {
     if (!newMessage.trim()) return;
     socketRef.current.emit("sendMessage", {
       firstName: user.firstName,
@@ -67,7 +70,8 @@ export const useChatSocket = ({
   };
 
   const handleTyping = () => {
-    socketRef.current.emit("typing", { userId, targetUserId });
+    if (socketRef.current)
+      socketRef.current.emit("typing", { userId, targetUserId });
   };
 
   return { sendMessage, handleTyping };

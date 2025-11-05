@@ -1,9 +1,8 @@
 import { IoSend } from "react-icons/io5";
 import chatDark from "@assets/bg-chatUI.jpg";
-import PropTypes from "prop-types";
 
-const ChatWindow = ({
-  messages,
+const ChatWindow: React.FC<ChatWindowProps> = ({
+  messages = [],
   newMessage,
   setNewMessage,
   sendMessage,
@@ -149,20 +148,6 @@ const ChatWindow = ({
       </footer>
     </div>
   );
-};
-
-ChatWindow.propTypes = {
-  messages: PropTypes.array.isRequired,
-  newMessage: PropTypes.string.isRequired,
-  setNewMessage: PropTypes.func.isRequired,
-  sendMessage: PropTypes.func.isRequired,
-  handleTyping: PropTypes.func.isRequired,
-  messagesEndRef: PropTypes.object,
-  chatPartner: PropTypes.object,
-  user: PropTypes.object.isRequired,
-  isTyping: PropTypes.bool.isRequired,
-  isOnline: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default ChatWindow;

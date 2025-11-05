@@ -4,7 +4,6 @@ import { store } from "@redux/store";
 // Pages
 import Body from "@components/layout/Body";
 import Feed from "@pages/feed/Feed";
-// import Chat from "@components/Chat";
 import OnboardingFlow from "@pages/onboarding/OnboardingFlow";
 import Login from "@pages/auth/Login";
 import WelcomeStep from "@pages/onboarding/WelcomeStep";
@@ -12,6 +11,7 @@ import { PATH } from "@constants/path";
 import Profile from "@pages/profile/Profile";
 import Connections from "@pages/connection/Connections";
 import Requests from "@pages/request/Requests";
+import Chat from "@pages/chat/Chat";
 
 function App() {
   return (
@@ -26,6 +26,7 @@ function App() {
             <Route path={PATH.PROFILE} element={<Profile />} />
             <Route path={PATH.CONNECTION} element={<Connections />} />
             <Route path={PATH.REQUEST} element={<Requests />} />
+            <Route path={PATH.CHAT} element={<Chat />} />
             {/* 
             <Route path="chat" element={<Chat />} /> */}
           </Route>

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { dispatch } from "@redux/store";
 import { getAllConnections } from "@redux/slices/connection";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "@constants/path";
+import { addChatUser } from "@redux/slices/chat";
 
 const Connections = () => {
   const [connections, setConnections] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchConnections() {
@@ -14,6 +18,11 @@ const Connections = () => {
 
     fetchConnections();
   }, []);
+
+  const handleChat = (connection: chatUserDetailsTypes) => {
+    dispatch(addChatUser({ data: connection }));
+    navigate(PATH.CHAT);
+  };
 
   if (!connections || connections.length === 0)
     return (
@@ -54,9 +63,12 @@ const Connections = () => {
               </div>
               <p>{about}</p>
             </div>
-            <Link to={"/chat"}>
-              <button className="btn btn-secondary px-7 mt-4">Chat</button>
-            </Link>
+            <button
+              onClick={() => handleChat(connection)}
+              className="btn btn-secondary px-7 mt-4"
+            >
+              Chat
+            </button>
           </div>
         );
       })}
