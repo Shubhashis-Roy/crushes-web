@@ -7,4 +7,5 @@ export const PATH = {
   CONNECTION: "/connections",
   REQUEST: "/requests",
   CHAT: "/chat",
+  VIDEO: "/video",
 };

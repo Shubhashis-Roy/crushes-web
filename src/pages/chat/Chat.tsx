@@ -5,6 +5,7 @@ import ChatSidebar from "@sections/chat/ChatSidebar";
 import ChatWindow from "@sections/chat/ChatWindow";
 import { dispatch, useSelector } from "@redux/store";
 import { getChatMessages } from "@redux/slices/chat";
+import Video from "@pages/video/video";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -16,13 +17,16 @@ const Chat = () => {
   const [activeChatUserId, setActiveChatUserId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // ✅ added for video call modal
+  const [showCall, setShowCall] = useState(false);
+
   const typingTimeoutRef = useRef(null);
   const userDetails = useSelector((state) => state.auth.userDetails);
   const startChat = useSelector((state) => state.chat.startChat);
   const userId = userDetails?._id;
   const messagesEndRef = useRef(null);
 
-  // Fetch messages for selected chat
+  // ✅ Fetch messages for selected chat
   const fetchChatMessages = async (targetUserId: string) => {
     if (!targetUserId) return;
     const res = await dispatch(getChatMessages(targetUserId));
@@ -37,6 +41,7 @@ const Chat = () => {
         createdAt,
       };
     });
+
     setMessages(chatMessages);
     scrollToBottom();
   };
@@ -45,15 +50,8 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // useEffect(() => {
-  //   console.log(startChat?._id, "startChat call hlo");
-  //   if (!startChat?._id) return;
-  //   handleChat(startChat);
-  // }, [startChat?._id]);
-
+  // ✅ Chat open handler
   const handleChat = (userDetails) => {
-    console.log("fn call hlo");
-
     if (!userDetails?._id) return;
     setMessages([]);
     setChatPartner(userDetails);
@@ -61,6 +59,7 @@ const Chat = () => {
     fetchChatMessages(userDetails._id);
   };
 
+  // ✅ Socket Hook
   const { sendMessage, handleTyping } = useChatSocket({
     user: userDetails,
     userId,
@@ -98,6 +97,14 @@ const Chat = () => {
         isOnline={isOnline}
         loading={loading}
       />
+
+      {chatPartner && (
+        <Video
+          userId={userDetails._id}
+          targetUserId={chatPartner._id}
+          onClose={() => setShowCall(false)}
+        />
+      )}
     </div>
   );
 };
