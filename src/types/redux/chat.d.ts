@@ -1,7 +1,16 @@
 declare interface chatStateTypes {
   isLoading: boolean;
   error: string | ErrorType;
+  startChat: startChatTypes;
   chatUserList: chatUserDetailsTypes[];
+}
+
+declare interface startChatTypes {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  city: string;
+  photoUrl: string[];
 }
 
 declare interface chatUserDetailsTypes {
@@ -15,4 +24,8 @@ declare interface chatUserDetailsTypes {
   gender?: string;
   interest?: string;
   bio?: string;
+  lastMessage?: {
+    text: string;
+    createdAt: string;
+  };
 }

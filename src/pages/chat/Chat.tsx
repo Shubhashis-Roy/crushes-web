@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import "@styles/ChatTheme.css";
 import { useChatSocket } from "@hooks/useChatSocket";
 import ChatSidebar from "@sections/chat/ChatSidebar";
 import ChatWindow from "@sections/chat/ChatWindow";
 import { dispatch, useSelector } from "@redux/store";
-import { getChatMessages, getChatUserList } from "@redux/slices/chat";
+import { getChatMessages } from "@redux/slices/chat";
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -17,19 +17,10 @@ const Chat = () => {
   const [loading, setLoading] = useState(false);
 
   const typingTimeoutRef = useRef(null);
-  const chatUserList = useSelector((store) => store.chat.chatUserList);
   const userDetails = useSelector((state) => state.auth.userDetails);
+  const startChat = useSelector((state) => state.chat.startChat);
   const userId = userDetails?._id;
   const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    // async function fetchChatUsers() {
-    //   const users = await dispatch(getChatUserList());
-    //   setChatList(users);
-    // }
-    // fetchChatUsers();
-    dispatch(getChatUserList());
-  }, []);
 
   // Fetch messages for selected chat
   const fetchChatMessages = async (targetUserId: string) => {
@@ -54,7 +45,15 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // useEffect(() => {
+  //   console.log(startChat?._id, "startChat call hlo");
+  //   if (!startChat?._id) return;
+  //   handleChat(startChat);
+  // }, [startChat?._id]);
+
   const handleChat = (userDetails) => {
+    console.log("fn call hlo");
+
     if (!userDetails?._id) return;
     setMessages([]);
     setChatPartner(userDetails);
@@ -82,7 +81,6 @@ const Chat = () => {
       <ChatSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        chatList={chatUserList}
         handleChat={handleChat}
         activeChatUserId={activeChatUserId}
       />

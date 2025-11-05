@@ -8,20 +8,13 @@ import errorHandle from "@services/api-services/errorHandle";
 const initialState: chatStateTypes = {
   isLoading: false,
   error: "",
-  //   chatUserList: [
-  //     {
-  //       _id: "68f937044a2cea1cd6d48260",
-  //       firstName: "Boshis",
-  //       lastName: "Roy",
-  //       city: "Siliguri",
-  //       photoUrl: [
-  //         "https://previews.123rf.com/images/aberrantrealitie…-man-wearing-a-hat-and-sunglasses-in-the-snow.jpg",
-  //         "https://previews.123rf.com/images/aberrantrealitie…-man-wearing-a-hat-and-sunglasses-in-the-snow.jpg",
-  //         "https://previews.123rf.com/images/aberrantrealitie…-man-wearing-a-hat-and-sunglasses-in-the-snow.jpg",
-  //       ],
-  //     },
-  //   ],
-  // };
+  startChat: {
+    _id: "",
+    firstName: "",
+    lastName: "",
+    city: "",
+    photoUrl: [],
+  },
   chatUserList: [],
 };
 
@@ -49,13 +42,7 @@ const slice = createSlice({
     },
 
     addChatUser(state, action) {
-      const exists = state.chatUserList.some(
-        (item) => JSON.stringify(item) === JSON.stringify(action.payload.data)
-      );
-
-      if (!exists) {
-        state.chatUserList.unshift(action.payload.data);
-      }
+      state.startChat = action.payload.data;
     },
   },
 });

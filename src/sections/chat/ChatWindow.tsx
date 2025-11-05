@@ -1,20 +1,6 @@
 import { IoSend } from "react-icons/io5";
 import chatDark from "@assets/bg-chatUI.jpg";
 
-interface ChatWindowProps {
-  messages: string[];
-  newMessage: () => void;
-  setNewMessage: (msg: string) => void;
-  sendMessage: () => void;
-  handleTyping: () => void;
-  messagesEndRef: React.RefObject<HTMLDivElement>;
-  chatPartner: any;
-  user: any;
-  isTyping: boolean;
-  isOnline: boolean;
-  loading: boolean;
-}
-
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages = [],
   newMessage,
@@ -29,10 +15,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   loading,
 }) => {
   const hasChat = !!chatPartner;
-
-  // console.log(messages, "messages hlo");
-  // console.log(newMessage, "newMessage hlo ");
-  // console.log(chatPartner, "chatPartner hlo ");
 
   return (
     <div

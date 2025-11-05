@@ -1,13 +1,45 @@
 import { FaBars } from "react-icons/fa";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { dispatch, useSelector } from "@redux/store";
+import { getChatUserList } from "@redux/slices/chat";
+import { getAllConnections } from "@redux/slices/connection";
+// import { usePreviousRoute } from "@hooks/usePreviousRoute";
 
-const ChatSidebar = ({
+const ChatSidebar: React.FC<ChatSidebarProps> = ({
   sidebarOpen,
   setSidebarOpen,
-  chatList,
   handleChat,
   activeChatUserId,
 }) => {
+  const [chatList, setChatList] = useState([]);
+  const [activeTab, setActiveTab] = useState("chats");
+  const loading = useSelector((state) => state.chat.isLoading);
+  // const prevRoute = usePreviousRoute();
+  // console.log("Previous route hlo:", prevRoute);
+
+  async function fetchChatUsers() {
+    const users = await dispatch(getChatUserList());
+    setChatList(users);
+  }
+
+  useEffect(() => {
+    fetchChatUsers();
+  }, []);
+
+  const handleRecentChats = () => {
+    setActiveTab("chats");
+    fetchChatUsers();
+  };
+
+  const handleAllConnections = () => {
+    setActiveTab("connections");
+    async function fetchConnections() {
+      const res = await dispatch(getAllConnections());
+      setChatList(res);
+    }
+    fetchConnections();
+  };
+
   return (
     <aside
       className={`transition-all duration-300 flex flex-col 
@@ -15,16 +47,38 @@ const ChatSidebar = ({
         bg-gradient-to-b from-[#200a3d] via-[#2a1252] to-[#3a1a5f]
         border-r border-white/10 backdrop-blur-xl shadow-[inset_0_0_10px_rgba(255,255,255,0.1)]`}
     >
-      {/* Header */}
-      <header className="flex justify-between items-center py-3 px-5 border-b border-white/10 text-white font-semibold">
+      {/* Header with tabs + close button */}
+      <header className="flex items-center justify-between py-3 px-3 border-b border-white/10 text-sm font-medium text-white/80">
         {sidebarOpen ? (
           <>
-            <span className="text-lg tracking-wide text-pink-200">
-              Recent Chats
-            </span>
+            {/* ✅ Tabs */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRecentChats}
+                className={`px-4 py-1 rounded-full transition-all ${
+                  activeTab === "chats"
+                    ? "bg-pink-500/30 text-pink-200 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
+                    : "hover:bg-white/10"
+                }`}
+              >
+                Recent Chats
+              </button>
+              <button
+                onClick={handleAllConnections}
+                className={`px-4 py-1 rounded-full transition-all ${
+                  activeTab === "connections"
+                    ? "bg-pink-500/30 text-pink-200 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
+                    : "hover:bg-white/10"
+                }`}
+              >
+                All Connections
+              </button>
+            </div>
+
+            {/* ✅ Close Button */}
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-white/70 hover:text-pink-300 transition-all"
+              className="text-white/70 hover:text-pink-300 transition-all text-lg font-semibold"
             >
               ✕
             </button>
@@ -42,7 +96,7 @@ const ChatSidebar = ({
       {/* Chat List */}
       <ul className="divide-y divide-white/10 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-pink-400/40 scrollbar-track-transparent">
         {chatList.length > 0
-          ? chatList.map((chat) => {
+          ? chatList.map((chat: chatUserDetailsTypes) => {
               const isActive = activeChatUserId === chat._id;
               return (
                 <li
@@ -71,8 +125,8 @@ const ChatSidebar = ({
                         {chat.firstName} {chat.lastName}
                       </p>
                       <p className="text-xs text-white/50 truncate italic">
-                        {chat?.lastMessage?.text
-                          ? chat.lastMessage.text
+                        {chat?.lastMessage
+                          ? chat?.lastMessage?.text
                           : "Tap to chat"}
                       </p>
                     </div>
@@ -82,20 +136,14 @@ const ChatSidebar = ({
             })
           : sidebarOpen && (
               <li className="text-white/50 text-sm px-4 py-4 text-center italic">
-                No recent chats 💬
+                {activeTab === "chats"
+                  ? "No recent chats 💬"
+                  : "No connections yet 🤝"}
               </li>
             )}
       </ul>
     </aside>
   );
-};
-
-ChatSidebar.propTypes = {
-  sidebarOpen: PropTypes.bool.isRequired,
-  setSidebarOpen: PropTypes.func.isRequired,
-  chatList: PropTypes.array.isRequired,
-  handleChat: PropTypes.func.isRequired,
-  activeChatUserId: PropTypes.string,
 };
 
 export default ChatSidebar;
