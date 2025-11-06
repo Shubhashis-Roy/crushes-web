@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useWebRTC } from "@hooks/useWebRtc";
+import { useChatSocket } from "@hooks/useChatSocket";
+import { useSelector } from "@redux/store";
+import { useVideoSocket } from "@hooks/useVideoSocket";
 
 type Props = {
   userId: string;
@@ -10,9 +13,15 @@ type Props = {
 const Video: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const userDetails = useSelector((state) => state.auth.userDetails);
 
-  // 🔹 We’ll use a state trigger to force UI re-render when remote stream changes
   const [streamsVersion, setStreamsVersion] = useState(0);
+
+  useVideoSocket({
+    user: userDetails,
+    userId,
+    targetUserId,
+  });
 
   const {
     isInCall,
@@ -29,7 +38,6 @@ const Video: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
     onCallEnded: onClose,
   });
 
-  // 🔹 Re-bind local & remote video streams whenever changed
   useEffect(() => {
     const local = getLocalStream();
     if (local && localVideoRef.current) {

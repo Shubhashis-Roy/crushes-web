@@ -1,16 +1,10 @@
-import {
-  FaBars,
-  FaVideo,
-  FaUsers,
-  FaComments,
-  FaTimes,
-  FaChevronLeft,
-} from "react-icons/fa";
+import { FaVideo } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import { dispatch, useSelector } from "@redux/store";
 import { getChatUserList } from "@redux/slices/chat";
 import { getAllConnections } from "@redux/slices/connection";
-// import { usePreviousRoute } from "@hooks/usePreviousRoute";
+import ChatSidebarHeader from "./ChatSidebarHeader";
+import Video from "@sections/video/Video";
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
   sidebarOpen,
@@ -20,8 +14,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 }) => {
   const [chatList, setChatList] = useState([]);
   const [activeTab, setActiveTab] = useState("chats");
-  const loading = useSelector((state) => state.chat.isLoading);
   const [showNoUserMsg, setShowNoUserMsg] = useState(false);
+  const [showCall, setShowCall] = useState(false);
+  const [callTarget, setCallTarget] = useState<chatUserDetailsTypes | null>(
+    null
+  );
+
+  // const loading = useSelector((state) => state.chat.isLoading);
+  const userDetails = useSelector((state) => state.auth.userDetails);
 
   async function fetchChatUsers() {
     const users = await dispatch(getChatUserList());
@@ -46,140 +46,116 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     fetchConnections();
   };
 
-  // 🔹 handle video tab click
   const handleVideoClick = () => {
     setActiveTab("video");
-    setChatList([]); // no users yet
+    setChatList([]);
     setShowNoUserMsg(true);
-    setTimeout(() => setShowNoUserMsg(false), 2000); // hide message after 2s
+    setTimeout(() => setShowNoUserMsg(false), 2000);
+  };
+
+  const handleStartVideoCall = (chat: chatUserDetailsTypes) => {
+    setCallTarget(chat);
+    setShowCall(true);
   };
 
   return (
-    <aside
-      className={`transition-all duration-300 flex flex-col 
+    <>
+      <aside
+        className={`transition-all duration-300 flex flex-col 
         ${sidebarOpen ? "w-80" : "w-16"} 
         bg-gradient-to-b from-[#200a3d] via-[#2a1252] to-[#3a1a5f]
         border-r border-white/10 backdrop-blur-xl shadow-[inset_0_0_10px_rgba(255,255,255,0.1)]`}
-    >
-      {/* Header with tabs + close button */}
-      <header className="flex items-center justify-between py-3 px-3 border-b border-white/10 text-sm font-medium text-white/80">
-        {sidebarOpen ? (
-          <>
-            {/* ======= Tabs ======= */}
-            <div className="flex items-center gap-10">
-              <button
-                onClick={handleRecentChats}
-                className={`px-4 py-1 rounded-full transition-all ${
-                  activeTab === "chats"
-                    ? "bg-pink-500/30 text-pink-200 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
-                    : "hover:bg-white/10"
-                }`}
-                title="Chats"
-              >
-                <FaComments size={20} />
-              </button>
+      >
+        <ChatSidebarHeader
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          activeTab={activeTab}
+          handleRecentChats={handleRecentChats}
+          handleVideoClick={handleVideoClick}
+          handleAllConnections={handleAllConnections}
+        />
 
-              <button
-                onClick={handleVideoClick}
-                className={`px-4 py-1 rounded-full transition-all flex items-center justify-center ${
-                  activeTab === "video"
-                    ? "bg-pink-500/30 text-pink-200 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
-                    : "hover:bg-white/10"
-                }`}
-                title="Video Calls"
-              >
-                <FaVideo size={20} />
-              </button>
-
-              <button
-                onClick={handleAllConnections}
-                className={`px-4 py-1 rounded-full transition-all ${
-                  activeTab === "connections"
-                    ? "bg-pink-500/30 text-pink-200 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
-                    : "hover:bg-white/10"
-                }`}
-                title="All Connections"
-              >
-                <FaUsers size={20} />
-              </button>
-            </div>
-
-            {/* ======= Close Button ======= */}
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="text-white/70 hover:text-pink-300 transition-all text-lg font-semibold"
-            >
-              <FaChevronLeft size={20} />
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="text-white/80 hover:text-pink-300 transition-all"
-          >
-            <FaBars size={18} />
-          </button>
-        )}
-      </header>
-
-      {/* Chat List */}
-      <ul className="divide-y divide-white/10 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-pink-400/40 scrollbar-track-transparent">
-        {showNoUserMsg ? (
-          <li className="text-center text-white/70 py-5 italic">
-            No users found 🙃
-          </li>
-        ) : chatList.length > 0 ? (
-          chatList.map((chat: chatUserDetailsTypes) => {
-            const isActive = activeChatUserId === chat._id;
-            return (
-              <li
-                key={chat._id}
-                onClick={() => handleChat(chat)}
-                className={`cursor-pointer flex items-center gap-3 px-4 py-3 transition-all group ${
-                  isActive
-                    ? "bg-pink-500/20 shadow-[inset_0_0_10px_rgba(236,72,153,0.5)]"
-                    : "hover:bg-white/10"
-                }`}
-              >
-                {chat.photoUrl?.length > 0 ? (
-                  <img
-                    src={chat.photoUrl[0]}
-                    alt={chat.firstName}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
-                  />
-                ) : (
-                  <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-500/50 text-white font-bold">
-                    {chat?.firstName?.[0]?.toUpperCase() || "?"}
-                  </div>
-                )}
-                {sidebarOpen && (
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate group-hover:text-pink-300">
-                      {chat.firstName} {chat.lastName}
-                    </p>
-                    <p className="text-xs text-white/50 truncate italic">
-                      {chat?.lastMessage
-                        ? chat?.lastMessage?.text
-                        : "Tap to chat"}
-                    </p>
-                  </div>
-                )}
-              </li>
-            );
-          })
-        ) : (
-          sidebarOpen && (
-            <li className="text-white/50 text-sm px-4 py-4 text-center italic">
-              {activeTab === "chats"
-                ? "No recent chats 💬"
-                : activeTab === "video"
-                ? "No users found 🙃"
-                : "No connections yet 🤝"}
+        {/* Chat List */}
+        <ul className="divide-y divide-white/10 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-pink-400/40 scrollbar-track-transparent">
+          {showNoUserMsg ? (
+            <li className="text-center text-white/70 py-5 italic">
+              No users found 🙃
             </li>
-          )
-        )}
-      </ul>
-    </aside>
+          ) : chatList.length > 0 ? (
+            chatList.map((chat: chatUserDetailsTypes) => {
+              const isActive = activeChatUserId === chat._id;
+              return (
+                <li
+                  key={chat._id}
+                  onClick={() => handleChat(chat)}
+                  className={`cursor-pointer flex items-center gap-3 px-4 py-3 transition-all group ${
+                    isActive
+                      ? "bg-pink-500/20 shadow-[inset_0_0_10px_rgba(236,72,153,0.5)]"
+                      : "hover:bg-white/10"
+                  }`}
+                >
+                  {chat.photoUrl?.length > 0 ? (
+                    <img
+                      src={chat.photoUrl[0]}
+                      alt={chat.firstName}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-500/50 text-white font-bold">
+                      {chat?.firstName?.[0]?.toUpperCase() || "?"}
+                    </div>
+                  )}
+
+                  {sidebarOpen && (
+                    <div className="flex-1 min-w-0 flex items-center justify-between">
+                      <div>
+                        <p className="text-white font-medium truncate group-hover:text-pink-300">
+                          {chat.firstName} {chat.lastName}
+                        </p>
+                        <p className="text-xs text-white/50 truncate italic">
+                          {chat?.lastMessage
+                            ? chat?.lastMessage?.text
+                            : "Tap to chat"}
+                        </p>
+                      </div>
+
+                      {/*Video Call Icon */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStartVideoCall(chat);
+                        }}
+                        className="ml-3 p-2 rounded-full hover:bg-pink-500/20 text-pink-300 hover:text-pink-200 transition-all"
+                        title="Start Video Call"
+                      >
+                        <FaVideo size={16} />
+                      </button>
+                    </div>
+                  )}
+                </li>
+              );
+            })
+          ) : (
+            sidebarOpen && (
+              <li className="text-white/50 text-sm px-4 py-4 text-center italic">
+                {activeTab === "chats"
+                  ? "No recent chats 💬"
+                  : activeTab === "video"
+                  ? "No users found 🙃"
+                  : "No connections yet 🤝"}
+              </li>
+            )
+          )}
+        </ul>
+      </aside>
+      {showCall && callTarget && (
+        <Video
+          userId={userDetails._id}
+          targetUserId={callTarget._id}
+          onClose={() => setShowCall(false)}
+        />
+      )}
+    </>
   );
 };
 
