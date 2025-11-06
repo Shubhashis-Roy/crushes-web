@@ -5,33 +5,36 @@ import ChatSidebar from "@sections/chat/ChatSidebar";
 import ChatWindow from "@sections/chat/ChatWindow";
 import { dispatch, useSelector } from "@redux/store";
 import { getChatMessages } from "@redux/slices/chat";
-import Video from "@pages/video/video";
+
+interface msgTypes {
+  firstName: string;
+  lastName: string;
+  text: string;
+}
 
 const Chat = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<msgTypes[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [chatPartner, setChatPartner] = useState(null);
+  const [chatPartner, setChatPartner] = useState<chatUserDetailsTypes | null>(
+    null
+  );
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
-  const [activeChatUserId, setActiveChatUserId] = useState(null);
+  const [activeChatUserId, setActiveChatUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // ✅ added for video call modal
   const [showCall, setShowCall] = useState(false);
 
-  const typingTimeoutRef = useRef(null);
   const userDetails = useSelector((state) => state.auth.userDetails);
-  const startChat = useSelector((state) => state.chat.startChat);
   const userId = userDetails?._id;
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ Fetch messages for selected chat
+  //Fetch messages for selected chat
   const fetchChatMessages = async (targetUserId: string) => {
     if (!targetUserId) return;
     const res = await dispatch(getChatMessages(targetUserId));
 
-    const chatMessages = res?.map((msg) => {
+    const chatMessages = res?.map((msg: chatMessagesTypes) => {
       const { senderId, text, createdAt } = msg;
       return {
         firstName: senderId?.firstName,
@@ -50,8 +53,8 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ✅ Chat open handler
-  const handleChat = (userDetails) => {
+  //Chat open handler
+  const handleChat = (userDetails: chatUserDetailsTypes) => {
     if (!userDetails?._id) return;
     setMessages([]);
     setChatPartner(userDetails);
@@ -59,7 +62,7 @@ const Chat = () => {
     fetchChatMessages(userDetails._id);
   };
 
-  // ✅ Socket Hook
+  //Socket Hook
   const { sendMessage, handleTyping } = useChatSocket({
     user: userDetails,
     userId,
@@ -68,7 +71,6 @@ const Chat = () => {
     setIsTyping,
     setIsOnline,
     messagesEndRef,
-    typingTimeoutRef,
   });
 
   return (
@@ -98,13 +100,13 @@ const Chat = () => {
         loading={loading}
       />
 
-      {chatPartner && (
+      {/* {chatPartner && (
         <Video
           userId={userDetails._id}
           targetUserId={chatPartner._id}
           onClose={() => setShowCall(false)}
         />
-      )}
+      )} */}
     </div>
   );
 };

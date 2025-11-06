@@ -3,13 +3,11 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
-// import { removeUser } from "../redux/userSlice";
 import { useState } from "react";
 import { IoChatbubbleEllipsesOutline, IoMenu, IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { store, useSelector } from "@redux/store";
 import Logout from "@sections/profile/Logout";
-// import { BASE_URL } from "@services/axios";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.auth.userDetails);

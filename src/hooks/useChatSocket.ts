@@ -1,5 +1,21 @@
-import { useEffect, useRef } from "react";
-import { getSocket } from "@services/socket/socket"; // ✅ updated import
+import React, { useEffect, useRef } from "react";
+import { getSocket } from "@services/socket/socket";
+
+interface useChatSocketProps {
+  user: userDetailsTypes;
+  userId: string;
+  targetUserId: string | null;
+  setMessages: React.Dispatch<React.SetStateAction<msgTypes[]>>;
+  setIsTyping: (arg0: boolean) => void;
+  setIsOnline: (arg0: boolean) => void;
+  messagesEndRef: React.MutableRefObject<HTMLDivElement | null>;
+}
+
+interface msgTypes {
+  firstName: string;
+  lastName: string;
+  text: string;
+}
 
 export const useChatSocket = ({
   user,
@@ -9,62 +25,65 @@ export const useChatSocket = ({
   setIsTyping,
   setIsOnline,
   messagesEndRef,
-  typingTimeoutRef,
-}) => {
+}: useChatSocketProps) => {
   const socketRef = useRef<any>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ✅ initialize socket connection once
   useEffect(() => {
     if (!userId) return;
 
-    socketRef.current = getSocket(); // ✅ use shared instance
+    socketRef.current = getSocket();
 
-    socketRef.current.on("connect", () => {
-      console.log("🟢 Socket connected:", socketRef.current.id);
-    });
+    //! FOR TESTING
+    // socketRef.current.on("connect", () => {
+    //   console.log("Socket connected:", socketRef.current.id);
+    // });
 
-    socketRef.current.on("disconnect", (reason) => {
-      console.warn("🔴 Socket disconnected:", reason);
-    });
+    // socketRef.current.on("disconnect", (reason: string) => {
+    //   console.warn("Socket disconnected:", reason);
+    // });
 
-    socketRef.current.on("connect_error", (err) => {
-      console.error("⚠️ Socket connection error:", err.message);
-    });
+    // socketRef.current.on("connect_error", (err: AxiosErrorResponseTypes) => {
+    //   console.error("Socket connection error:", err.message);
+    // });
 
-    socketRef.current.on("messageReceived", (msg) => {
+    socketRef.current.on("messageReceived", (msg: msgTypes) => {
       setMessages((prev) => (Array.isArray(prev) ? [...prev, msg] : [msg]));
       scrollToBottom();
     });
 
-    socketRef.current.on("typing", ({ userId: typingUserId }) => {
+    socketRef.current.on("typing", (typingUserId: string) => {
       if (typingUserId !== userId) {
         setIsTyping(true);
-        clearTimeout(typingTimeoutRef.current);
+        clearTimeout(typingTimeoutRef.current as NodeJS.Timeout);
         typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 2000);
       }
     });
 
-    socketRef.current.on("userStatus", ({ userId: statusUserId, status }) => {
-      if (statusUserId === targetUserId) {
-        setIsOnline(status === "online");
+    socketRef.current.on(
+      "userStatus",
+      (statusUserId: string, status: string) => {
+        // console.log(statusUserId, status, "hlo status");
+
+        if (statusUserId === targetUserId) {
+          setIsOnline(status === "online");
+        }
       }
-    });
+    );
 
     return () => {
-      // 👇 Instead of disconnecting the socket globally, just clean up listeners
       if (socketRef.current) {
         socketRef.current.off("messageReceived");
         socketRef.current.off("typing");
         socketRef.current.off("userStatus");
       }
     };
-  }, [userId]); // ✅ only reinit when your own user changes
+  }, [userId]);
 
-  // ✅ rejoin chat room when chat partner changes
   useEffect(() => {
     if (socketRef.current && userId && targetUserId) {
       socketRef.current.emit("joinChat", {

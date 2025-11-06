@@ -68,7 +68,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             No messages yet — say hello 👋
           </div>
         ) : (
-          messages.map((msg, idx) => {
+          messages.map((msg: MessageTypes, idx: number) => {
             const isOwn = user.firstName === msg.firstName;
             return (
               <div

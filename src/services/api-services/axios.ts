@@ -1,12 +1,12 @@
 import axios from "axios";
 
-export const BASE_URL =
+const API_URL =
   window.location.hostname === "localhost"
     ? import.meta.env.VITE_API_DEV_URL
     : import.meta.env.VITE_API_PROD_URL;
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
