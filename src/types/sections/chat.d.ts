@@ -6,10 +6,10 @@ declare interface ChatSidebarProps {
 }
 
 declare interface ChatWindowProps {
-  messages: string[];
-  newMessage: () => void;
+  messages: MessageTypes[];
+  newMessage: string;
   setNewMessage: (msg: string) => void;
-  sendMessage: () => void;
+  sendMessage: (arg0: string) => void;
   handleTyping: () => void;
   messagesEndRef: React.RefObject<HTMLDivElement>;
   chatPartner: any;
@@ -17,4 +17,19 @@ declare interface ChatWindowProps {
   isTyping: boolean;
   isOnline: boolean;
   loading: boolean;
+}
+
+declare interface chatMessagesTypes {
+  senderId: MessageTypes;
+  text: string;
+  createdAt: string;
+}
+
+declare interface MessageTypes {
+  _id?: string;
+  firstName: string;
+  lastName: string;
+  text: string;
+  createdAt?: string;
+  updateAt?: string;
 }
