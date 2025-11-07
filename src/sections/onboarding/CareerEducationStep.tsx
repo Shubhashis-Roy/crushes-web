@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
-import { OnboardingData } from "./OnboardingFlow";
 
 interface CareerEducationStepProps {
-  data: OnboardingData;
-  updateData: (data: Partial<OnboardingData>) => void;
+  data: OnboardingDataTypes;
+  updateData: (data: Partial<OnboardingDataTypes>) => void;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -67,9 +66,7 @@ const CareerEducationStep: React.FC<CareerEducationStepProps> = ({
       <div className="w-full max-w-lg space-y-8 text-left">
         {/* Profession */}
         <div className="space-y-3">
-          <Label className="text-pink-200 font-medium">
-            What do you do?
-          </Label>
+          <Label className="text-pink-200 font-medium">What do you do?</Label>
           <Input
             type="text"
             placeholder="e.g., Software Engineer, Student, Artist"
@@ -122,9 +119,7 @@ const CareerEducationStep: React.FC<CareerEducationStepProps> = ({
 
         {/* Education */}
         <div className="space-y-3">
-          <Label className="text-pink-200 font-medium">
-            Education Level
-          </Label>
+          <Label className="text-pink-200 font-medium">Education Level</Label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {educationLevels.map((level) => (
               <Button

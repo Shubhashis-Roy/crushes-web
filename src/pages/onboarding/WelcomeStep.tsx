@@ -10,7 +10,7 @@ import { PATH } from "@constants/path";
 //   updateData: (data: Partial<OnboardingData>) => void;
 //   onNext: () => void;
 //   onPrev: () => void;
-//   openLogin: () => void; // ✅ added
+//   openLogin: () => void;
 // }
 
 // Floating animation variants
@@ -84,7 +84,7 @@ const WelcomeStep = () => {
         color: THEME.colors.textPrimary,
       }}
     >
-      {/* 🌸 Floating Orbs */}
+      {/* Floating Orbs */}
       <motion.div
         className="absolute top-20 left-16 w-20 h-20 rounded-full opacity-30 blur-2xl"
         style={{ background: "#E1BEE7" }}
@@ -104,7 +104,6 @@ const WelcomeStep = () => {
         animate="float3"
       />
 
-      {/* 💖 Icon Row */}
       <div className="flex justify-center mb-10 space-x-8 z-10">
         {[Heart, Sparkles, Users].map((Icon, i) => (
           <motion.div
@@ -123,7 +122,7 @@ const WelcomeStep = () => {
         ))}
       </div>
 
-      {/* 🌈 Title + Animated Word */}
+      {/*  Title + Animated Word */}
       <motion.h1
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
@@ -169,7 +168,7 @@ const WelcomeStep = () => {
         </span>
       </motion.h1>
 
-      {/* 💬 Subtitle */}
+      {/* Subtitle */}
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -185,7 +184,7 @@ const WelcomeStep = () => {
         journey to meaningful connections starts here.
       </motion.p>
 
-      {/* 🚀 Get Started Button */}
+      {/* Get Started Button */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

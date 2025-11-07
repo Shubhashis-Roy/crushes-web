@@ -1,4 +1,4 @@
-export const messages = [
+export const UsersFeedback = [
   "💘 Rahini just joined Crushes to find real love.",
   "❤️ Anjali signed up to find her soulmate.",
   "💞 Rahul is looking for a genuine connection.",
