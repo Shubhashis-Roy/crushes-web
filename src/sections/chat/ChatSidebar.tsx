@@ -4,7 +4,7 @@ import { dispatch, useSelector } from "@redux/store";
 import { getChatUserList } from "@redux/slices/chat";
 import { getAllConnections } from "@redux/slices/connection";
 import ChatSidebarHeader from "./ChatSidebarHeader";
-import Video from "@sections/video/Video";
+import VideoCall from "@sections/video/VideoCall";
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
   sidebarOpen,
@@ -20,7 +20,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     null
   );
 
-  // const loading = useSelector((state) => state.chat.isLoading);
   const userDetails = useSelector((state) => state.auth.userDetails);
 
   async function fetchChatUsers() {
@@ -46,12 +45,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     fetchConnections();
   };
 
-  const handleVideoClick = () => {
-    setActiveTab("video");
-    setChatList([]);
-    setShowNoUserMsg(true);
-    setTimeout(() => setShowNoUserMsg(false), 2000);
-  };
+  // const handleVideoClick = () => {
+  //   setActiveTab("video");
+  //   setChatList([]);
+  //   setShowNoUserMsg(true);
+  //   setTimeout(() => setShowNoUserMsg(false), 2000);
+  // };
 
   const handleStartVideoCall = (chat: chatUserDetailsTypes) => {
     setCallTarget(chat);
@@ -71,7 +70,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
           setSidebarOpen={setSidebarOpen}
           activeTab={activeTab}
           handleRecentChats={handleRecentChats}
-          handleVideoClick={handleVideoClick}
+          // handleVideoClick={handleVideoClick}
           handleAllConnections={handleAllConnections}
         />
 
@@ -119,7 +118,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                         </p>
                       </div>
 
-                      {/*Video Call Icon */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -149,7 +147,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </ul>
       </aside>
       {showCall && callTarget && (
-        <Video
+        <VideoCall
           userId={userDetails._id}
           targetUserId={callTarget._id}
           onClose={() => setShowCall(false)}

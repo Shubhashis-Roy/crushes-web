@@ -22,7 +22,7 @@ export const useVideoSocket = ({
 
   useEffect(() => {
     if (socketRef.current && userId && targetUserId) {
-      socketRef.current.emit("joinChat", {
+      socketRef.current.emit("joinVideo", {
         firstName: user.firstName,
         userId,
         targetUserId,

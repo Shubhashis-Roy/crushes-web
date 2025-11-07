@@ -1,7 +1,7 @@
 import React from "react";
 import {
   FaBars,
-  FaVideo,
+  // FaVideo,
   FaUsers,
   FaComments,
   FaChevronLeft,
@@ -12,7 +12,7 @@ interface ChatSidebarHeaderProps {
   setSidebarOpen: (open: boolean) => void;
   activeTab: string;
   handleRecentChats: () => void;
-  handleVideoClick: () => void;
+  // handleVideoClick: () => void;
   handleAllConnections: () => void;
 }
 
@@ -21,7 +21,7 @@ const ChatSidebarHeader: React.FC<ChatSidebarHeaderProps> = ({
   setSidebarOpen,
   activeTab,
   handleRecentChats,
-  handleVideoClick,
+  // handleVideoClick,
   handleAllConnections,
 }) => {
   return (
@@ -29,8 +29,7 @@ const ChatSidebarHeader: React.FC<ChatSidebarHeaderProps> = ({
       {sidebarOpen ? (
         <>
           {/* ======= Tabs ======= */}
-          <div className="flex items-center gap-12">
-            {/* 💬 Chats */}
+          <div className="flex items-center gap-20">
             <button
               onClick={handleRecentChats}
               className={`flex items-center justify-center w-8 h-8 rounded-full transition-all ${
@@ -43,8 +42,7 @@ const ChatSidebarHeader: React.FC<ChatSidebarHeaderProps> = ({
               <FaComments size={22} />
             </button>
 
-            {/* 🎥 Video */}
-            <button
+            {/* <button
               onClick={handleVideoClick}
               className={`flex items-center justify-center w-8 h-8 rounded-full transition-all ${
                 activeTab === "video"
@@ -54,12 +52,11 @@ const ChatSidebarHeader: React.FC<ChatSidebarHeaderProps> = ({
               title="Video Calls"
             >
               <FaVideo size={22} />
-            </button>
+            </button> */}
 
-            {/* 👥 All Connections */}
             <button
               onClick={handleAllConnections}
-              className={`flex items-center justify-center w-8 h-8 rounded-full transition-all ${
+              className={`flex ml-3 items-center justify-center w-8 h-8 rounded-full transition-all ${
                 activeTab === "connections"
                   ? "bg-pink-500/30 text-pink-200 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
                   : "hover:bg-white/10 text-white/80"

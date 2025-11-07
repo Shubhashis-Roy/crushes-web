@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useWebRTC } from "@hooks/useWebRtc";
-import { useChatSocket } from "@hooks/useChatSocket";
 import { useSelector } from "@redux/store";
 import { useVideoSocket } from "@hooks/useVideoSocket";
 
@@ -10,7 +9,7 @@ type Props = {
   onClose?: () => void;
 };
 
-const Video: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
+const VideoCall: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const userDetails = useSelector((state) => state.auth.userDetails);
@@ -55,9 +54,8 @@ const Video: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
         .play()
         .catch(() => console.warn("Remote video autoplay blocked"));
     }
-  }, [streamsVersion]); // 👈 runs every time we increment version below
+  }, [streamsVersion]);
 
-  // 🔹 Listen for remote stream update from the WebRTC hook
   useEffect(() => {
     const handleTrack = () => setStreamsVersion((v) => v + 1);
     window.addEventListener("remoteStreamReady", handleTrack);
@@ -147,4 +145,4 @@ const Video: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
   );
 };
 
-export default Video;
+export default VideoCall;

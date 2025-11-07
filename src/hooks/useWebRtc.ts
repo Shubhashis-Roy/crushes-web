@@ -109,7 +109,7 @@ export const useWebRTC = ({
     const pc = pcRef.current!;
     const local = await ensureLocalStream();
 
-    // ✅ Attach local tracks *after* fresh peer exists
+    // Attach local tracks *after* fresh peer exists
     local.getTracks().forEach((t) => pc.addTrack(t, local));
 
     // Create SDP offer

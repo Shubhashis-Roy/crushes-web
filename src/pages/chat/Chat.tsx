@@ -23,7 +23,6 @@ const Chat = () => {
   const [isOnline, setIsOnline] = useState(false);
   const [activeChatUserId, setActiveChatUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showCall, setShowCall] = useState(false);
 
   const userDetails = useSelector((state) => state.auth.userDetails);
   const userId = userDetails?._id;
@@ -99,14 +98,6 @@ const Chat = () => {
         isOnline={isOnline}
         loading={loading}
       />
-
-      {/* {chatPartner && (
-        <Video
-          userId={userDetails._id}
-          targetUserId={chatPartner._id}
-          onClose={() => setShowCall(false)}
-        />
-      )} */}
     </div>
   );
 };
