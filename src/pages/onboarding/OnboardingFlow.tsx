@@ -3,9 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-// import { useDispatch } from "react-redux";
 import { THEME } from "@constants/colors";
-import { useToast } from "@utils/use-toast";
 import NavBar from "@components/layout/NavBar";
 
 // Steps
@@ -13,35 +11,15 @@ import BasicInfoStep from "@sections/onboarding/BasicInfoStep";
 import CareerEducationStep from "@sections/onboarding/CareerEducationStep";
 import ProfileSetupStep from "@sections/onboarding/ProfileSetupStep";
 import PreferencesStep from "@sections/onboarding/PreferencesStep";
-import PermissionsStep from "@sections/onboarding/PermissionsStep";
+// import PermissionsStep from "@sections/onboarding/PermissionsStep";
 import PreviewStep from "@sections/onboarding/PreviewStep";
+import { dispatch } from "@redux/store";
+import { updateUserProfile } from "@redux/slices/user";
+import { signup } from "@redux/slices/auth";
+import { dobFormatter } from "@utils/age";
+import { PATH } from "@constants/path";
 
-export interface OnboardingData {
-  name: string;
-  email: string;
-  password: string;
-  city: string;
-  dateOfBirth: string;
-  age?: number;
-  zodiacSign?: string;
-  gender: string;
-  interestedIn: string[];
-  profession: string;
-  company?: string;
-  education: string;
-  photos: File[];
-  bio: string;
-  hobbies: string[];
-  lifestyle: string[];
-  personality: string[];
-  lookingFor: string[];
-  ageRange: [number, number];
-  distanceRange: number;
-  locationPermission: boolean;
-  notificationPermission: boolean;
-}
-
-export const initialData: OnboardingData = {
+export const initialData: OnboardingDataTypes = {
   name: "",
   email: "",
   password: "",
@@ -67,11 +45,10 @@ export const initialData: OnboardingData = {
 const OnboardingFlow: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [data, setData] = useState<OnboardingData>(initialData);
+  const [data, setData] = useState<OnboardingDataTypes>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showLogin, setShowLogin] = useState(false);
@@ -86,98 +63,96 @@ const OnboardingFlow: React.FC = () => {
     }
   }, [location.state]);
 
-  const updateData = (newData: Partial<OnboardingData>) =>
+  const updateData = (newData: Partial<OnboardingDataTypes>) =>
     setData((prev) => ({ ...prev, ...newData }));
 
   const steps = [
     { component: BasicInfoStep, title: "Basic Info" },
     { component: CareerEducationStep, title: "Career & Education" },
-    { component: ProfileSetupStep, title: "Profile Setup" },
     { component: PreferencesStep, title: "Preferences" },
-    { component: PermissionsStep, title: "Permissions" },
+    { component: ProfileSetupStep, title: "Profile Setup" },
+    // { component: PermissionsStep, title: "Permissions" },
     { component: PreviewStep, title: "Preview" },
   ];
 
-  const totalSteps = steps.length - 1;
+  // console.log(steps.length, "steps leng hlo=====");
+
+  const totalSteps = steps.length;
   const CurrentStepComponent = steps[currentStep].component;
 
   // Next Step Handler
-  const nextStep = () => {
+  const nextStep = async () => {
     setError("");
 
-    // Handle signup step
-    // if (currentStep === 1) {
-    //   const { email, password, name, city, dateOfBirth, gender, interestedIn } =
-    //     data;
+    if (currentStep === 0 && data?.email && data?.password) {
+      const dob = dobFormatter(data?.dateOfBirth);
 
-    //   if (
-    //     !email ||
-    //     !password ||
-    //     !name ||
-    //     !city ||
-    //     !dateOfBirth ||
-    //     !gender ||
-    //     !interestedIn.length
-    //   ) {
-    //     const msg = "Please fill in all required fields.";
-    //     toast({
-    //       title: "Missing Information",
-    //       description: msg,
-    //       type: "error",
-    //     });
-    //     setError(msg);
-    //     return;
-    //   }
+      const res = await dispatch(
+        signup({
+          emailId: data?.email,
+          password: data?.password,
+          firstName: data?.name,
+          lastName: data?.name,
+          dob: dob,
+          city: data?.city,
+          interest: data?.interestedIn?.map((i) => i.toLowerCase()),
+          gender: data?.gender.toLocaleLowerCase(),
+        })
+      );
 
-    //   try {
-    //     setLoading(true);
-
-    //     toast({
-    //       title: "Signup Successful!",
-    //       description: "Your account has been created.",
-    //       type: "success",
-    //     });
-    //   } catch (err) {
-    //     console.error("Signup error:", err);
-
-    //     let msg = "Signup failed. Please try again.";
-
-    //     if (axios.isAxiosError(err)) {
-    //       msg = err.response?.data?.message || err.response?.data || msg;
-    //     }
-
-    //     toast({ title: "Signup Failed", description: msg, type: "error" });
-    //     setError(msg);
-    //     setLoading(false);
-    //     return;
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-
-    // Move to next onboarding step
-    if (currentStep < totalSteps) {
+      if (res?.status !== 200) return;
       setDirection(1);
-      setCurrentStep((prev) => prev + 1);
-    } else {
-      // Final step - onboarding complete
-      localStorage.setItem("onboardingDone", "true");
-      toast({
-        title: "Onboarding Complete!",
-        description: "Redirecting to your feed 🎉",
-        type: "success",
-      });
+      setCurrentStep(1);
+    }
 
-      // Delay navigation slightly so user sees success message
-      setTimeout(() => {
-        navigate("/feed");
-      }, 1000);
+    if (currentStep === 1) {
+      const res = await dispatch(
+        updateUserProfile({
+          profession: data?.profession?.toLocaleLowerCase(),
+          organization: data?.company?.toLocaleLowerCase(),
+          education: data?.education
+            ? data?.education?.toLocaleLowerCase()
+            : "",
+        })
+      );
+      if (res?.status !== 200) return;
+      setDirection(1);
+      setCurrentStep(2);
+    }
+
+    if (currentStep === 2) {
+      const res = await dispatch(
+        updateUserProfile({
+          lookingFor: data?.lookingFor,
+          preferredAge: { min: data?.ageRange[0], max: data?.ageRange[1] },
+          preferredDistance: data?.distanceRange,
+        })
+      );
+
+      if (res?.status !== 200) return;
+      setDirection(1);
+      setCurrentStep(3);
+    }
+
+    if (currentStep === 3) {
+      const res = await dispatch(
+        updateUserProfile({
+          bio: data?.bio,
+        })
+      );
+      if (res?.status !== 200) return;
+      setDirection(1);
+      setCurrentStep(4);
+    }
+
+    if (currentStep === 4) {
+      navigate(PATH.FEED);
     }
   };
 
   const prevStep = () => {
     if (currentStep === 0) {
-      navigate("/");
+      navigate(PATH.HOME);
       return;
     }
 
@@ -186,27 +161,6 @@ const OnboardingFlow: React.FC = () => {
       setCurrentStep((prev) => prev - 1);
     }
   };
-
-  // const canProceed = () => {
-  //   switch (currentStep) {
-  //     case 1:
-  //       return (
-  //         data.email &&
-  //         data.password &&
-  //         data.name &&
-  //         data.dateOfBirth &&
-  //         data.gender &&
-  //         data.city &&
-  //         data.interestedIn.length > 0
-  //       );
-  //     case 2:
-  //       return data.profession && data.education;
-  //     case 3:
-  //       return data.photos.length > 0 && data.bio;
-  //     default:
-  //       return true;
-  //   }
-  // };
 
   const variants = {
     enter: (direction: number) => ({
@@ -237,13 +191,13 @@ const OnboardingFlow: React.FC = () => {
               <div
                 key={i}
                 className={`h-2 w-10 rounded-full ${
-                  i < currentStep ? "bg-white" : "bg-pink-200/60"
+                  i <= currentStep ? "bg-white" : "bg-pink-200/60"
                 }`}
               />
             ))}
           </div>
           <p className="text-xs text-white opacity-90">
-            Step {currentStep} of {totalSteps}
+            Step {currentStep + 1} of {totalSteps}
           </p>
         </div>
       </div>

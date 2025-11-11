@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import {
@@ -9,16 +9,22 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { OnboardingData } from "./OnboardingFlow";
+import { dispatch } from "@redux/store";
+import { getProfile } from "@redux/slices/user";
+import { capitalizeFirstLetter } from "@utils/string";
 
-interface PreviewStepProps {
-  data: OnboardingData;
-  updateData: (data: Partial<OnboardingData>) => void;
-  onNext: () => void;
-  onPrev: () => void;
-}
+const PreviewStep = () => {
+  const [profileDetails, setProfileDetails] = useState<profileDetailsTypes>();
 
-const PreviewStep: React.FC<PreviewStepProps> = ({ data }) => {
+  useEffect(() => {
+    async function fetchProfile() {
+      const res = await dispatch(getProfile());
+      setProfileDetails(res);
+    }
+
+    fetchProfile();
+  }, []);
+
   const getInitials = (name: string) =>
     name
       .split(" ")
@@ -27,7 +33,11 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data }) => {
       .toUpperCase();
 
   const mainPhotoUrl =
-    data.photos.length > 0 ? URL.createObjectURL(data.photos[0]) : null;
+    profileDetails?.photoUrl?.length && profileDetails?.photoUrl?.length > 0
+      ? typeof profileDetails.photoUrl[0] === "string"
+        ? profileDetails.photoUrl[0]
+        : URL.createObjectURL(profileDetails.photoUrl[0])
+      : null;
 
   return (
     <div className="w-full flex flex-col items-center justify-center text-center px-4">
@@ -58,16 +68,16 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data }) => {
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-400/20 to-purple-600/20">
               <Avatar className="w-28 h-28">
                 <AvatarFallback className="text-3xl bg-pink-500/20 text-white">
-                  {getInitials(data.name || "U")}
+                  {getInitials(profileDetails?.firstName || "U")}
                 </AvatarFallback>
               </Avatar>
             </div>
           )}
 
           {/* Photo count */}
-          {data.photos.length > 1 && (
+          {profileDetails?.photoUrl?.length && (
             <div className="absolute bottom-4 right-4 bg-black/40 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
-              1/{data.photos.length}
+              1/{profileDetails?.photoUrl?.length}
             </div>
           )}
 
@@ -81,106 +91,116 @@ const PreviewStep: React.FC<PreviewStepProps> = ({ data }) => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-2xl font-bold text-white">
-                {data.name || "User"}{" "}
-                {data.dateOfBirth && (
+                {capitalizeFirstLetter(profileDetails?.firstName) || "User"}{" "}
+                {profileDetails?.dateOfBirth && (
                   <span className="text-white/70 text-lg">
                     •{" "}
                     {new Date().getFullYear() -
-                      new Date(data.dateOfBirth).getFullYear()}
+                      new Date(profileDetails?.dateOfBirth).getFullYear()}
                   </span>
                 )}
               </h3>
-              {data.zodiacSign && (
-                <p className="text-sm text-pink-300">
-                  ♑ {data.zodiacSign}
-                </p>
-              )}
+              {/* {profileDetails?.zodiacSign && (
+                <p className="text-sm text-pink-300">♑ {profileDetails?.zodiacSign}</p>
+              )} */}
             </div>
             <div className="flex items-center text-sm text-white/70">
               <MapPin className="w-4 h-4 mr-1 text-pink-300" />
-              <span>{data.city || "Unknown"}</span>
+              <span>
+                {capitalizeFirstLetter(profileDetails?.city) || "Unknown"}
+              </span>
             </div>
           </div>
 
           {/* Bio */}
-          {data.bio && (
+          {profileDetails?.bio && (
             <p className="text-white/90 mb-4 text-[15px] leading-relaxed">
-              “{data.bio}”
+              “{profileDetails?.bio}”
             </p>
           )}
 
           {/* Profession & Education */}
           <div className="space-y-2 mb-4">
-            {data.profession && (
+            {profileDetails?.profession && (
               <div className="flex items-center text-sm text-white/70">
                 <Briefcase className="w-4 h-4 mr-2 text-purple-300" />
                 <span>
-                  {data.profession}
-                  {data.company && ` at ${data.company}`}
+                  {capitalizeFirstLetter(profileDetails?.profession)}
+                  {profileDetails?.profession &&
+                    ` at ${capitalizeFirstLetter(
+                      profileDetails?.organization
+                    )}`}
                 </span>
               </div>
             )}
-            {data.education && (
+            {profileDetails?.education && (
               <div className="flex items-center text-sm text-white/70">
                 <GraduationCap className="w-4 h-4 mr-2 text-indigo-300" />
-                <span>{data.education}</span>
+                <span>{capitalizeFirstLetter(profileDetails?.education)}</span>
               </div>
             )}
           </div>
 
           {/* Looking for */}
-          {data.lookingFor.length > 0 && (
-            <div className="mb-4">
-              <div className="flex items-center text-sm text-white/70 mb-2">
-                <Heart className="w-4 h-4 mr-2 text-pink-300" />
-                <span>Looking for</span>
+          {profileDetails?.lookingFor?.length &&
+            profileDetails?.lookingFor?.length > 0 && (
+              <div className="mb-4">
+                <div className="flex items-center text-sm text-white/70 mb-2">
+                  <Heart className="w-4 h-4 mr-2 text-pink-300" />
+                  <span>Looking for</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profileDetails?.lookingFor.map((item, i) => (
+                    <Badge
+                      key={i}
+                      variant="outline"
+                      className="border-white/30 text-white text-xs bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm"
+                    >
+                      {item.replace("-", " ")}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {data.lookingFor.map((item, i) => (
-                  <Badge
-                    key={i}
-                    variant="outline"
-                    className="border-white/30 text-white text-xs bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm"
-                  >
-                    {item.replace("-", " ")}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
+            )}
 
           {/* Interests */}
-          {data.hobbies.length > 0 && (
-            <div className="mb-4">
-              <div className="flex items-center text-sm text-white/70 mb-2">
-                <Star className="w-4 h-4 mr-2 text-yellow-300" />
-                <span>Interests</span>
+          {profileDetails?.interest?.length &&
+            profileDetails?.interest?.length > 0 && (
+              <div className="mb-4">
+                <div className="flex items-center text-sm text-white/70 mb-2">
+                  <Star className="w-4 h-4 mr-2 text-yellow-300" />
+                  <span>Interests</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {profileDetails?.interest?.slice(0, 6).map((hobby, i) => (
+                    <Badge
+                      key={i}
+                      variant="outline"
+                      className="border-white/20 text-white/90 text-xs bg-white/5 px-3 py-1 rounded-full"
+                    >
+                      {capitalizeFirstLetter(hobby)}
+                    </Badge>
+                  ))}
+                  {profileDetails?.interest?.length > 6 && (
+                    <Badge
+                      variant="outline"
+                      className="text-xs bg-white/10 text-white"
+                    >
+                      +{profileDetails?.interest?.length - 6} more
+                    </Badge>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {data.hobbies.slice(0, 6).map((hobby, i) => (
-                  <Badge
-                    key={i}
-                    variant="outline"
-                    className="border-white/20 text-white/90 text-xs bg-white/5 px-3 py-1 rounded-full"
-                  >
-                    {hobby}
-                  </Badge>
-                ))}
-                {data.hobbies.length > 6 && (
-                  <Badge variant="outline" className="text-xs bg-white/10 text-white">
-                    +{data.hobbies.length - 6} more
-                  </Badge>
-                )}
-              </div>
-            </div>
-          )}
+            )}
 
           {/* Preferences */}
           <div className="flex items-center text-xs text-white/60 mt-4">
             <Users className="w-3 h-3 mr-2 text-purple-300" />
             <span>
-              Interested in {data.interestedIn.join(", ") || "All"} • Ages{" "}
-              {data.ageRange[0]}–{data.ageRange[1]} • Within {data.distanceRange}
+              Interested in {profileDetails?.interest.join(", ") || "All"} •
+              Ages {profileDetails?.preferredAge?.min}–
+              {profileDetails?.preferredAge?.max} • Within{" "}
+              {profileDetails?.preferredDistance}
               km
             </span>
           </div>

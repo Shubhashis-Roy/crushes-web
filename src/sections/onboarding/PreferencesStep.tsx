@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
-import { OnboardingData } from "./OnboardingFlow";
 
 interface PreferencesStepProps {
-  data: OnboardingData;
-  updateData: (data: Partial<OnboardingData>) => void;
+  data: OnboardingDataTypes;
+  updateData: (data: Partial<OnboardingDataTypes>) => void;
   onNext: () => void;
   onPrev: () => void;
 }
 
-const PreferencesStep: React.FC<PreferencesStepProps> = ({ data, updateData }) => {
+const PreferencesStep: React.FC<PreferencesStepProps> = ({
+  data,
+  updateData,
+}) => {
   const [formData, setFormData] = useState({
     lookingFor: data.lookingFor || [],
     ageRange: data.ageRange || [18, 35],
@@ -38,7 +40,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ data, updateData }) =
     }));
   };
 
-  // 🌈 Single-value gradient slider (for distance)
+  // Single-value gradient slider (for distance)
   const GradientSlider = ({
     label,
     min,
@@ -178,7 +180,9 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({ data, updateData }) =
             Preferences
           </span>
         </h2>
-        <p className="text-white/80 text-base">Let us know what suits you best 💫</p>
+        <p className="text-white/80 text-base">
+          Let us know what suits you best 💫
+        </p>
       </div>
 
       <div className="w-full max-w-lg space-y-10 text-left">

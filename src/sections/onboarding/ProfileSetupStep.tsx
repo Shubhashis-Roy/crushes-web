@@ -3,11 +3,10 @@ import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
 import { Textarea } from "../../components/ui/textarea";
 import { X, Camera } from "lucide-react";
-import { OnboardingData } from "./OnboardingFlow";
 
 interface ProfileSetupStepProps {
-  data: OnboardingData;
-  updateData: (data: Partial<OnboardingData>) => void;
+  data: OnboardingDataTypes;
+  updateData: (data: Partial<OnboardingDataTypes>) => void;
   onNext: () => void;
   onPrev: () => void;
 }

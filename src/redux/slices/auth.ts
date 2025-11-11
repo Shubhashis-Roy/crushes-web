@@ -107,6 +107,7 @@ export const signup = (payload: signUpPayloadTypes) => async () => {
     //     userDetails: response?.data?.response?.user,
     //   })
     // );
+    return response;
   } catch (error) {
     const axiosError = error as AxiosErrorResponseTypes;
     errorHandle({ error: axiosError, label: "signup API Error:" });

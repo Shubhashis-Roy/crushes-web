@@ -16,7 +16,7 @@ const initialState: userStateTypes = {
     dateOfBirth: "",
     city: "",
     gender: "",
-    interest: "",
+    interest: [],
     photoUrl: [],
     createdAt: "",
     updatedAt: "",
@@ -30,7 +30,7 @@ const initialState: userStateTypes = {
     dateOfBirth: "",
     city: "",
     gender: "",
-    interest: "",
+    interest: [],
     photoUrl: [],
     createdAt: "",
     updatedAt: "",
@@ -113,6 +113,8 @@ export const updateUserProfile =
           data: response?.data,
         })
       );
+
+      return response;
     } catch (error) {
       const axiosError = error as AxiosErrorResponseTypes;
       errorHandle({ error: axiosError, label: "updateUserProfile API Error:" });

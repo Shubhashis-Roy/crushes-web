@@ -13,12 +13,23 @@ declare interface profileDetailsTypes {
   dateOfBirth: string;
   city: string;
   gender: string;
-  interest: string;
+  interest: string[];
   photoUrl: string[];
   bio?: string;
+  profession?: string;
+  organization?: string;
+  education?: string;
+  lookingFor?: string[];
+  preferredAge?: preferredAgeType;
+  preferredDistance?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+interface preferredAgeType {
+  min: number;
+  max: number;
 }
 
 declare interface updateProfilePayloadTypes {
@@ -29,4 +40,11 @@ declare interface updateProfilePayloadTypes {
   gender?: string;
   interest?: string;
   bio?: string;
+  interest?: string;
+  profession?: string;
+  organization?: string;
+  education?: string;
+  lookingFor?: string[];
+  preferredAge?: preferredAgeType;
+  preferredDistance?: number;
 }

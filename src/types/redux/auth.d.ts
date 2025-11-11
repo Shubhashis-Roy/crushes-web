@@ -53,7 +53,7 @@ declare interface signUpPayloadTypes {
   password: string;
   dob: string;
   city: string;
-  interest: string;
+  interest: string[];
   gender: string;
 }
 
