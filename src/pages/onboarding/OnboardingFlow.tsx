@@ -17,6 +17,7 @@ import { dispatch } from "@redux/store";
 import { updateUserProfile } from "@redux/slices/user";
 import { signup } from "@redux/slices/auth";
 import { dobFormatter } from "@utils/age";
+import { PATH } from "@constants/path";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -74,7 +75,9 @@ const OnboardingFlow: React.FC = () => {
     { component: PreviewStep, title: "Preview" },
   ];
 
-  const totalSteps = steps.length - 1;
+  // console.log(steps.length, "steps leng hlo=====");
+
+  const totalSteps = steps.length;
   const CurrentStepComponent = steps[currentStep].component;
 
   // Next Step Handler
@@ -143,13 +146,13 @@ const OnboardingFlow: React.FC = () => {
     }
 
     if (currentStep === 4) {
-      navigate("/feed");
+      navigate(PATH.FEED);
     }
   };
 
   const prevStep = () => {
     if (currentStep === 0) {
-      navigate("/");
+      navigate(PATH.HOME);
       return;
     }
 
@@ -188,13 +191,13 @@ const OnboardingFlow: React.FC = () => {
               <div
                 key={i}
                 className={`h-2 w-10 rounded-full ${
-                  i < currentStep ? "bg-white" : "bg-pink-200/60"
+                  i <= currentStep ? "bg-white" : "bg-pink-200/60"
                 }`}
               />
             ))}
           </div>
           <p className="text-xs text-white opacity-90">
-            Step {currentStep} of {totalSteps}
+            Step {currentStep + 1} of {totalSteps}
           </p>
         </div>
       </div>

@@ -75,7 +75,25 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
       </div>
 
       {/* Form */}
+
       <div className="w-full max-w-lg space-y-8 text-left">
+        {/* Name */}
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 text-pink-200 font-medium">
+            <FaUser /> Your Name
+          </Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
+          />
+        </div>
+
         {/* Email */}
         <div className="space-y-2">
           <Label className="flex items-center gap-2 text-pink-200 font-medium">
@@ -105,23 +123,6 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
             value={formData.password}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, password: e.target.value }))
-            }
-            className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
-          />
-        </div>
-
-        {/* Name */}
-        <div className="space-y-2">
-          <Label className="flex items-center gap-2 text-pink-200 font-medium">
-            <FaUser /> Your Name
-          </Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Enter your full name"
-            value={formData.name}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, name: e.target.value }))
             }
             className="h-12 text-base rounded-full bg-white/10 border-white/20 text-white placeholder-white/50 focus:ring-pink-400 focus:border-pink-400"
           />
