@@ -50,7 +50,6 @@ const UserCard: React.FC<UserCardProps> = ({
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
   const handleSendRequest = async (status: string) => {
-    // console.log(status, "status handleSendRequest hlo");
     if (status === "ignored") {
       const res = await dispatch(
         sendRequest({
@@ -79,10 +78,11 @@ const UserCard: React.FC<UserCardProps> = ({
       api.start({ x: down ? mx : 0, rot: down ? mx / 20 : 0, immediate: down });
     },
     onDragEnd: ({ movement: [mx], direction: [xDir], velocity }) => {
+      const dir = xDir || (mx > 0 ? 1 : mx < 0 ? -1 : 0);
+
       const swipeThreshold = 120;
       const velocityThreshold = 0.4;
 
-      // if (Math.abs(mx) < swipeThreshold || velocity < velocityThreshold) {
       if (
         Math.abs(mx) < swipeThreshold ||
         Number(velocity) < velocityThreshold
@@ -91,16 +91,14 @@ const UserCard: React.FC<UserCardProps> = ({
         return;
       }
 
-      if (xDir > 0) {
+      if (dir > 0) {
         setShowLove(true);
-        setTimeout(() => setShowLove(false), 1000);
+        setTimeout(() => setShowLove(false), 3000);
         handleSendRequest("interested");
-        // console.log("interested hlo");
-      } else {
+      } else if (dir < 0) {
         setShowNo(true);
-        setTimeout(() => setShowNo(false), 1000);
+        setTimeout(() => setShowNo(false), 3000);
         handleSendRequest("ignored");
-        // console.log("ignored hlo");
       }
 
       api.start({ x: xDir > 0 ? 500 : -500, rot: xDir > 0 ? 15 : -15 });

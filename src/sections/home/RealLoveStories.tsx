@@ -1,15 +1,19 @@
-// import React from "react";
-import PropTypes from "prop-types";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { loveStories } from "@schema/loveStories";
+import { FC } from "react";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/autoplay";
 
-// LoveStoryCard component
-const LoveStoryCard = ({ name, image, story }) => (
+interface LoveStoryCardpProps {
+  name: string;
+  image: string;
+  story: string;
+}
+
+const LoveStoryCard: FC<LoveStoryCardpProps> = ({ name, image, story }) => (
   <div className="w-full bg-gradient-to-br from-pink-100 via-red-100 to-pink-200 shadow-lg rounded-2xl p-4 transition-transform hover:scale-105 duration-300">
     <img
       src={image}
@@ -25,13 +29,6 @@ const LoveStoryCard = ({ name, image, story }) => (
     </div>
   </div>
 );
-
-// Prop validation
-LoveStoryCard.propTypes = {
-  name: PropTypes.string.isRequired,
-  image: PropTypes.string.isRequired,
-  story: PropTypes.string.isRequired,
-};
 
 const RealLoveStories = () => {
   return (

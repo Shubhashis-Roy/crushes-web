@@ -13,8 +13,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   activeChatUserId,
 }) => {
   const [chatList, setChatList] = useState([]);
-  const [activeTab, setActiveTab] = useState("chats");
-  const [showNoUserMsg, setShowNoUserMsg] = useState(false);
+  const [activeTab, setActiveTab] = useState("connections");
   const [showCall, setShowCall] = useState(false);
   const [callTarget, setCallTarget] = useState<chatUserDetailsTypes | null>(
     null
@@ -25,10 +24,19 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   async function fetchChatUsers() {
     const users = await dispatch(getChatUserList());
     setChatList(users);
+    if (users?.length) {
+      setActiveTab("chats");
+    }
+  }
+
+  async function fetchConnections() {
+    const res = await dispatch(getAllConnections());
+    setChatList(res);
   }
 
   useEffect(() => {
     fetchChatUsers();
+    fetchConnections();
   }, []);
 
   const handleRecentChats = () => {
@@ -38,10 +46,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
   const handleAllConnections = () => {
     setActiveTab("connections");
-    async function fetchConnections() {
-      const res = await dispatch(getAllConnections());
-      setChatList(res);
-    }
     fetchConnections();
   };
 
@@ -76,74 +80,68 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
         {/* Chat List */}
         <ul className="divide-y divide-white/10 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-pink-400/40 scrollbar-track-transparent">
-          {showNoUserMsg ? (
-            <li className="text-center text-white/70 py-5 italic">
-              No users found 🙃
-            </li>
-          ) : chatList.length > 0 ? (
-            chatList.map((chat: chatUserDetailsTypes) => {
-              const isActive = activeChatUserId === chat._id;
-              return (
-                <li
-                  key={chat._id}
-                  onClick={() => handleChat(chat)}
-                  className={`cursor-pointer flex items-center gap-3 px-4 py-3 transition-all group ${
-                    isActive
-                      ? "bg-pink-500/20 shadow-[inset_0_0_10px_rgba(236,72,153,0.5)]"
-                      : "hover:bg-white/10"
-                  }`}
-                >
-                  {chat.photoUrl?.length > 0 ? (
-                    <img
-                      src={chat.photoUrl[0]}
-                      alt={chat.firstName}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-500/50 text-white font-bold">
-                      {chat?.firstName?.[0]?.toUpperCase() || "?"}
-                    </div>
-                  )}
-
-                  {sidebarOpen && (
-                    <div className="flex-1 min-w-0 flex items-center justify-between">
-                      <div>
-                        <p className="text-white font-medium truncate group-hover:text-pink-300">
-                          {chat.firstName} {chat.lastName}
-                        </p>
-                        <p className="text-xs text-white/50 truncate italic">
-                          {chat?.lastMessage
-                            ? chat?.lastMessage?.text
-                            : "Tap to chat"}
-                        </p>
+          {chatList.length > 0
+            ? chatList.map((chat: chatUserDetailsTypes) => {
+                const isActive = activeChatUserId === chat._id;
+                return (
+                  <li
+                    key={chat._id}
+                    onClick={() => handleChat(chat)}
+                    className={`cursor-pointer flex items-center gap-3 px-4 py-3 transition-all group ${
+                      isActive
+                        ? "bg-pink-500/20 shadow-[inset_0_0_10px_rgba(236,72,153,0.5)]"
+                        : "hover:bg-white/10"
+                    }`}
+                  >
+                    {chat.photoUrl?.length > 0 ? (
+                      <img
+                        src={chat.photoUrl[0]}
+                        alt={chat.firstName}
+                        className="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-500/50 text-white font-bold">
+                        {chat?.firstName?.[0]?.toUpperCase() || "?"}
                       </div>
+                    )}
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStartVideoCall(chat);
-                        }}
-                        className="ml-3 p-2 rounded-full hover:bg-pink-500/20 text-pink-300 hover:text-pink-200 transition-all"
-                        title="Start Video Call"
-                      >
-                        <FaVideo size={16} />
-                      </button>
-                    </div>
-                  )}
+                    {sidebarOpen && (
+                      <div className="flex-1 min-w-0 flex items-center justify-between">
+                        <div>
+                          <p className="text-white font-medium truncate group-hover:text-pink-300">
+                            {chat.firstName} {chat.lastName}
+                          </p>
+                          <p className="text-xs text-white/50 truncate italic">
+                            {chat?.lastMessage
+                              ? chat?.lastMessage?.text
+                              : "Tap to chat"}
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartVideoCall(chat);
+                          }}
+                          className="ml-3 p-2 rounded-full hover:bg-pink-500/20 text-pink-300 hover:text-pink-200 transition-all"
+                          title="Start Video Call"
+                        >
+                          <FaVideo size={16} />
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                );
+              })
+            : sidebarOpen && (
+                <li className="text-white/50 text-sm px-4 py-4 text-center italic">
+                  {activeTab === "chats"
+                    ? "No recent chats 💬"
+                    : activeTab === "video"
+                    ? "No users found 🙃"
+                    : "No connections yet 🤝"}
                 </li>
-              );
-            })
-          ) : (
-            sidebarOpen && (
-              <li className="text-white/50 text-sm px-4 py-4 text-center italic">
-                {activeTab === "chats"
-                  ? "No recent chats 💬"
-                  : activeTab === "video"
-                  ? "No users found 🙃"
-                  : "No connections yet 🤝"}
-              </li>
-            )
-          )}
+              )}
         </ul>
       </aside>
       {showCall && callTarget && (
