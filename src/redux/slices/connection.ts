@@ -9,6 +9,20 @@ const initialState: connectionStateTypes = {
   isLoading: false,
   error: "",
   connections: [],
+  interestConnections: {
+    _id: "",
+    fromUserId: "",
+    toUserId: "",
+    status: "",
+    createdAt: "",
+  },
+  ignoreConnections: {
+    _id: "",
+    fromUserId: "",
+    toUserId: "",
+    status: "",
+    createdAt: "",
+  },
 };
 
 // ----------------------------------------------------------------------
@@ -31,6 +45,12 @@ const slice = createSlice({
     getConnectionsSuccess(state, action) {
       state.isLoading = false;
       state.connections = action.payload.data;
+    },
+
+    // ADD INTERESTED USER
+    getInterestedUserSuccess(state, action) {
+      state.isLoading = false;
+      state.interestConnections = action.payload.data;
     },
   },
 });
@@ -65,3 +85,35 @@ export const getAllConnections = () => async () => {
     );
   }
 };
+
+// Send request for interest/ignore
+export const sendRequest =
+  (sendRequestParams: sendRequestParamsType) => async () => {
+    try {
+      const response = await axiosInstance.post(
+        `/request/send/${sendRequestParams.status}/${sendRequestParams.id}`
+      );
+      // console.log(response?.data, "send req hlo ===========");
+
+      return response;
+
+      if (sendRequestParams?.status === "interested") {
+        dispatch(
+          slice.actions.getInterestedUserSuccess({
+            data: response?.data?.data,
+          })
+        );
+      }
+
+      return response?.data?.data;
+    } catch (error) {
+      const axiosError = error as AxiosErrorResponseTypes;
+      errorHandle({ error: axiosError, label: "sendRequest API Error:" });
+      const errorData = axiosError?.response?.data as ErrorResponseTypes;
+      dispatch(
+        slice.actions.hasError({
+          error: axiosError?.response?.data || "Something went wrong",
+        })
+      );
+    }
+  };

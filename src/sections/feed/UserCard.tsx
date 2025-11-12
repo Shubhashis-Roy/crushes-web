@@ -8,12 +8,15 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import { dispatch } from "@redux/store";
+import { sendRequest } from "@redux/slices/connection";
 
 interface UserCardProps {
   user: feedDetailsTypes;
   onShowDetails: () => void;
   onHideDetails: () => void;
   isDetailsVisible: boolean;
+  setUsers: React.Dispatch<React.SetStateAction<feedDetailsTypes[]>>;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -21,6 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({
   onShowDetails,
   onHideDetails,
   isDetailsVisible,
+  setUsers,
 }) => {
   const { _id, firstName, dateOfBirth, city, photoUrl } = user;
 
@@ -45,7 +49,29 @@ const UserCard: React.FC<UserCardProps> = ({
   const [showNo, setShowNo] = useState(false);
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
-  const handleSendRequest = (status: string) => {};
+  const handleSendRequest = async (status: string) => {
+    // console.log(status, "status handleSendRequest hlo");
+    if (status === "ignored") {
+      const res = await dispatch(
+        sendRequest({
+          id: _id,
+          status: "ignored",
+        })
+      );
+      if (res?.status !== 200) return;
+      setUsers((prev: feedDetailsTypes[]) => prev.slice(1));
+    }
+    if (status === "interested") {
+      const res = await dispatch(
+        sendRequest({
+          id: _id,
+          status: "interested",
+        })
+      );
+      if (res?.status !== 200) return;
+      setUsers((prev: feedDetailsTypes[]) => prev.slice(1));
+    }
+  };
 
   // Gesture for swipe
   const bind = useGesture({
@@ -69,10 +95,12 @@ const UserCard: React.FC<UserCardProps> = ({
         setShowLove(true);
         setTimeout(() => setShowLove(false), 1000);
         handleSendRequest("interested");
+        // console.log("interested hlo");
       } else {
         setShowNo(true);
         setTimeout(() => setShowNo(false), 1000);
         handleSendRequest("ignored");
+        // console.log("ignored hlo");
       }
 
       api.start({ x: xDir > 0 ? 500 : -500, rot: xDir > 0 ? 15 : -15 });
@@ -115,7 +143,7 @@ const UserCard: React.FC<UserCardProps> = ({
           rotateZ: rot,
           touchAction: "none",
         }}
-        className="relative w-[380px] h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
+        className="relative w-[340px] h-[530px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
                    bg-black/40 backdrop-blur-md cursor-grab"
       >
         {/* ============== Photo Progress Bar ============== */}
@@ -179,7 +207,11 @@ const UserCard: React.FC<UserCardProps> = ({
             <div>
               <h2 className="text-2xl font-bold text-white">
                 {firstName}
-                {age && <span className="text-white/80 text-lg"> • {age}</span>}
+                {Number(age) > 0 && (
+                  <span className="text-white/90 text-[24px] pl-2">
+                    • {age}
+                  </span>
+                )}
               </h2>
               {city && <p className="text-sm text-white/80">{city}</p>}
             </div>

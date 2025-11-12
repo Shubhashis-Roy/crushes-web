@@ -2,6 +2,8 @@ declare interface connectionStateTypes {
   isLoading: boolean;
   error: string | ErrorType;
   connections: connectionsDetailsTypes[];
+  interestConnections: interestConnectionsTypes;
+  ignoreConnections: interestConnectionsTypes;
 }
 
 declare interface connectionsDetailsTypes {
@@ -15,4 +17,17 @@ declare interface connectionsDetailsTypes {
   gender?: string;
   interest?: string;
   bio?: string;
+}
+
+declare interface sendRequestParamsType {
+  status: "ignored" | "interested";
+  id: string;
+}
+
+declare interface interestConnectionsTypes {
+  _id: string;
+  fromUserId: string;
+  toUserId: string;
+  status: string;
+  createdAt: string;
 }
