@@ -31,7 +31,7 @@ const UserDetailsCard: React.FC<UserDetailsCardProps> = ({ user, onClose }) => {
           </h2>
 
           <p className="text-sm text-white/70 mb-1">
-            {age && `${age}, `} {user?.gender}
+            {Number(age) > 0 && `${age}, `} {user?.gender}
           </p>
 
           <p className="text-white/90 mb-3">{user?.city}</p>

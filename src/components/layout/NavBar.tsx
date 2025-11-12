@@ -1,18 +1,20 @@
-import PropTypes from "prop-types";
-import axios from "axios";
-import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
 import { useState } from "react";
-import { IoChatbubbleEllipsesOutline, IoMenu, IoClose } from "react-icons/io5";
+import {
+  IoChatbubbleEllipsesOutline,
+  IoMenu,
+  IoClose,
+  IoVideocamOutline,
+} from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { store, useSelector } from "@redux/store";
 import Logout from "@sections/profile/Logout";
+import { PATH } from "@constants/path";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.auth.userDetails);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,8 +36,6 @@ const NavBar = ({ showMinimal = false }) => {
         ? "bg-white text-pink-700 shadow-md"
         : "text-white/90 hover:text-yellow-300 hover:bg-white/10"
     }`;
-
-  const handleChatNavigate = () => navigate("/chat");
 
   return (
     <>
@@ -74,10 +74,17 @@ const NavBar = ({ showMinimal = false }) => {
           {!showMinimal && user && user.firstName && (
             <div className="flex items-center gap-4">
               {!isChatPage && (
-                <IoChatbubbleEllipsesOutline
-                  onClick={handleChatNavigate}
-                  className="text-3xl cursor-pointer font-extrabold text-yellow-300 hover:text-pink-200 transition-all duration-300 hover:scale-110"
-                />
+                <>
+                  <IoVideocamOutline
+                    size={36}
+                    onClick={() => navigate(PATH.CHAT)}
+                    className="text-3xl cursor-pointer font-extrabold text-yellow-300 hover:text-pink-200 transition-all duration-300 hover:scale-110"
+                  />
+                  <IoChatbubbleEllipsesOutline
+                    onClick={() => navigate(PATH.CHAT)}
+                    className="text-3xl cursor-pointer font-extrabold text-yellow-300 hover:text-pink-200 transition-all duration-300 hover:scale-110"
+                  />
+                </>
               )}
               <span className="text-sm font-semibold text-white/90 hidden sm:block">
                 Hi, {user.firstName?.toUpperCase()}
@@ -98,7 +105,7 @@ const NavBar = ({ showMinimal = false }) => {
         </div>
       </motion.header>
 
-      {/* ✅ Sidebar */}
+      {/* ========= Sidebar ========== */}
       <AnimatePresence>
         {!showMinimal && sidebarOpen && user && (
           <>
@@ -193,10 +200,6 @@ const NavBar = ({ showMinimal = false }) => {
       )}
     </>
   );
-};
-
-NavBar.propTypes = {
-  showMinimal: PropTypes.bool,
 };
 
 export default NavBar;

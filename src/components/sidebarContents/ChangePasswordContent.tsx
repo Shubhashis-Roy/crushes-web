@@ -10,7 +10,9 @@ const ChangePasswordContent = () => (
         <label className="block mb-1">New Password</label>
         <input type="password" className="w-full border rounded p-2" />
       </div>
-      <button className="bg-pink-600 text-white px-4 py-2 rounded">Update Password</button>
+      <button className="bg-pink-600 text-white px-4 py-2 rounded">
+        Update Password
+      </button>
     </form>
   </div>
 );

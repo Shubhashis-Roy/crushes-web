@@ -1,5 +1,10 @@
 import { IoSend } from "react-icons/io5";
 import chatDark from "@assets/bg-chatUI.jpg";
+import { useEffect, useState } from "react";
+import { dispatch } from "@redux/store";
+import { getAllConnections } from "@redux/slices/connection";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "@constants/path";
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages = [],
@@ -14,6 +19,19 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   isOnline,
   loading,
 }) => {
+  const [connections, setConnections] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchConnections() {
+      const res = await dispatch(getAllConnections());
+      setConnections(res);
+    }
+
+    fetchConnections();
+  }, []);
+
   const hasChat = !!chatPartner;
 
   return (
@@ -55,47 +73,70 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
       {/* Messages */}
       <main className="flex-1 overflow-y-auto px-6 py-4 space-y-3 relative z-10 scrollbar-thin scrollbar-thumb-pink-400/30 scrollbar-track-transparent">
-        {!hasChat ? (
-          <div className="flex h-full items-center justify-center text-white/50 italic">
-            💬 Start chatting to see messages here...
-          </div>
-        ) : loading ? (
-          <div className="flex h-full items-center justify-center text-white/50 italic animate-pulse">
-            Loading messages...
-          </div>
-        ) : messages.length === 0 ? (
-          <div className="flex h-full items-center justify-center text-white/50 italic">
-            No messages yet — say hello 👋
+        {!connections?.length ? (
+          <div className="flex flex-col h-full items-center justify-center text-center">
+            <p className="text-white text-lg font-medium mb-4">
+              ✨No connections yet, make connections and enjoy unlimited
+              chatting and video calls!
+            </p>
+
+            <button
+              className="px-6 py-2 rounded-lg text-white font-semibold 
+               bg-gradient-to-r from-pink-500 to-red-500 
+               shadow-md hover:opacity-90 transition-all"
+              onClick={() => navigate(PATH.FEED)}
+            >
+              Discover
+            </button>
           </div>
         ) : (
-          messages.map((msg: MessageTypes, idx: number) => {
-            const isOwn = user.firstName === msg.firstName;
-            return (
-              <div
-                key={idx}
-                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`px-3 py-2 max-w-[60%] text-sm rounded-xl shadow-md backdrop-blur-sm ${
-                    isOwn
-                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-tr-none"
-                      : "bg-white/10 text-white rounded-tl-none"
-                  }`}
-                >
-                  {msg.text}
-                  <div className="text-[10px] text-white/50 text-right mt-1">
-                    {msg.createdAt
-                      ? new Date(msg.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : ""}
-                  </div>
-                </div>
+          <>
+            {!hasChat ? (
+              <div className="flex h-full items-center justify-center text-white/50 italic">
+                💬 Start chatting to see messages here...
               </div>
-            );
-          })
+            ) : loading ? (
+              <div className="flex h-full items-center justify-center text-white/50 italic animate-pulse">
+                Loading messages...
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="flex h-full items-center justify-center text-white/50 italic">
+                No messages yet — say hello 👋
+              </div>
+            ) : (
+              messages.map((msg: MessageTypes, idx: number) => {
+                const isOwn = user.firstName === msg.firstName;
+                return (
+                  <div
+                    key={idx}
+                    className={`flex ${
+                      isOwn ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`px-3 py-2 max-w-[60%] text-sm rounded-xl shadow-md backdrop-blur-sm ${
+                        isOwn
+                          ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-tr-none"
+                          : "bg-white/10 text-white rounded-tl-none"
+                      }`}
+                    >
+                      {msg.text}
+                      <div className="text-[10px] text-white/50 text-right mt-1">
+                        {msg.createdAt
+                          ? new Date(msg.createdAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : ""}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </>
         )}
+
         <div ref={messagesEndRef} />
       </main>
 

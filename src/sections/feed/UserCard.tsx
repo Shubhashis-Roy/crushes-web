@@ -8,12 +8,15 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import { dispatch } from "@redux/store";
+import { sendRequest } from "@redux/slices/connection";
 
 interface UserCardProps {
   user: feedDetailsTypes;
   onShowDetails: () => void;
   onHideDetails: () => void;
   isDetailsVisible: boolean;
+  setUsers: React.Dispatch<React.SetStateAction<feedDetailsTypes[]>>;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -21,6 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({
   onShowDetails,
   onHideDetails,
   isDetailsVisible,
+  setUsers,
 }) => {
   const { _id, firstName, dateOfBirth, city, photoUrl } = user;
 
@@ -45,7 +49,28 @@ const UserCard: React.FC<UserCardProps> = ({
   const [showNo, setShowNo] = useState(false);
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
-  const handleSendRequest = (status: string) => {};
+  const handleSendRequest = async (status: string) => {
+    if (status === "ignored") {
+      const res = await dispatch(
+        sendRequest({
+          id: _id,
+          status: "ignored",
+        })
+      );
+      if (res?.status !== 200) return;
+      setUsers((prev: feedDetailsTypes[]) => prev.slice(1));
+    }
+    if (status === "interested") {
+      const res = await dispatch(
+        sendRequest({
+          id: _id,
+          status: "interested",
+        })
+      );
+      if (res?.status !== 200) return;
+      setUsers((prev: feedDetailsTypes[]) => prev.slice(1));
+    }
+  };
 
   // Gesture for swipe
   const bind = useGesture({
@@ -53,10 +78,11 @@ const UserCard: React.FC<UserCardProps> = ({
       api.start({ x: down ? mx : 0, rot: down ? mx / 20 : 0, immediate: down });
     },
     onDragEnd: ({ movement: [mx], direction: [xDir], velocity }) => {
+      const dir = xDir || (mx > 0 ? 1 : mx < 0 ? -1 : 0);
+
       const swipeThreshold = 120;
       const velocityThreshold = 0.4;
 
-      // if (Math.abs(mx) < swipeThreshold || velocity < velocityThreshold) {
       if (
         Math.abs(mx) < swipeThreshold ||
         Number(velocity) < velocityThreshold
@@ -65,13 +91,13 @@ const UserCard: React.FC<UserCardProps> = ({
         return;
       }
 
-      if (xDir > 0) {
+      if (dir > 0) {
         setShowLove(true);
-        setTimeout(() => setShowLove(false), 1000);
+        setTimeout(() => setShowLove(false), 3000);
         handleSendRequest("interested");
-      } else {
+      } else if (dir < 0) {
         setShowNo(true);
-        setTimeout(() => setShowNo(false), 1000);
+        setTimeout(() => setShowNo(false), 3000);
         handleSendRequest("ignored");
       }
 
@@ -115,7 +141,7 @@ const UserCard: React.FC<UserCardProps> = ({
           rotateZ: rot,
           touchAction: "none",
         }}
-        className="relative w-[380px] h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
+        className="relative w-[340px] h-[530px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
                    bg-black/40 backdrop-blur-md cursor-grab"
       >
         {/* ============== Photo Progress Bar ============== */}
@@ -179,7 +205,11 @@ const UserCard: React.FC<UserCardProps> = ({
             <div>
               <h2 className="text-2xl font-bold text-white">
                 {firstName}
-                {age && <span className="text-white/80 text-lg"> • {age}</span>}
+                {Number(age) > 0 && (
+                  <span className="text-white/90 text-[24px] pl-2">
+                    • {age}
+                  </span>
+                )}
               </h2>
               {city && <p className="text-sm text-white/80">{city}</p>}
             </div>

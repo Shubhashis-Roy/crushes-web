@@ -7,7 +7,7 @@ import { getFeed } from "@redux/slices/feed";
 import UserDetailsCard from "@sections/feed/UserDetailsCard";
 
 const Feed = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<feedDetailsTypes[]>([]);
   const [selectedUser, setSelectedUser] = useState<feedDetailsTypes | null>(
     null
   );
@@ -29,10 +29,9 @@ const Feed = () => {
     );
   }
 
-  const handleSwipe = (direction: string, swipedUser: feedDetailsTypes) => {
-    setUsers((prev) => prev.slice(1));
-    console.log(`Swiped ${direction} on ${swipedUser.firstName}`);
-  };
+  // const handleSwipe = (direction: string, swipedUser: feedDetailsTypes) => {
+  //   setUsers((prev) => prev.slice(1));
+  // };
 
   return (
     <div
@@ -74,17 +73,18 @@ const Feed = () => {
                   drag={isTop ? "x" : false}
                   dragConstraints={{ left: 0, right: 0 }}
                   dragElastic={1}
-                  onDragEnd={(e, info) => {
-                    if (info.offset.x > 150) handleSwipe("right", user);
-                    else if (info.offset.x < -150) handleSwipe("left", user);
-                  }}
+                  // onDragEnd={(e, info) => {
+                  //   if (info.offset.x > 150) handleSwipe("right", user);
+                  //   else if (info.offset.x < -150) handleSwipe("left", user);
+                  // }}
                   whileTap={{ scale: 0.98 }}
-                  className="cursor-grab active:cursor-grabbing"
+                  className="cursor-grab active:cursor-grabbing mt-10"
                 >
                   <UserCard
                     user={user}
                     onShowDetails={() => setSelectedUser(user)}
                     onHideDetails={() => setSelectedUser(null)}
+                    setUsers={setUsers}
                     isDetailsVisible={selectedUser?._id === user._id}
                   />
                 </motion.div>
