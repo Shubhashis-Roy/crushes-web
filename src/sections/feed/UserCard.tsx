@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { dispatch } from "@redux/store";
 import { sendRequest } from "@redux/slices/connection";
+import { capitalizeFirstLetter } from "@utils/string";
 
 interface UserCardProps {
   user: feedDetailsTypes;
@@ -204,14 +205,18 @@ const UserCard: React.FC<UserCardProps> = ({
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold text-white">
-                {firstName}
+                {capitalizeFirstLetter(firstName)}
                 {Number(age) > 0 && (
                   <span className="text-white/90 text-[24px] pl-2">
                     • {age}
                   </span>
                 )}
               </h2>
-              {city && <p className="text-sm text-white/80">{city}</p>}
+              {city && (
+                <p className="text-sm text-white/80">
+                  {capitalizeFirstLetter(city)}
+                </p>
+              )}
             </div>
           </div>
 

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { dispatch } from "@redux/store";
 import { getProfile } from "@redux/slices/user";
-import Logout from "@sections/profile/Logout";
 import EditProfile from "@sections/profile/EditProfile";
 import ManageImages from "@sections/profile/ManageImages";
 import MyMatch from "@sections/profile/MyMatch";
 import DeleteAccount from "@sections/profile/DeleteAccount";
+import Logout from "@components/auth/Logout";
 
 const Profile = () => {
   const [user, setUser] = useState<profileDetailsTypes>();
