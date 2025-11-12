@@ -15,6 +15,7 @@ const Logout: React.FC<logoutProps> = ({ setShowLogoutConfirm }) => {
   const handleLogout = async () => {
     const statusCode = await dispatch(logout());
     if (statusCode === 200) {
+      setShowLogoutConfirm(false);
       navigate(PATH.LOGIN);
     }
   };

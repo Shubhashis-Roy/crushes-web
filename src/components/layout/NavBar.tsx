@@ -1,25 +1,23 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
 import { useState } from "react";
-import {
-  IoChatbubbleEllipsesOutline,
-  IoMenu,
-  IoClose,
-  IoVideocamOutline,
-} from "react-icons/io5";
-import { motion, AnimatePresence } from "framer-motion";
-import { store, useSelector } from "@redux/store";
-import Logout from "@sections/profile/Logout";
-import { PATH } from "@constants/path";
+import { IoMenu } from "react-icons/io5";
+import { motion } from "framer-motion";
+import { useSelector } from "@redux/store";
+import Logout from "../auth/Logout";
+import ProfileMenu from "@components/sidebarContents/ProfileMenu";
+import SidebarMenu from "@components/sidebarContents/sideBarMenu";
+import NavRightSection from "@components/sidebarContents/NavRightSection";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.auth.userDetails);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const isFeedPage =
     location.pathname === "/" ||
@@ -36,6 +34,10 @@ const NavBar = ({ showMinimal = false }) => {
         ? "bg-white text-pink-700 shadow-md"
         : "text-white/90 hover:text-yellow-300 hover:bg-white/10"
     }`;
+
+  const handleManu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
   return (
     <>
@@ -70,134 +72,35 @@ const NavBar = ({ showMinimal = false }) => {
             </Link>
           </div>
 
-          {/* Right section (only if full mode) */}
-          {!showMinimal && user && user.firstName && (
-            <div className="flex items-center gap-4">
-              {!isChatPage && (
-                <>
-                  <IoVideocamOutline
-                    size={36}
-                    onClick={() => navigate(PATH.CHAT)}
-                    className="text-3xl cursor-pointer font-extrabold text-yellow-300 hover:text-pink-200 transition-all duration-300 hover:scale-110"
-                  />
-                  <IoChatbubbleEllipsesOutline
-                    onClick={() => navigate(PATH.CHAT)}
-                    className="text-3xl cursor-pointer font-extrabold text-yellow-300 hover:text-pink-200 transition-all duration-300 hover:scale-110"
-                  />
-                </>
-              )}
-              <span className="text-sm font-semibold text-white/90 hidden sm:block">
-                Hi, {user.firstName?.toUpperCase()}
-              </span>
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-300 shadow-lg cursor-pointer">
-                <img
-                  src={
-                    Array.isArray(user.photoUrl)
-                      ? user.photoUrl[0]
-                      : user.photoUrl
-                  }
-                  alt="User"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+          {/* Right section */}
+          {!showMinimal && user && (
+            <NavRightSection
+              user={user}
+              isChatPage={isChatPage}
+              onMenuToggle={handleManu}
+            />
           )}
         </div>
       </motion.header>
 
       {/* ========= Sidebar ========== */}
-      <AnimatePresence>
-        {!showMinimal && sidebarOpen && user && (
-          <>
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black z-[80]"
-              onClick={() => setSidebarOpen(false)}
-            />
-            <motion.div
-              key="sidebar"
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
-              transition={{ type: "spring", stiffness: 120, damping: 18 }}
-              className="fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-[#1a082d] to-[#2d1557] text-white shadow-2xl z-[90] flex flex-col justify-between"
-            >
-              <div className="flex justify-between items-center px-5 py-4 border-b border-white/20">
-                <h2 className="text-xl font-bold">
-                  <span className="text-yellow-300">Your</span> Space
-                </h2>
-                <IoClose
-                  onClick={() => setSidebarOpen(false)}
-                  className="text-2xl cursor-pointer hover:text-pink-400 transition"
-                />
-              </div>
-
-              <ul className="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
-                <li>
-                  <Link
-                    to="/feed"
-                    onClick={() => setSidebarOpen(false)}
-                    className={getItemClasses(isFeedPage)}
-                  >
-                    Discover
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/profile"
-                    onClick={() => setSidebarOpen(false)}
-                    className={getItemClasses(isProfilePage)}
-                  >
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/connections"
-                    onClick={() => setSidebarOpen(false)}
-                    className={getItemClasses(isConnectionsPage)}
-                  >
-                    Connections
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/requests"
-                    onClick={() => setSidebarOpen(false)}
-                    className={getItemClasses(isRequestsPage)}
-                  >
-                    Requests
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setSidebarOpen(false);
-                      setShowLogoutConfirm(true);
-                    }}
-                    className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-
-              <div className="px-5 py-4 border-t border-white/10 text-sm text-center text-white/60">
-                © {new Date().getFullYear()} Crushes
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <SidebarMenu
+        isOpen={!showMinimal && sidebarOpen && !!user}
+        onClose={() => setSidebarOpen(false)}
+        onLogout={() => setShowLogoutConfirm(true)}
+        isFeedPage={isFeedPage}
+        isProfilePage={isProfilePage}
+        isConnectionsPage={isConnectionsPage}
+        isRequestsPage={isRequestsPage}
+        getItemClasses={getItemClasses}
+      />
 
       {/* ================= Logout Modal ================= */}
       {showLogoutConfirm && (
         <Logout setShowLogoutConfirm={setShowLogoutConfirm} />
       )}
+
+      <ProfileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );
 };
