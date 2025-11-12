@@ -1,19 +1,19 @@
-- after signup need redirect to profile and show the profile details 
-
 
 domain:
 F.E: http://16.16.185.216
 
 
-ToDo: 
-- feed page card when interest or reject that time give a mgs.[test it] 
-
-
 add shimmer UI.
-make chat UI better.
 
-
-- add a mgs for chat testing perpuse[done]
-- swapping right not send req.(stop this feature as of now)
-- age not update/ profile data update api[Done]
-- add diff image for every users
+---------------------------------------------------------
+ToDo: 13 Nov
+- Req, conntions card, flow to chatting
+- chat page sidebar issue (useState related)
+- photo upload 
+- profile page 
+- login card [done]
+---------------------
+- fix: redux persist issue
+- footer (show sucess love store)
+- toast
+- show new user login/ac open toast. 

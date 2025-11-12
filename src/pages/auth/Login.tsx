@@ -36,7 +36,7 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden text-white">
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden text-white mt-8">
       {/* ============== Background Orbs ============== */}
       <motion.div
         className="absolute w-[600px] h-[600px] bg-pink-600/25 rounded-full blur-[200px] top-[-7%] left-[-10%] -z-10"
@@ -54,7 +54,7 @@ const Login = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-lg mx-auto px-12 py-12
+        className="relative z-10 w-full max-w-lg mx-auto px-12 py-10
              bg-white/10 backdrop-blur-2xl border border-white/20
              rounded-3xl shadow-[0_8px_40px_rgba(255,255,255,0.2)]
              flex flex-col items-center"
@@ -68,7 +68,7 @@ const Login = () => {
         </h2>
 
         <p className="text-white/70 text-sm mb-8 text-center italic">
-          🔐 Demo credentials are pre-filled — just hit Login!
+          🔐 Demo credentials are pre-filled for testing — just hit Login!
         </p>
 
         <div className="w-full max-w-md">
@@ -92,7 +92,11 @@ const Login = () => {
             icon="lock"
             showToggle
             toggleValue={
-              showPassword ? <EyeOff size={18} /> : <Eye size={18} />
+              showPassword ? (
+                <EyeOff className="mt-[8px]" size={18} />
+              ) : (
+                <Eye className="mt-[8px]" size={18} />
+              )
             }
             onToggle={() => setShowPassword((prev) => !prev)}
           />
