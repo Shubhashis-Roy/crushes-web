@@ -86,7 +86,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
                   onClick={onClose}
                   className={getItemClasses(isConnectionsPage)}
                 >
-                  Connections
+                  Matches
                 </Link>
               </li>
               <li>

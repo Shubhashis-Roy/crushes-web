@@ -9,8 +9,8 @@ import { dispatch } from "@redux/store";
 import { login } from "@redux/slices/auth";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("shub@gmail.in");
-  const [password, setPassword] = useState("Subhashis@9");
+  const [emailId, setEmailId] = useState("shub@gmail.com");
+  const [password, setPassword] = useState("1234");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

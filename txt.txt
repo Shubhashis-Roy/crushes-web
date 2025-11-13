@@ -12,6 +12,8 @@ ToDo: 13 Nov
 - photo upload 
 - profile page 
 - login card [done]
+- Protected route
+- photo loaded late in feed card, shimmer UI
 ---------------------
 - fix: redux persist issue
 - footer (show sucess love store)

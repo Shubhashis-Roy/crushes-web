@@ -30,6 +30,7 @@
       "@schema/*": ["schema/*"],
       "@sections/*": ["sections/*"],
       "@services/*": ["services/*"],
+      "@shimmer_ui/*": ["shimmer_ui/*"],
       "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"]

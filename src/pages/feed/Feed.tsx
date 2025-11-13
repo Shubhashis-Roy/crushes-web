@@ -5,6 +5,7 @@ import UserCard from "@sections/feed/UserCard";
 import { dispatch } from "@redux/store";
 import { getFeed } from "@redux/slices/feed";
 import UserDetailsCard from "@sections/feed/UserDetailsCard";
+import { getProfile } from "@redux/slices/user";
 
 const Feed = () => {
   const [users, setUsers] = useState<feedDetailsTypes[]>([]);
@@ -19,6 +20,7 @@ const Feed = () => {
     }
 
     getFeedData();
+    dispatch(getProfile());
   }, []);
 
   if (!users || users.length === 0) {

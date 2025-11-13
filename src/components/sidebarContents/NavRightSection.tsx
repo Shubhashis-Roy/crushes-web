@@ -6,6 +6,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@constants/path";
 import { capitalizeFirstLetter } from "@utils/string";
+import { getAvatarFromName } from "@utils/avatar";
 
 interface NavRightSectionProps {
   user: any;
@@ -51,9 +52,9 @@ const NavRightSection: React.FC<NavRightSectionProps> = ({
       >
         <img
           src={
-            Array.isArray(user.photoUrl)
+            user?.photoUrl?.length > 0
               ? user.photoUrl[0]
-              : user.photoUrl || "/default-avatar.png"
+              : getAvatarFromName(user?.firstName)
           }
           alt="User"
           className="w-full h-full object-cover"

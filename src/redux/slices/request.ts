@@ -72,11 +72,11 @@ export const reviewConnectionRequest =
     // dispatch(slice.actions.startLoading());
     try {
       const response = await axiosInstance.post(
-        `/request/review/${payload.status}/${payload.requestId}`
+        `/request/review/${payload.status}/${payload.userId}`
       );
       // console.log(response?.data, "reviewRequest response hlo ============");
 
-      return response?.data;
+      return response;
     } catch (error) {
       const axiosError = error as AxiosErrorResponseTypes;
       errorHandle({ error: axiosError, label: "reviewRequest API Error:" });

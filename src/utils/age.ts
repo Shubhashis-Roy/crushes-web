@@ -1,4 +1,5 @@
-function getAge(dob: string): number {
+function getAge(dob: string | undefined) {
+  if (!dob) return;
   const today = new Date();
   const birthDate = new Date(dob);
   let age = today.getFullYear() - birthDate.getFullYear();

@@ -26,5 +26,10 @@ declare interface fromUserIdTypes {
 
 declare interface reviewRequestPayloadTypes {
   status: string;
-  requestId: string;
+  userId: string;
+}
+
+declare interface requestsDetailsTypes {
+  requestDetails: connectionsDetailsTypes;
+  _id: string;
 }
