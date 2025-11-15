@@ -24,8 +24,5 @@ declare interface chatUserDetailsTypes {
   gender?: string;
   interest?: string;
   bio?: string;
-  lastMessage?: {
-    text: string;
-    createdAt: string;
-  };
+  lastMessage?: string;
 }
