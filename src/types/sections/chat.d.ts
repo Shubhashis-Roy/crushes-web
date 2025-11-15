@@ -16,7 +16,7 @@ declare interface ChatWindowProps {
   user: any;
   isTyping: boolean;
   isOnline: boolean;
-  loading: boolean;
+  isStartChatLoading: boolean;
 }
 
 declare interface chatMessagesTypes {

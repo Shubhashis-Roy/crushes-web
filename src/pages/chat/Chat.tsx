@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "@styles/ChatTheme.css";
 import { useChatSocket } from "@hooks/useChatSocket";
 import ChatSidebar from "@sections/chat/ChatSidebar";
 import ChatWindow from "@sections/chat/ChatWindow";
 import { dispatch, useSelector } from "@redux/store";
-import { getChatMessages } from "@redux/slices/chat";
+import { clearChattingUser, getChatMessages } from "@redux/slices/chat";
 
 interface msgTypes {
   firstName: string;
@@ -22,15 +22,23 @@ const Chat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
   const [activeChatUserId, setActiveChatUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isStartChatLoading, setIsStartChatLoading] = useState(false);
 
   const userDetails = useSelector((state) => state.auth.userDetails);
+  const newStartChat = useSelector((state) => state.chat.newStartChat);
   const userId = userDetails?._id;
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!newStartChat?._id) return;
+    handleChat(newStartChat);
+    dispatch(clearChattingUser());
+  }, []);
 
   //Fetch messages for selected chat
   const fetchChatMessages = async (targetUserId: string) => {
     if (!targetUserId) return;
+    setIsStartChatLoading(true);
     const res = await dispatch(getChatMessages(targetUserId));
 
     const chatMessages = res?.map((msg: chatMessagesTypes) => {
@@ -46,6 +54,7 @@ const Chat = () => {
 
     setMessages(chatMessages);
     scrollToBottom();
+    setIsStartChatLoading(false);
   };
 
   const scrollToBottom = () => {
@@ -96,7 +105,7 @@ const Chat = () => {
         user={userDetails}
         isTyping={isTyping}
         isOnline={isOnline}
-        loading={loading}
+        isStartChatLoading={isStartChatLoading}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
+import { PATH } from "@constants/path";
 
 interface SidebarMenuProps {
   isOpen: boolean;
@@ -63,7 +64,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
             <ul className="flex-1 px-4 py-6 space-y-3 overflow-y-auto">
               <li>
                 <Link
-                  to="/feed"
+                  to={PATH.FEED}
                   onClick={onClose}
                   className={getItemClasses(isFeedPage)}
                 >
@@ -73,7 +74,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
 
               <li>
                 <Link
-                  to="/profile"
+                  to={PATH.PROFILE}
                   onClick={onClose}
                   className={getItemClasses(isProfilePage)}
                 >
@@ -82,16 +83,16 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({
               </li>
               <li>
                 <Link
-                  to="/connections"
+                  to={PATH.CONNECTION}
                   onClick={onClose}
                   className={getItemClasses(isConnectionsPage)}
                 >
-                  Connections
+                  Matches
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/requests"
+                  to={PATH.REQUEST}
                   onClick={onClose}
                   className={getItemClasses(isRequestsPage)}
                 >

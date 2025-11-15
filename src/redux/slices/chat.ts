@@ -16,6 +16,18 @@ const initialState: chatStateTypes = {
     photoUrl: [],
   },
   chatUserList: [],
+  newStartChat: {
+    _id: "",
+    firstName: "",
+    lastName: "",
+    photoUrl: [],
+    emailId: "",
+    dateOfBirth: "",
+    city: "",
+    gender: "",
+    interest: "",
+    bio: "",
+  },
 };
 
 // ----------------------------------------------------------------------
@@ -41,8 +53,25 @@ const slice = createSlice({
       state.chatUserList = action.payload.data;
     },
 
-    addChatUser(state, action) {
-      state.startChat = action.payload.data;
+    // START CHAT
+    addChattingUser(state, action) {
+      state.newStartChat = action.payload;
+    },
+
+    // CLEAR CHAT
+    clearChattingUser(state) {
+      state.newStartChat = {
+        _id: "",
+        firstName: "",
+        lastName: "",
+        photoUrl: [],
+        emailId: "",
+        dateOfBirth: "",
+        city: "",
+        gender: "",
+        interest: "",
+        bio: "",
+      };
     },
   },
 });
@@ -50,7 +79,7 @@ const slice = createSlice({
 // Reducer
 export default slice.reducer;
 // Export Actions
-export const { addChatUser } = slice.actions;
+export const { addChattingUser, clearChattingUser } = slice.actions;
 
 // ----------------------------------------------------------------------------
 

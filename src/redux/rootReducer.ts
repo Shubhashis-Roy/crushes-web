@@ -32,8 +32,7 @@ const rootPersistConfig = {
   key: "root",
   storage,
   keyPrefix: "redux-",
-  blacklist: [],
-  // blacklist: ["connection", "user", "feed", "request", "chat"],
+  blacklist: ["feed", "connection", "request", "chat"],
   // whitelist: [],
 };
 

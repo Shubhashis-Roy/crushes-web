@@ -1,10 +1,11 @@
 import { IoSend } from "react-icons/io5";
 import chatDark from "@assets/bg-chatUI.jpg";
 import { useEffect, useState } from "react";
-import { dispatch } from "@redux/store";
+import { dispatch, useSelector } from "@redux/store";
 import { getAllConnections } from "@redux/slices/connection";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@constants/path";
+import ChatWindowSkeleton from "@shimmer_ui/ChatWindowSkeleton";
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
   messages = [],
@@ -17,9 +18,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   user,
   isTyping,
   isOnline,
-  loading,
+  isStartChatLoading,
 }) => {
   const [connections, setConnections] = useState([]);
+  const loading = useSelector((state) => state.connection.isLoading);
 
   const navigate = useNavigate();
 
@@ -73,7 +75,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
       {/* Messages */}
       <main className="flex-1 overflow-y-auto px-6 py-4 space-y-3 relative z-10 scrollbar-thin scrollbar-thumb-pink-400/30 scrollbar-track-transparent">
-        {!connections?.length ? (
+        {loading ? (
+          <ChatWindowSkeleton />
+        ) : !connections?.length ? (
           <div className="flex flex-col h-full items-center justify-center text-center">
             <p className="text-white text-lg font-medium mb-4">
               ✨No connections yet, make connections and enjoy unlimited
@@ -95,10 +99,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <div className="flex h-full items-center justify-center text-white/50 italic">
                 💬 Start chatting to see messages here...
               </div>
-            ) : loading ? (
-              <div className="flex h-full items-center justify-center text-white/50 italic animate-pulse">
-                Loading messages...
-              </div>
+            ) : isStartChatLoading ? (
+              <ChatWindowSkeleton />
             ) : messages.length === 0 ? (
               <div className="flex h-full items-center justify-center text-white/50 italic">
                 No messages yet — say hello 👋

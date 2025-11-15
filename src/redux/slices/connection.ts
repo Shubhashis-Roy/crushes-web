@@ -95,8 +95,6 @@ export const sendRequest =
       );
       // console.log(response?.data, "send req hlo ===========");
 
-      return response;
-
       if (sendRequestParams?.status === "interested") {
         dispatch(
           slice.actions.getInterestedUserSuccess({
@@ -105,7 +103,7 @@ export const sendRequest =
         );
       }
 
-      return response?.data?.data;
+      return response;
     } catch (error) {
       const axiosError = error as AxiosErrorResponseTypes;
       errorHandle({ error: axiosError, label: "sendRequest API Error:" });

@@ -5,29 +5,28 @@ import UserCard from "@sections/feed/UserCard";
 import { dispatch } from "@redux/store";
 import { getFeed } from "@redux/slices/feed";
 import UserDetailsCard from "@sections/feed/UserDetailsCard";
+import { getProfile } from "@redux/slices/user";
+import SkeletonCard from "@shimmer_ui/FeedCardSkeleton";
+import { NoUserFound } from "@sections/feed/NoUserFound";
 
 const Feed = () => {
   const [users, setUsers] = useState<feedDetailsTypes[]>([]);
   const [selectedUser, setSelectedUser] = useState<feedDetailsTypes | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getFeedData() {
+      setLoading(true);
       const res = await dispatch(getFeed());
       setUsers(res);
+      setLoading(false);
     }
 
     getFeedData();
+    dispatch(getProfile());
   }, []);
-
-  if (!users || users.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-white bg-gradient-to-br from-purple-900 to-pink-800">
-        <p className="text-lg font-semibold">No more users to show 💖</p>
-      </div>
-    );
-  }
 
   // const handleSwipe = (direction: string, swipedUser: feedDetailsTypes) => {
   //   setUsers((prev) => prev.slice(1));
@@ -80,13 +79,21 @@ const Feed = () => {
                   whileTap={{ scale: 0.98 }}
                   className="cursor-grab active:cursor-grabbing mt-10"
                 >
-                  <UserCard
-                    user={user}
-                    onShowDetails={() => setSelectedUser(user)}
-                    onHideDetails={() => setSelectedUser(null)}
-                    setUsers={setUsers}
-                    isDetailsVisible={selectedUser?._id === user._id}
-                  />
+                  {loading ? (
+                    <SkeletonCard />
+                  ) : users?.length > 0 ? (
+                    <UserCard
+                      user={user}
+                      onShowDetails={() => setSelectedUser(user)}
+                      onHideDetails={() => setSelectedUser(null)}
+                      setUsers={setUsers}
+                      isDetailsVisible={selectedUser?._id === user._id}
+                    />
+                  ) : (
+                    users?.length === 0 && (
+                      <NoUserFound text={"No more users to show 💖"} />
+                    )
+                  )}
                 </motion.div>
               </motion.div>
             );

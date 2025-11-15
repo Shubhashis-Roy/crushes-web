@@ -3,6 +3,7 @@ declare interface chatStateTypes {
   error: string | ErrorType;
   startChat: startChatTypes;
   chatUserList: chatUserDetailsTypes[];
+  newStartChat: connectionsDetailsTypes;
 }
 
 declare interface startChatTypes {
@@ -24,8 +25,5 @@ declare interface chatUserDetailsTypes {
   gender?: string;
   interest?: string;
   bio?: string;
-  lastMessage?: {
-    text: string;
-    createdAt: string;
-  };
+  lastMessage?: string;
 }
