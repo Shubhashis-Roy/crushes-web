@@ -3,10 +3,10 @@ import { dispatch } from "@redux/store";
 import { getAllConnections } from "@redux/slices/connection";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@constants/path";
-import { addChatUser } from "@redux/slices/chat";
 import ConnectionCard from "@sections/connections/connectionCard";
 import SkeletonConnections from "@shimmer_ui/SkeletonConnections";
 import NoRequestFound from "@sections/request/NoRequestFound";
+import { addChattingUser } from "@redux/slices/chat";
 
 const Connections = () => {
   const [connections, setConnections] = useState([]);
@@ -27,7 +27,7 @@ const Connections = () => {
   }, []);
 
   const handleChat = (connection: chatUserDetailsTypes) => {
-    dispatch(addChatUser({ data: connection }));
+    dispatch(addChattingUser(connection));
     navigate(PATH.CHAT);
   };
 

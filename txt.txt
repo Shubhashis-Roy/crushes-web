@@ -9,12 +9,14 @@ add shimmer UI.
 ToDo: 13 Nov
 - Req, conntions UI[done] 
 - login card [done]
-- from Conntions page to chatting flow 
-- chat page sidebar issue (useState related)
+- from Conntions page to chatting flow [done]
+- chat page sidebar issue[done]
 - photo upload 
 - profile page
 - Protected route
-- photo loaded late in feed card, shimmer UI
+- photo loaded late in feed card
+shimmer UI:
+- Req, conntions, chat, feed[test]
 ---------------------
 - fix: redux persist issue[test]
 - footer (show sucess love store)

@@ -5,7 +5,7 @@ export const PATH = {
   LOGIN: "/login",
   REGISTER: "/register",
   PROFILE: "/profile",
-  CONNECTION: "/connections",
+  CONNECTION: "/matchs",
   REQUEST: "/requests",
   CHAT: "/chat",
   VIDEO: "/video",

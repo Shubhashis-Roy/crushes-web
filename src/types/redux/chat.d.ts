@@ -3,6 +3,7 @@ declare interface chatStateTypes {
   error: string | ErrorType;
   startChat: startChatTypes;
   chatUserList: chatUserDetailsTypes[];
+  newStartChat: connectionsDetailsTypes;
 }
 
 declare interface startChatTypes {

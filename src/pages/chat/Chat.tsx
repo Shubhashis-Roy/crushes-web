@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "@styles/ChatTheme.css";
 import { useChatSocket } from "@hooks/useChatSocket";
 import ChatSidebar from "@sections/chat/ChatSidebar";
 import ChatWindow from "@sections/chat/ChatWindow";
 import { dispatch, useSelector } from "@redux/store";
-import { getChatMessages } from "@redux/slices/chat";
+import { clearChattingUser, getChatMessages } from "@redux/slices/chat";
 
 interface msgTypes {
   firstName: string;
@@ -25,8 +25,15 @@ const Chat = () => {
   const [isStartChatLoading, setIsStartChatLoading] = useState(false);
 
   const userDetails = useSelector((state) => state.auth.userDetails);
+  const newStartChat = useSelector((state) => state.chat.newStartChat);
   const userId = userDetails?._id;
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!newStartChat?._id) return;
+    handleChat(newStartChat);
+    dispatch(clearChattingUser());
+  }, []);
 
   //Fetch messages for selected chat
   const fetchChatMessages = async (targetUserId: string) => {
