@@ -11,6 +11,7 @@ import {
 import { dispatch } from "@redux/store";
 import { sendRequest } from "@redux/slices/connection";
 import { capitalizeFirstLetter } from "@utils/string";
+import { dummyImg } from "@constants/images";
 
 interface UserCardProps {
   user: feedDetailsTypes;
@@ -187,17 +188,16 @@ const UserCard: React.FC<UserCardProps> = ({
         {/* ============== Main Image ============== */}
         {photos.length > 0 ? (
           <img
-            src={
-              photos[currentPhotoIndex] ||
-              "https://res.cloudinary.com/demo/image/upload/v1710000000/default-avatar.jpg"
-            }
+            src={photos[currentPhotoIndex]}
             alt={firstName}
             className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-purple-800 to-pink-700 text-white text-lg font-semibold">
-            No photo available 😔
-          </div>
+          <img
+            src={dummyImg}
+            alt={firstName}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+          />
         )}
 
         {/* ============== Info Overlay ============== */}

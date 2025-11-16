@@ -10,7 +10,10 @@ declare interface connectionsDetailsTypes {
   _id: string;
   firstName: string;
   lastName: string;
-  photoUrl: string[];
+  photoUrl: {
+    url: string;
+    public_id: string;
+  }[];
   emailId?: string;
   dateOfBirth?: string;
   city?: string;

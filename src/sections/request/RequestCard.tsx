@@ -4,6 +4,7 @@ import { getAge } from "@utils/age";
 import { connectionEnum } from "@enum/connectionEnum";
 import { dispatch } from "@redux/store";
 import { reviewConnectionRequest } from "@redux/slices/request";
+import { dummyImg } from "@constants/images";
 
 interface RequestCardProps {
   requestDetails: chatUserDetailsTypes;
@@ -44,7 +45,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
         <img
           alt={`${firstName}'s photo`}
           className="w-20 h-20 rounded-full object-cover border-2 border-pink-400 shadow-md"
-          src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
+          src={photoUrl?.length > 0 ? photoUrl[0]?.url : dummyImg}
         />
       </div>
 

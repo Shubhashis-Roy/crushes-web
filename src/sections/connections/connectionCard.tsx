@@ -1,3 +1,4 @@
+import { dummyImg } from "@constants/images";
 import { getAge } from "@utils/age";
 import { capitalizeFirstLetter, truncateText } from "@utils/string";
 import React from "react";
@@ -24,7 +25,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
         <img
           alt={`${firstName}'s photo`}
           className="w-20 h-20 rounded-full object-cover border-2 border-pink-400 shadow-md"
-          src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
+          src={photoUrl?.length > 0 ? photoUrl[0]?.url : dummyImg}
         />
       </div>
 

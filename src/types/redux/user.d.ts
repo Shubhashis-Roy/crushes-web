@@ -14,7 +14,10 @@ declare interface profileDetailsTypes {
   city: string;
   gender: string;
   interest: string[];
-  photoUrl: string[];
+  photoUrl: {
+    url: string;
+    public_id: string;
+  }[];
   bio?: string;
   profession?: string;
   organization?: string;
