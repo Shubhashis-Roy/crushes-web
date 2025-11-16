@@ -53,7 +53,7 @@ const NavRightSection: React.FC<NavRightSectionProps> = ({
         <img
           src={
             user?.photoUrl?.length > 0
-              ? user.photoUrl[0]
+              ? user.photoUrl[0]?.url
               : getAvatarFromName(user?.firstName)
           }
           alt="User"

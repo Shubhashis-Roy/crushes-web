@@ -106,7 +106,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                     >
                       {chat?.photoUrl?.length > 0 ? (
                         <img
-                          src={chat?.photoUrl[0]}
+                          src={chat?.photoUrl[0]?.url}
                           alt={chat?.firstName}
                           className="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
                         />

@@ -22,6 +22,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 }) => {
   const [connections, setConnections] = useState([]);
   const loading = useSelector((state) => state.connection.isLoading);
+  const chatUserList = useSelector((state) => state.chat.chatUserList);
 
   const navigate = useNavigate();
 
@@ -52,7 +53,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
             {chatPartner?.photoUrl?.length > 0 ? (
               <img
-                src={chatPartner.photoUrl[0]}
+                src={chatPartner.photoUrl[0]?.url}
                 alt={chatPartner.firstName}
                 className="w-full h-full object-cover"
               />
@@ -77,7 +78,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       <main className="flex-1 overflow-y-auto px-6 py-4 space-y-3 relative z-10 scrollbar-thin scrollbar-thumb-pink-400/30 scrollbar-track-transparent">
         {loading ? (
           <ChatWindowSkeleton />
-        ) : !connections?.length ? (
+        ) : !chatUserList?.length && !connections?.length ? (
           <div className="flex flex-col h-full items-center justify-center text-center">
             <p className="text-white text-lg font-medium mb-4">
               ✨No connections yet, make connections and enjoy unlimited

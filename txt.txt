@@ -12,6 +12,7 @@ ToDo: 13 Nov
 - from Conntions page to chatting flow [done]
 - chat page sidebar issue[done]
 - photo upload 
+- chat page: show the last mgs properly
 - profile page
 - Protected route
 - photo loaded late in feed card
