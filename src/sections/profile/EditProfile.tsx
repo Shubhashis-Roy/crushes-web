@@ -10,6 +10,7 @@ interface EditProfileProps {
 const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const [firstName, setFirstName] = useState(user?.firstName);
   const [lastName, setLastName] = useState(user?.lastName);
+  const [city, setCity] = useState(user?.city);
   const [age, setAge] = useState<string | null>(null);
   const [gender, setGender] = useState(user?.gender || "");
   const [about, setAbout] = useState(user?.bio || "");
@@ -18,7 +19,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
     const bodyPayload = {
       firstName,
       lastName,
-      age,
+      // age,
+      city,
       gender: gender.toLowerCase(),
       about,
     };
@@ -35,6 +37,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
     firstName !== user.firstName ||
     lastName !== user.lastName ||
     age !== (age || "") ||
+    city !== (user.city || "") ||
     gender !== (user.gender || "") ||
     about !== (user.bio || "");
 
@@ -69,6 +72,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
         <input
+          type="text"
+          placeholder="City"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+        {/* <input
           type="number"
           placeholder="Age"
           value={Number(age)}
@@ -76,7 +86,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           min="18"
           max="100"
           className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
+        /> */}
         {/* ================ Custom Gender Dropdown ================ */}
         <div className="relative w-full">
           <select
