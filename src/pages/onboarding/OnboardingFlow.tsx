@@ -14,7 +14,7 @@ import PreferencesStep from "@sections/onboarding/PreferencesStep";
 // import PermissionsStep from "@sections/onboarding/PermissionsStep";
 import PreviewStep from "@sections/onboarding/PreviewStep";
 import { dispatch } from "@redux/store";
-import { updateUserProfile } from "@redux/slices/user";
+import { updateUserProfile, uploadPhotos } from "@redux/slices/user";
 import { signup } from "@redux/slices/auth";
 import { dobFormatter } from "@utils/age";
 import { PATH } from "@constants/path";
@@ -46,7 +46,7 @@ const OnboardingFlow: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [data, setData] = useState<OnboardingDataTypes>(initialData);
   const [loading, setLoading] = useState(false);
@@ -74,8 +74,6 @@ const OnboardingFlow: React.FC = () => {
     // { component: PermissionsStep, title: "Permissions" },
     { component: PreviewStep, title: "Preview" },
   ];
-
-  // console.log(steps.length, "steps leng hlo=====");
 
   const totalSteps = steps.length;
   const CurrentStepComponent = steps[currentStep].component;
@@ -140,7 +138,8 @@ const OnboardingFlow: React.FC = () => {
           bio: data?.bio,
         })
       );
-      if (res?.status !== 200) return;
+      const resPhoto = await dispatch(uploadPhotos(data?.photos));
+      if (res?.status !== 200 && resPhoto?.status !== 200) return;
       setDirection(1);
       setCurrentStep(4);
     }

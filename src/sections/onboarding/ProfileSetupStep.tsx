@@ -29,7 +29,7 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({
     if (files.length > 0) {
       setFormData((prev) => ({
         ...prev,
-        photos: [...prev.photos, ...files].slice(0, 6), // Max 6 photos
+        photos: [...prev.photos, ...files].slice(0, 6),
       }));
     }
   };
@@ -65,7 +65,7 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({
 
       {/* Content */}
       <div className="w-full max-w-2xl text-left space-y-10">
-        {/* 📸 Photo Upload */}
+        {/* Photo Upload */}
         <div className="space-y-4">
           <Label className="text-pink-200 font-medium text-lg">
             Photos (1–6 required)
@@ -130,7 +130,7 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({
           </p>
         </div>
 
-        {/* 📝 Bio Section */}
+        {/*  Bio Section */}
         <div className="space-y-3">
           <Label
             htmlFor="bio"
@@ -152,7 +152,7 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({
             <span>{formData.bio.length}/200 characters</span>
           </div>
 
-          {/* 🌷 Bio Suggestions */}
+          {/*  Bio Suggestions */}
           <div className="space-y-2 mt-4">
             <Label className="text-xs text-pink-200 font-medium">
               Need inspiration?
