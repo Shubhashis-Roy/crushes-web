@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import {
@@ -12,6 +12,7 @@ import {
 import { dispatch } from "@redux/store";
 import { getProfile } from "@redux/slices/user";
 import { capitalizeFirstLetter } from "@utils/string";
+import { getAge } from "@utils/age";
 
 const PreviewStep = () => {
   const [profileDetails, setProfileDetails] = useState<profileDetailsTypes>();
@@ -34,10 +35,12 @@ const PreviewStep = () => {
 
   const mainPhotoUrl =
     profileDetails?.photoUrl?.length && profileDetails?.photoUrl?.length > 0
-      ? typeof profileDetails.photoUrl[0] === "string"
-        ? profileDetails.photoUrl[0]
-        : URL.createObjectURL(profileDetails.photoUrl[0])
+      ? typeof profileDetails.photoUrl[0]?.url === "string"
+        ? profileDetails.photoUrl[0]?.url
+        : URL.createObjectURL(profileDetails.photoUrl[0]?.url)
       : null;
+
+  console.log(profileDetails?.dateOfBirth, "date hlo =======");
 
   return (
     <div className="w-full flex flex-col items-center justify-center text-center px-4">
@@ -94,9 +97,7 @@ const PreviewStep = () => {
                 {capitalizeFirstLetter(profileDetails?.firstName) || "User"}{" "}
                 {profileDetails?.dateOfBirth && (
                   <span className="text-white/70 text-lg">
-                    •{" "}
-                    {new Date().getFullYear() -
-                      new Date(profileDetails?.dateOfBirth).getFullYear()}
+                    • {getAge(profileDetails?.dateOfBirth)}
                   </span>
                 )}
               </h3>

@@ -41,7 +41,15 @@ const Requests = () => {
       {requests.map((request: requestsDetailsTypes) => (
         <RequestCard
           key={request._id}
-          requestDetails={request?.fromUserId}
+          requestDetails={{
+            ...request?.fromUserId,
+            photoUrl: Array.isArray(request?.fromUserId?.photoUrl)
+              ? request.fromUserId.photoUrl.map((url: string) => ({
+                  url,
+                  public_id: "",
+                }))
+              : [],
+          }}
           requestId={request?._id}
           setRequests={setRequests}
         />

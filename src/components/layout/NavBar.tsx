@@ -1,23 +1,32 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { THEME } from "@constants/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { useSelector } from "@redux/store";
+import { dispatch, useSelector } from "@redux/store";
 import Logout from "../auth/Logout";
 import ProfileMenu from "@components/sidebarContents/ProfileMenu";
 import SidebarMenu from "@components/sidebarContents/sideBarMenu";
 import NavRightSection from "@components/sidebarContents/NavRightSection";
+import { getProfile } from "@redux/slices/user";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.auth.userDetails);
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileDetails, setProfileDetails] = useState();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const res = await dispatch(getProfile());
+      setProfileDetails(res);
+    }
+
+    fetchProfile();
+  }, []);
 
   const isFeedPage =
     location.pathname === "/" ||
@@ -75,7 +84,7 @@ const NavBar = ({ showMinimal = false }) => {
           {/* Right section */}
           {!showMinimal && user && (
             <NavRightSection
-              user={user}
+              profileDetails={profileDetails}
               isChatPage={isChatPage}
               onMenuToggle={handleManu}
             />

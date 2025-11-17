@@ -126,3 +126,36 @@ export const updateUserProfile =
       );
     }
   };
+
+//Upload photo
+export const uploadPhotos = (files: File[]) => async () => {
+  try {
+    const formData = new FormData();
+
+    files.forEach((file) => {
+      formData.append("photo", file);
+    });
+
+    const response = await axiosInstance.post(
+      "/profile/upload-photos",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    // console.log(response?.data, "uploadPhotos res hlo ============");
+
+    return response;
+  } catch (error) {
+    const axiosError = error as AxiosErrorResponseTypes;
+    errorHandle({ error: axiosError, label: "uploadPhotos API Error:" });
+    const errorData = axiosError?.response?.data as ErrorResponseTypes;
+    dispatch(
+      slice.actions.hasError({
+        error: errorData || "Something went wrong",
+      })
+    );
+  }
+};

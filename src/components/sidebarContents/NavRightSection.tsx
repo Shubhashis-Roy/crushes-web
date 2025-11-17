@@ -9,19 +9,19 @@ import { capitalizeFirstLetter } from "@utils/string";
 import { getAvatarFromName } from "@utils/avatar";
 
 interface NavRightSectionProps {
-  user: any;
+  profileDetails: profileDetailsTypes | undefined;
   isChatPage: boolean;
   onMenuToggle: () => void;
 }
 
 const NavRightSection: React.FC<NavRightSectionProps> = ({
-  user,
+  profileDetails,
   isChatPage,
   onMenuToggle,
 }) => {
   const navigate = useNavigate();
 
-  if (!user || !user.firstName) return null;
+  if (!profileDetails || !profileDetails.firstName) return null;
 
   return (
     <div className="flex items-center gap-4">
@@ -42,7 +42,7 @@ const NavRightSection: React.FC<NavRightSectionProps> = ({
 
       {/* ===== Greeting text ===== */}
       <span className="text-sm font-semibold text-white/90 hidden sm:block">
-        Hi, {capitalizeFirstLetter(user.firstName)}
+        Hi, {capitalizeFirstLetter(profileDetails.firstName)}
       </span>
 
       {/* ===== User Avatar ===== */}
@@ -52,9 +52,9 @@ const NavRightSection: React.FC<NavRightSectionProps> = ({
       >
         <img
           src={
-            user?.photoUrl?.length > 0
-              ? user.photoUrl[0]
-              : getAvatarFromName(user?.firstName)
+            profileDetails?.photoUrl?.length > 0
+              ? profileDetails.photoUrl[0]?.url
+              : getAvatarFromName(profileDetails?.firstName)
           }
           alt="User"
           className="w-full h-full object-cover"

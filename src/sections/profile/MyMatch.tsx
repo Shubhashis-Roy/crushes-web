@@ -1,10 +1,15 @@
+import { PATH } from "@constants/path";
+import { addChattingUser } from "@redux/slices/chat";
 import { getAllConnections } from "@redux/slices/connection";
 import { dispatch } from "@redux/store";
+import ConnectionCard from "@sections/connections/connectionCard";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MyMatch = () => {
   const [connections, setConnections] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchConnections() {
@@ -15,12 +20,19 @@ const MyMatch = () => {
     fetchConnections();
   }, []);
 
+  const handleChat = (connection: chatUserDetailsTypes) => {
+    dispatch(addChattingUser(connection));
+    navigate(PATH.CHAT);
+  };
+
+  // console.log(connections, "connections matches hlo ============");
+
   if (!connections) return null;
 
   if (connections?.length === 0)
     return (
       <div className="text-center mt-16">
-        <h2 className="text-4xl font-extrabold mb-3 bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+        <h2 className="text-4xl font-extrabold mb-3 bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-400 bg-clip-text text-transparent">
           💞 My Matches
         </h2>
         <p className="text-white/60 text-lg">
@@ -33,7 +45,7 @@ const MyMatch = () => {
     <div className="w-full flex flex-col items-center text-center text-white mt-10 px-4">
       {/* ============= Header ============== */}
       <div className="mb-8">
-        <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
+        <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-500 bg-clip-text text-transparent drop-shadow-lg">
           💞 My Matches
         </h2>
         <p className="text-white/80 mt-2">
@@ -42,50 +54,14 @@ const MyMatch = () => {
       </div>
 
       {/* ============= Match Cards ============== */}
-      <div className="grid gap-8 w-full max-w-5xl">
-        {connections.map((connection) => {
-          const { _id, firstName, lastName, age, photoUrl, gender, about } =
-            connection;
-
-          return (
-            <div
-              key={_id}
-              className="group relative w-full bg-white/10 border border-white/20 rounded-2xl backdrop-blur-2xl shadow-lg overflow-hidden p-5 flex flex-col sm:flex-row items-center gap-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-pink-500/30"
-            >
-              {/* ============= Profile Photo ============== */}
-              <div className="relative">
-                <img
-                  alt={`${firstName}'s photo`}
-                  src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
-                  className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-pink-400 shadow-[0_0_25px_rgba(236,72,153,0.6)] transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              </div>
-
-              {/* ============= Info ============== */}
-              <div className="flex-1 text-left space-y-1">
-                <h2 className="text-2xl font-bold text-white">
-                  {firstName} {lastName}
-                </h2>
-                <p className="text-sm text-white/70">
-                  {age && `${age} yrs`}{" "}
-                  {gender && <span className="text-white/60">• {gender}</span>}
-                </p>
-                {about && (
-                  <p className="text-sm text-white/60 italic mt-1">“{about}”</p>
-                )}
-              </div>
-
-              {/* ============= Chat Button ============== */}
-              <Link to="/chat">
-                <button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-pink-400/40 hover:scale-105 transition-all duration-300">
-                  💬 Chat
-                </button>
-              </Link>
-            </div>
-          );
-        })}
-      </div>
+      {connections?.map((connection: chatUserDetailsTypes) => (
+        <ConnectionCard
+          key={connection._id}
+          connection={connection}
+          onChat={handleChat}
+          styleObj={{ sm_w: "", md_w: "90%" }}
+        />
+      ))}
     </div>
   );
 };

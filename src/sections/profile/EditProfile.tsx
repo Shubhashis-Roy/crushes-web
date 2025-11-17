@@ -1,23 +1,26 @@
 import { updateUserProfile } from "@redux/slices/user";
 import { dispatch } from "@redux/store";
-import React, { useState } from "react";
+import { getAge } from "@utils/age";
+import React, { useEffect, useState } from "react";
 
 interface EditProfileProps {
   user: profileDetailsTypes;
 }
 
 const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-  const [age, setAge] = useState(user.dateOfBirth || "");
-  const [gender, setGender] = useState(user.gender || "");
-  const [about, setAbout] = useState(user.bio || "");
+  const [firstName, setFirstName] = useState(user?.firstName);
+  const [lastName, setLastName] = useState(user?.lastName);
+  const [city, setCity] = useState(user?.city);
+  const [age, setAge] = useState<string | null>(null);
+  const [gender, setGender] = useState(user?.gender || "");
+  const [about, setAbout] = useState(user?.bio || "");
 
   const saveProfile = async () => {
     const bodyPayload = {
       firstName,
       lastName,
-      age,
+      // age,
+      city,
       gender: gender.toLowerCase(),
       about,
     };
@@ -25,10 +28,16 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
     dispatch(updateUserProfile(bodyPayload));
   };
 
+  useEffect(() => {
+    const result = getAge(user?.dateOfBirth);
+    setAge(String(result));
+  }, [user?.dateOfBirth]);
+
   const isEdited =
     firstName !== user.firstName ||
     lastName !== user.lastName ||
-    age !== (user.dateOfBirth || "") ||
+    age !== (age || "") ||
+    city !== (user.city || "") ||
     gender !== (user.gender || "") ||
     about !== (user.bio || "");
 
@@ -37,7 +46,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
       {/* ============ Avatar ============ */}
       <div className="flex flex-col items-center mb-8">
         <img
-          src={user.photoUrl[0]}
+          src={user.photoUrl[0]?.url}
           alt="User"
           className="w-36 h-36 rounded-full object-cover border-4 border-pink-400 shadow-[0_0_25px_rgba(236,72,153,0.6)]"
         />
@@ -63,14 +72,21 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
         <input
+          type="text"
+          placeholder="City"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
+        />
+        {/* <input
           type="number"
           placeholder="Age"
-          value={age}
+          value={Number(age)}
           onChange={(e) => setAge(e.target.value)}
           min="18"
           max="100"
           className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
+        /> */}
         {/* ================ Custom Gender Dropdown ================ */}
         <div className="relative w-full">
           <select

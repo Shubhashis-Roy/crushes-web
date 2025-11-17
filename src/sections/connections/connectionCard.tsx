@@ -1,3 +1,4 @@
+import { dummyImg } from "@constants/images";
 import { getAge } from "@utils/age";
 import { capitalizeFirstLetter, truncateText } from "@utils/string";
 import React from "react";
@@ -5,26 +6,37 @@ import React from "react";
 interface ConnectionCardProps {
   connection: chatUserDetailsTypes;
   onChat: (connection: chatUserDetailsTypes) => void;
+  styleObj?: {
+    sm_w: string;
+    md_w: string;
+  };
 }
 
 const ConnectionCard: React.FC<ConnectionCardProps> = ({
   connection,
   onChat,
+  styleObj,
 }) => {
   const { _id, firstName, lastName, photoUrl, dateOfBirth, gender, bio } =
     connection;
 
+  console.log(firstName, lastName, "hlo ==========");
+
   return (
     <div
       key={_id}
-      className="flex items-center m-4 p-4 rounded-lg bg-[#1e1035] text-white w-[90%] sm:w-[70%] md:w-[50%] mx-auto justify-between gap-4 shadow-lg border border-white/10 hover:bg-[#2a1552] transition-all duration-300"
+      className={`flex items-center m-4 p-4 rounded-lg bg-[#1e1035] text-white w-[90%] sm:w-[${
+        styleObj?.sm_w ? styleObj?.sm_w : "70%"
+      }] md:w-[${
+        styleObj?.md_w ? styleObj?.md_w : "50%"
+      }] mx-auto justify-between gap-4 shadow-lg border border-white/10 hover:bg-[#2a1552] transition-all duration-300`}
     >
       {/* Profile Image */}
       <div>
         <img
           alt={`${firstName}'s photo`}
           className="w-20 h-20 rounded-full object-cover border-2 border-pink-400 shadow-md"
-          src={Array.isArray(photoUrl) ? photoUrl[0] : photoUrl}
+          src={photoUrl?.length > 0 ? photoUrl[0]?.url : dummyImg}
         />
       </div>
 

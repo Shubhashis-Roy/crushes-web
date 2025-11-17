@@ -14,10 +14,12 @@ import PreferencesStep from "@sections/onboarding/PreferencesStep";
 // import PermissionsStep from "@sections/onboarding/PermissionsStep";
 import PreviewStep from "@sections/onboarding/PreviewStep";
 import { dispatch } from "@redux/store";
-import { updateUserProfile } from "@redux/slices/user";
+import { updateUserProfile, uploadPhotos } from "@redux/slices/user";
 import { signup } from "@redux/slices/auth";
 import { dobFormatter } from "@utils/age";
 import { PATH } from "@constants/path";
+import ErrorMessage from "@sections/onboarding/ErrorMessage";
+import { onBoardingValidations } from "@utils/validation";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -75,14 +77,18 @@ const OnboardingFlow: React.FC = () => {
     { component: PreviewStep, title: "Preview" },
   ];
 
-  // console.log(steps.length, "steps leng hlo=====");
-
   const totalSteps = steps.length;
   const CurrentStepComponent = steps[currentStep].component;
 
   // Next Step Handler
   const nextStep = async () => {
     setError("");
+
+    const validationError = onBoardingValidations(currentStep, data);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
 
     if (currentStep === 0 && data?.email && data?.password) {
       const dob = dobFormatter(data?.dateOfBirth);
@@ -140,7 +146,8 @@ const OnboardingFlow: React.FC = () => {
           bio: data?.bio,
         })
       );
-      if (res?.status !== 200) return;
+      const resPhoto = await dispatch(uploadPhotos(data?.photos));
+      if (res?.status !== 200 && resPhoto?.status !== 200) return;
       setDirection(1);
       setCurrentStep(4);
     }
@@ -221,10 +228,7 @@ const OnboardingFlow: React.FC = () => {
               onNext={nextStep}
               onPrev={prevStep}
             />
-
-            {error && (
-              <p className="text-center text-red-300 text-sm mt-4">{error}</p>
-            )}
+            <ErrorMessage message={error} />
           </motion.div>
         </AnimatePresence>
       </div>

@@ -49,7 +49,6 @@ const slice = createSlice({
     // CHAT USER LIST
     getChatUserListSuccess(state, action) {
       state.isLoading = false;
-      // state.chatUserList = [...state.chatUserList, ...action.payload.data];
       state.chatUserList = action.payload.data;
     },
 
@@ -90,11 +89,13 @@ export const getChatUserList = () => async () => {
     const response = await axiosInstance.get("/chat/users-list");
     // console.log(response?.data, "getChatUserList response hlo ============");
 
-    // dispatch(
-    //   slice.actions.getChatUserListSuccess({
-    //     data: response?.data?.users,
-    //   })
-    // );
+    const result = response?.data?.users?.filter(Boolean);
+
+    dispatch(
+      slice.actions.getChatUserListSuccess({
+        data: result,
+      })
+    );
 
     return response?.data?.users;
   } catch (error) {
