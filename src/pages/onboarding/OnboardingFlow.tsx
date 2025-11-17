@@ -18,6 +18,8 @@ import { updateUserProfile, uploadPhotos } from "@redux/slices/user";
 import { signup } from "@redux/slices/auth";
 import { dobFormatter } from "@utils/age";
 import { PATH } from "@constants/path";
+import ErrorMessage from "@sections/onboarding/ErrorMessage";
+import { onBoardingValidations } from "@utils/validation";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -46,7 +48,7 @@ const OnboardingFlow: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [data, setData] = useState<OnboardingDataTypes>(initialData);
   const [loading, setLoading] = useState(false);
@@ -81,6 +83,12 @@ const OnboardingFlow: React.FC = () => {
   // Next Step Handler
   const nextStep = async () => {
     setError("");
+
+    const validationError = onBoardingValidations(currentStep, data);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
 
     if (currentStep === 0 && data?.email && data?.password) {
       const dob = dobFormatter(data?.dateOfBirth);
@@ -220,10 +228,7 @@ const OnboardingFlow: React.FC = () => {
               onNext={nextStep}
               onPrev={prevStep}
             />
-
-            {error && (
-              <p className="text-center text-red-300 text-sm mt-4">{error}</p>
-            )}
+            <ErrorMessage message={error} />
           </motion.div>
         </AnimatePresence>
       </div>

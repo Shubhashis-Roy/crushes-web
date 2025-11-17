@@ -122,7 +122,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                             <p className="text-white font-medium truncate group-hover:text-pink-300">
                               {chat?.firstName} {chat?.lastName}
                             </p>
-                            <p
+                            {/* <p
                               className={`text-xs ${
                                 chat?.lastMessage
                                   ? "text-white"
@@ -132,7 +132,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                               {chat?.lastMessage
                                 ? chat?.lastMessage
                                 : "Tap to chat"}
-                            </p>
+                            </p> */}
                           </div>
 
                           <button

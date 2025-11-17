@@ -12,11 +12,11 @@ ToDo: 13 Nov
 - from Conntions page to chatting flow [done]
 - chat page sidebar issue[done]
 - photo upload [done]
-- chat page: show the last mgs properly
-- add onboarding input feild error.
+- add onboarding input feild error.[done]
 - profile page
 - Protected route
-- photo loaded late in feed card
+- chat sidebar: show the last mgs properly & show on top least text user 
+- photo loaded late in feed card: add shimmer UI if img not loaded
 shimmer UI:
 - Req, conntions, chat, feed[test]
 ---------------------
