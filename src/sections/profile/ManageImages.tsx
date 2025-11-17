@@ -37,7 +37,7 @@ const ManageImages: React.FC<{ user: profileDetailsTypes }> = ({ user }) => {
             {img ? (
               <>
                 <img
-                  src={img}
+                  src={img?.url}
                   alt={`Image ${idx + 1}`}
                   className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
                 />
