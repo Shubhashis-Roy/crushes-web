@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
-import { calculateAge } from "@utils/date";
+import { getAge } from "@utils/age";
 import {
   FaHeart,
   FaTimes,
@@ -29,12 +29,6 @@ const UserCard: React.FC<UserCardProps> = ({
   setUsers,
 }) => {
   const { _id, firstName, dateOfBirth, city, photoUrl } = user;
-
-  const [age, setAge] = useState<number | null>(null);
-
-  useEffect(() => {
-    setAge(calculateAge(user?.dateOfBirth || ""));
-  }, [dateOfBirth]);
 
   const photos = Array.isArray(photoUrl)
     ? photoUrl
@@ -206,9 +200,9 @@ const UserCard: React.FC<UserCardProps> = ({
             <div>
               <h2 className="text-2xl font-bold text-white">
                 {capitalizeFirstLetter(firstName)}
-                {Number(age) > 0 && (
+                {dateOfBirth && (
                   <span className="text-white/90 text-[24px] pl-2">
-                    • {age}
+                    • {getAge(dateOfBirth)}
                   </span>
                 )}
               </h2>

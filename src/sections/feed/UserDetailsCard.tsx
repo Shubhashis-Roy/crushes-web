@@ -1,6 +1,6 @@
-import { calculateAge } from "@utils/date";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import { getAge } from "@utils/age";
 
 interface UserDetailsCardProps {
   user: feedDetailsTypes | null;
@@ -8,10 +8,10 @@ interface UserDetailsCardProps {
 }
 
 const UserDetailsCard: React.FC<UserDetailsCardProps> = ({ user, onClose }) => {
-  const [age, setAge] = useState<number | null>(null);
+  const [age, setAge] = useState<number | null | undefined>(null);
 
   useEffect(() => {
-    setAge(calculateAge(user?.dateOfBirth || ""));
+    setAge(getAge(user?.dateOfBirth));
   }, [user?.dateOfBirth]);
 
   return (

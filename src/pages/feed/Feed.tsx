@@ -5,7 +5,6 @@ import UserCard from "@sections/feed/UserCard";
 import { dispatch } from "@redux/store";
 import { getFeed } from "@redux/slices/feed";
 import UserDetailsCard from "@sections/feed/UserDetailsCard";
-import { getProfile } from "@redux/slices/user";
 import SkeletonCard from "@shimmer_ui/FeedCardSkeleton";
 import { NoUserFound } from "@sections/feed/NoUserFound";
 
@@ -25,7 +24,6 @@ const Feed = () => {
     }
 
     getFeedData();
-    dispatch(getProfile());
   }, []);
 
   // const handleSwipe = (direction: string, swipedUser: feedDetailsTypes) => {

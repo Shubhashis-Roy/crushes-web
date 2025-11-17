@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import {
@@ -12,7 +12,7 @@ import {
 import { dispatch } from "@redux/store";
 import { getProfile } from "@redux/slices/user";
 import { capitalizeFirstLetter } from "@utils/string";
-import { calculateAge } from "@utils/date";
+import { getAge } from "@utils/age";
 
 const PreviewStep = () => {
   const [profileDetails, setProfileDetails] = useState<profileDetailsTypes>();
@@ -97,7 +97,7 @@ const PreviewStep = () => {
                 {capitalizeFirstLetter(profileDetails?.firstName) || "User"}{" "}
                 {profileDetails?.dateOfBirth && (
                   <span className="text-white/70 text-lg">
-                    • {calculateAge(profileDetails?.dateOfBirth)}
+                    • {getAge(profileDetails?.dateOfBirth)}
                   </span>
                 )}
               </h3>
