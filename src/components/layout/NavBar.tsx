@@ -19,15 +19,6 @@ const NavBar = ({ showMinimal = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    async function fetchProfile() {
-      const res = await dispatch(getProfile());
-      setProfileDetails(res);
-    }
-
-    fetchProfile();
-  }, []);
-
   const isFeedPage =
     location.pathname === "/" ||
     location.pathname === "/feed" ||
@@ -36,6 +27,16 @@ const NavBar = ({ showMinimal = false }) => {
   const isChatPage = location.pathname.includes("/chat");
   const isConnectionsPage = location.pathname.includes("/connections");
   const isRequestsPage = location.pathname.includes("/requests");
+
+  useEffect(() => {
+    if (!isFeedPage) return;
+    async function fetchProfile() {
+      const res = await dispatch(getProfile());
+      setProfileDetails(res);
+    }
+
+    fetchProfile();
+  }, [isFeedPage]);
 
   const getItemClasses = (active: boolean) =>
     `block px-4 py-2 rounded-lg transition-all duration-300 text-base font-medium ${
