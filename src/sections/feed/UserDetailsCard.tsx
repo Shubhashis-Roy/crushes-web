@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { getAge } from "@utils/age";
+import { capitalizeFirstLetter } from "@utils/string";
 
 interface UserDetailsCardProps {
   user: feedDetailsTypes | null;
@@ -31,7 +32,8 @@ const UserDetailsCard: React.FC<UserDetailsCardProps> = ({ user, onClose }) => {
           </h2>
 
           <p className="text-sm text-white/70 mb-1">
-            {Number(age) > 0 && `${age}, `} {user?.gender}
+            {Number(age) > 0 && `Age: ${age}, `}{" "}
+            {capitalizeFirstLetter(user?.gender)}
           </p>
 
           <p className="text-white/90 mb-3">{user?.city}</p>

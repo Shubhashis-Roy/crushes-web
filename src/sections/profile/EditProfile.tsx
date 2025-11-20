@@ -11,35 +11,29 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const [firstName, setFirstName] = useState(user?.firstName);
   const [lastName, setLastName] = useState(user?.lastName);
   const [city, setCity] = useState(user?.city);
-  const [age, setAge] = useState<string | null>(null);
   const [gender, setGender] = useState(user?.gender || "");
-  const [about, setAbout] = useState(user?.bio || "");
+  const [bio, setbio] = useState(user?.bio || "");
+
+  const isEdited =
+    firstName !== user.firstName ||
+    lastName !== user.lastName ||
+    city !== (user.city || "") ||
+    gender !== (user.gender || "") ||
+    bio !== (user.bio || "");
 
   const saveProfile = async () => {
     const bodyPayload = {
       firstName,
       lastName,
-      // age,
       city,
       gender: gender.toLowerCase(),
-      about,
+      bio,
     };
 
     dispatch(updateUserProfile(bodyPayload));
   };
 
-  useEffect(() => {
-    const result = getAge(user?.dateOfBirth);
-    setAge(String(result));
-  }, [user?.dateOfBirth]);
-
-  const isEdited =
-    firstName !== user.firstName ||
-    lastName !== user.lastName ||
-    age !== (age || "") ||
-    city !== (user.city || "") ||
-    gender !== (user.gender || "") ||
-    about !== (user.bio || "");
+  console.log(isEdited, "isEdited hlo =======");
 
   return (
     <div className="flex flex-col items-center w-full text-white">
@@ -78,15 +72,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           onChange={(e) => setCity(e.target.value)}
           className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
-        {/* <input
-          type="number"
-          placeholder="Age"
-          value={Number(age)}
-          onChange={(e) => setAge(e.target.value)}
-          min="18"
-          max="100"
-          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        /> */}
+
         {/* ================ Custom Gender Dropdown ================ */}
         <div className="relative w-full">
           <select
@@ -127,16 +113,16 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
         <div className="col-span-1 sm:col-span-2">
           <textarea
             placeholder="About You"
-            value={about}
+            value={bio}
             onChange={(e) => {
               const inputValue = e.target.value;
-              if (inputValue.length <= 40) setAbout(inputValue);
+              if (inputValue.length <= 40) setbio(inputValue);
             }}
             rows={4}
             className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
           />
           <p className="text-right text-xs text-white/50 mt-1">
-            {about.length} / 40 characters
+            {bio?.length} / 40 characters
           </p>
         </div>
       </div>
