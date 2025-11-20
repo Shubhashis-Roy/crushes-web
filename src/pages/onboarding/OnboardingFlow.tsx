@@ -188,7 +188,7 @@ const OnboardingFlow: React.FC = () => {
       className="relative min-h-screen w-full overflow-y-auto flex flex-col items-center"
       style={{ background: THEME.colors.backgroundGradient }}
     >
-      <NavBar showMinimal />
+      {/* <NavBar showMinimal /> */}
 
       {/* ========= Progress Bar ===================== */}
       <div className="sticky top-0 z-20 pb-4 pt-24">

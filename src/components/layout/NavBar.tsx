@@ -1,42 +1,39 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { THEME } from "@constants/colors";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { dispatch, useSelector } from "@redux/store";
+import { useSelector } from "@redux/store";
 import Logout from "../auth/Logout";
 import ProfileMenu from "@components/sidebarContents/ProfileMenu";
 import SidebarMenu from "@components/sidebarContents/sideBarMenu";
 import NavRightSection from "@components/sidebarContents/NavRightSection";
-import { getProfile } from "@redux/slices/user";
+import { PATH } from "@constants/path";
+import logo from "@assets/logo/logo.png";
 
 const NavBar = ({ showMinimal = false }) => {
   const user = useSelector((store) => store.auth.userDetails);
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [profileDetails, setProfileDetails] = useState();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const profileDetails = useSelector((state) => state.auth.userDetails);
 
   const isFeedPage =
-    location.pathname === "/" ||
-    location.pathname === "/feed" ||
-    location.pathname.endsWith("/feed");
-  const isProfilePage = location.pathname.includes("/profile");
-  const isChatPage = location.pathname.includes("/chat");
-  const isConnectionsPage = location.pathname.includes("/connections");
-  const isRequestsPage = location.pathname.includes("/requests");
-
-  useEffect(() => {
-    if (!isFeedPage) return;
-    async function fetchProfile() {
-      const res = await dispatch(getProfile());
-      setProfileDetails(res);
-    }
-
-    fetchProfile();
-  }, [isFeedPage]);
+    location.pathname === PATH.HOME ||
+    location.pathname === PATH.FEED ||
+    location.pathname.endsWith(PATH.FEED);
+  const isProfilePage = location.pathname.includes(PATH.PROFILE);
+  const isChatPage = location.pathname.includes(PATH.CHAT);
+  const isConnectionsPage = location.pathname.includes(PATH.CONNECTION);
+  const isRequestsPage = location.pathname.includes(PATH.REQUEST);
+  const isOnboarding = location.pathname === PATH.ONBOARDING;
+  const isLogin = location.pathname === PATH.LOGIN;
+  const isHome = location.pathname === PATH.HOME;
+  const isOnboard = isOnboarding || isLogin || isHome;
 
   const getItemClasses = (active: boolean) =>
     `block px-4 py-2 rounded-lg transition-all duration-300 text-base font-medium ${
@@ -47,6 +44,15 @@ const NavBar = ({ showMinimal = false }) => {
 
   const handleManu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleIconNavigation = () => {
+    if (isOnboard) {
+      navigate(PATH.HOME);
+      return;
+    }
+
+    navigate(PATH.FEED);
   };
 
   return (
@@ -74,12 +80,23 @@ const NavBar = ({ showMinimal = false }) => {
                 className="text-3xl text-white cursor-pointer hover:text-yellow-300 transition-all"
               />
             )}
-            <Link
-              to="/feed"
-              className="text-2xl font-bold tracking-wide text-white drop-shadow-md hover:text-yellow-300 transition"
+            {/* <div
+              onClick={handleIconNavigation}
+              className="text-2xl font-bold tracking-wide text-white drop-shadow-md hover:text-yellow-300 transition cursor-pointer"
             >
               Cr<span className="text-yellow-300">ushes</span>
-            </Link>
+            </div> */}
+
+            <div
+              onClick={handleIconNavigation}
+              className="cursor-pointer flex items-center"
+            >
+              <img
+                src={logo}
+                alt="Crushes Logo"
+                className="h-10 w-auto object-contain drop-shadow-md hover:opacity-80 transition"
+              />
+            </div>
           </div>
 
           {/* Right section */}

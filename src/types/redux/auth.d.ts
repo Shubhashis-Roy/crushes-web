@@ -30,7 +30,10 @@ declare interface userDetailsTypes {
   city: string;
   gender: string;
   interest: string;
-  photoUrl: string[];
+  photoUrl: {
+    url: string;
+    public_id: string;
+  }[];
   bio: string;
   education: string;
   organization: string;

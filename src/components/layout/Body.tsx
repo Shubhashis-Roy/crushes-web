@@ -9,9 +9,10 @@ const Body = () => {
 
   const isOnboarding = location.pathname === "/onboarding";
   const isLogin = location.pathname === "/login";
+  const isHome = location.pathname === "/";
   // const showFullNav = userData && Object.keys(userData).length > 0;
   const showFullNav = true;
-  const showMinimalNav = isOnboarding || isLogin;
+  const showMinimalNav = isOnboarding || isLogin || isHome;
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">

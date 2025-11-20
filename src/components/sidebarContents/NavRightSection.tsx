@@ -9,7 +9,7 @@ import { capitalizeFirstLetter } from "@utils/string";
 import { getAvatarFromName } from "@utils/avatar";
 
 interface NavRightSectionProps {
-  profileDetails: profileDetailsTypes | undefined;
+  profileDetails: userDetailsTypes | undefined;
   isChatPage: boolean;
   onMenuToggle: () => void;
 }
