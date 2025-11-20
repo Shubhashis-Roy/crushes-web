@@ -1,12 +1,14 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import { loveStories } from "@schema/loveStories";
+import { loveStories } from "@schema/loveStories.schema";
 import { FC } from "react";
+import { THEME } from "@constants/colors";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/autoplay";
 
+// --- LoveStoryCard definition (kept for context, no changes needed here) ---
 interface LoveStoryCardpProps {
   name: string;
   image: string;
@@ -14,27 +16,48 @@ interface LoveStoryCardpProps {
 }
 
 const LoveStoryCard: FC<LoveStoryCardpProps> = ({ name, image, story }) => (
-  <div className="w-full bg-gradient-to-br from-pink-100 via-red-100 to-pink-200 shadow-lg rounded-2xl p-4 transition-transform hover:scale-105 duration-300">
+  <div
+    className="w-full shadow-lg rounded-2xl p-4 transition-transform hover:scale-105 duration-300"
+    style={{
+      background: `linear-gradient(145deg, #FF80BF, #F8BBD0)`,
+      color: THEME.colors.textPrimary,
+    }}
+  >
     <img
       src={image}
       alt={name}
-      className="w-20 h-20 rounded-full object-cover mx-auto border-4 border-white shadow"
+      className="w-20 h-20 rounded-full object-cover mx-auto border-4 shadow"
+      style={{ borderColor: THEME.colors.highlight }}
     />
-    <h3 className="text-lg font-semibold text-center text-pink-800 mt-4">
+    <h3
+      className="text-lg font-semibold text-center mt-4"
+      style={{ color: THEME.colors.primary }}
+    >
       {name}
     </h3>
-    <p className="text-sm text-center text-pink-700 mt-2">{story}</p>
-    <div className="mt-4 flex justify-center gap-2 text-xl text-pink-500 animate-pulse">
+    <p
+      className="text-sm text-center mt-2"
+      style={{ color: THEME.colors.textSecondary }}
+    >
+      {story}
+    </p>
+    <div
+      className="mt-4 flex justify-center gap-2 text-xl animate-pulse"
+      style={{ color: THEME.colors.accent }}
+    >
       ❤️ 💑 💕
     </div>
   </div>
 );
+// --- End LoveStoryCard definition ---
 
 const RealLoveStories = () => {
   return (
-    // <section className="bg-white py-12 px-4 z-10 relative mb-16">
     <section className="px-4 pb-12 z-10 relative mb-16">
-      <h2 className="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
+      <h2
+        className="text-3xl sm:text-4xl font-bold text-center mb-8"
+        style={{ color: THEME.colors.highlight }}
+      >
         ❤️ Real Love Stories
       </h2>
 
@@ -54,7 +77,8 @@ const RealLoveStories = () => {
         }}
       >
         {loveStories.map((story) => (
-          <SwiperSlide key={story.id}>
+          // FIX APPLIED: Added py-5 to create vertical space around the card.
+          <SwiperSlide key={story.id} className="py-5">
             <LoveStoryCard
               name={story.name}
               image={story.image}

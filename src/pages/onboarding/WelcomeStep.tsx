@@ -4,6 +4,8 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { THEME } from "@constants/colors";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "@constants/path";
+import RealLoveStories from "@sections/home/RealLoveStories";
+import ToastPupUpMessage from "@sections/home/NewUserPupUp";
 
 // interface WelcomeStepProps {
 //   data: OnboardingData;
@@ -78,7 +80,7 @@ const WelcomeStep = () => {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden"
+      className="relative mt-[6%] min-h-screen flex flex-col items-center justify-center text-center overflow-hidden"
       style={{
         fontFamily: THEME.fonts.primary,
         color: THEME.colors.textPrimary,
@@ -211,7 +213,7 @@ const WelcomeStep = () => {
           Get Started
         </button>
 
-        {/* 👇 Already a user? Login */}
+        {/* Already a user? Login */}
         <button
           onClick={openLogin}
           className="text-pink-300 hover:text-pink-100 underline font-semibold text-sm transition-all duration-200"
@@ -220,7 +222,7 @@ const WelcomeStep = () => {
         </button>
       </motion.div>
 
-      {/* 🛡️ Bottom Info */}
+      {/*  Bottom Info */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -232,6 +234,11 @@ const WelcomeStep = () => {
         <span>• Verified Profiles</span>
         <span>• Real Connections</span>
       </motion.div>
+
+      <div className="mt-14 w-full max-w-7xl mx-auto cursor-pointer">
+        <RealLoveStories />
+      </div>
+      <ToastPupUpMessage />
     </div>
   );
 };

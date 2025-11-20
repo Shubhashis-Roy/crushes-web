@@ -22,7 +22,7 @@ const ToastPupUpMessage = () => {
         delayTimer = setTimeout(() => {
           setCurrentIndex((prev) => (prev + 1) % UsersFeedback.length);
           cycleMessages();
-        }, 500);
+        }, 750);
       }, 4000);
     };
 
@@ -37,7 +37,8 @@ const ToastPupUpMessage = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 pb-16">
+    // <div className="fixed bottom-6 right-6 z-50 pb-10">
+    <div className="fixed bottom-6 right-6 z-50 pb-10">
       <div className="alert shadow-lg bg-pink-100 text-pink-900 animate-slide-in rounded-lg border border-pink-300 p-4 relative w-auto">
         {/* Progress Bar */}
         <div
