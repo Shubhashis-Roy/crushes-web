@@ -235,7 +235,7 @@ const WelcomeStep = () => {
         <span>• Real Connections</span>
       </motion.div>
 
-      <div className="mt-14 w-full max-w-7xl mx-auto cursor-pointer">
+      <div className="mt-14 w-full mx-auto cursor-pointer">
         <RealLoveStories />
       </div>
       <ToastPupUpMessage />

@@ -17,27 +17,29 @@ interface LoveStoryCardpProps {
 
 const LoveStoryCard: FC<LoveStoryCardpProps> = ({ name, image, story }) => (
   <div
-    className="w-full shadow-lg rounded-2xl p-4 transition-transform hover:scale-105 duration-300"
+    className="w-full shadow-lg rounded-2xl p-4 transition-transform hover:scale-[1.05] duration-300 backdrop-blur-md border border-white/20"
     style={{
-      background: `linear-gradient(145deg, #FF80BF, #F8BBD0)`,
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       color: THEME.colors.textPrimary,
+      boxShadow: "0 8px 24px 0 rgba(31, 38, 135, 0.37)",
     }}
   >
     <img
       src={image}
       alt={name}
       className="w-20 h-20 rounded-full object-cover mx-auto border-4 shadow"
-      style={{ borderColor: THEME.colors.highlight }}
+      // Use white/light border for contrast on a dark/transparent card
+      style={{ borderColor: "rgba(255, 255, 255, 0.7)" }}
     />
     <h3
       className="text-lg font-semibold text-center mt-4"
-      style={{ color: THEME.colors.primary }}
+      style={{ color: THEME.colors.highlight }} // Use a high-contrast theme color for the name
     >
       {name}
     </h3>
     <p
       className="text-sm text-center mt-2"
-      style={{ color: THEME.colors.textSecondary }}
+      style={{ color: THEME.colors.textPrimary }} // Use primary text color (assuming it's light)
     >
       {story}
     </p>
@@ -53,7 +55,7 @@ const LoveStoryCard: FC<LoveStoryCardpProps> = ({ name, image, story }) => (
 
 const RealLoveStories = () => {
   return (
-    <section className="px-4 pb-12 z-10 relative mb-16">
+    <section className="px-4 pb-12 z-10 relative mb-10">
       <h2
         className="text-3xl sm:text-4xl font-bold text-center mb-8"
         style={{ color: THEME.colors.highlight }}
