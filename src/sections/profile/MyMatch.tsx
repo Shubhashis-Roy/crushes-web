@@ -25,8 +25,6 @@ const MyMatch = () => {
     navigate(PATH.CHAT);
   };
 
-  // console.log(connections, "connections matches hlo ============");
-
   if (!connections) return null;
 
   if (connections?.length === 0)

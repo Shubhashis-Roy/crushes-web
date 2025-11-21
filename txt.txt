@@ -16,6 +16,6 @@ shimmer UI:
 ---------------------
 - replce/delete photo
 - fix: redux persist issue[test]
-- footer (show sucess love store)
+- footer (show sucess love store) [done]
 - toast
-- show new user login/ac open toast. 
+- show new user login/ac open toast.[done]

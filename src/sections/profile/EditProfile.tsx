@@ -1,7 +1,6 @@
 import { updateUserProfile } from "@redux/slices/user";
 import { dispatch } from "@redux/store";
-import { getAge } from "@utils/age";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface EditProfileProps {
   user: profileDetailsTypes;
@@ -32,8 +31,6 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
 
     dispatch(updateUserProfile(bodyPayload));
   };
-
-  console.log(isEdited, "isEdited hlo =======");
 
   return (
     <div className="flex flex-col items-center w-full text-white">
