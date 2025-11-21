@@ -54,7 +54,7 @@ const VideoCall: React.FC<Props> = ({ userId, targetUserId, onClose }) => {
         .play()
         .catch(() => console.warn("Remote video autoplay blocked"));
     }
-  }, [streamsVersion]);
+  }, [streamsVersion, getLocalStream, getRemoteStream]);
 
   useEffect(() => {
     const handleTrack = () => setStreamsVersion((v) => v + 1);
