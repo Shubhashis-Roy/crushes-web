@@ -20,8 +20,6 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({
   const { _id, firstName, lastName, photoUrl, dateOfBirth, gender, bio } =
     connection;
 
-  console.log(firstName, lastName, "hlo ==========");
-
   return (
     <div
       key={_id}

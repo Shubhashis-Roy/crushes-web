@@ -7,12 +7,6 @@ add shimmer UI.
 
 ---------------------------------------------------------
 ToDo: 13 Nov
-- Req, conntions UI[done] 
-- login card [done]
-- from Conntions page to chatting flow [done]
-- chat page sidebar issue[done]
-- photo upload [done]
-- add onboarding input feild error.[done]
 - profile page
 - Protected route
 - chat sidebar: show the last mgs properly & show on top least text user 
@@ -22,6 +16,6 @@ shimmer UI:
 ---------------------
 - replce/delete photo
 - fix: redux persist issue[test]
-- footer (show sucess love store)
+- footer (show sucess love store) [done]
 - toast
-- show new user login/ac open toast. 
+- show new user login/ac open toast.[done]

@@ -1,40 +1,92 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import { loveStories } from "@schema/loveStories";
+import { loveStories } from "@schema/loveStories.schema";
 import { FC } from "react";
+import { THEME } from "@constants/colors";
 
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/autoplay";
 
+// --- LoveStoryCard Props Update ---
 interface LoveStoryCardpProps {
   name: string;
-  image: string;
+  maleImage: string;
+  femaleImage: string;
   story: string;
 }
 
-const LoveStoryCard: FC<LoveStoryCardpProps> = ({ name, image, story }) => (
-  <div className="w-full bg-gradient-to-br from-pink-100 via-red-100 to-pink-200 shadow-lg rounded-2xl p-4 transition-transform hover:scale-105 duration-300">
-    <img
-      src={image}
-      alt={name}
-      className="w-20 h-20 rounded-full object-cover mx-auto border-4 border-white shadow"
-    />
-    <h3 className="text-lg font-semibold text-center text-pink-800 mt-4">
+const LoveStoryCard: FC<LoveStoryCardpProps> = ({
+  name,
+  maleImage,
+  femaleImage,
+  story,
+}) => (
+  <div
+    className="w-full shadow-lg rounded-2xl p-4 transition-transform hover:scale-[1.05] duration-300 backdrop-blur-md border border-white/20 flex flex-col items-center text-center"
+    style={{
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
+      color: THEME.colors.textPrimary,
+      boxShadow: "0 8px 24px 0 rgba(31, 38, 135, 0.37)",
+    }}
+  >
+    {/* ------------------------------------------------------------------ */}
+    {/* ✨ NEW: Container for Two Overlapping Circles */}
+    {/* ------------------------------------------------------------------ */}
+    <div className="relative w-32 h-16 mb-6">
+      <img
+        src={femaleImage}
+        alt="Female Profile"
+        className="absolute top-0 left-0 w-16 h-16 rounded-full object-cover shadow-md z-10"
+        style={{
+          borderColor: THEME.colors.highlight,
+          borderWidth: 3,
+        }}
+      />
+
+      <img
+        src={maleImage}
+        alt="Male Profile"
+        className="absolute top-0 right-0 w-16 h-16 rounded-full object-cover shadow-lg z-20"
+        style={{
+          left: "45px",
+          borderColor: "rgba(255, 255, 255, 0.7)",
+          borderWidth: 3,
+          transform: "translateX(10px)",
+        }}
+      />
+    </div>
+    {/* ------------------------------------------------------------------ */}
+
+    <h3
+      className="text-lg font-semibold text-center mt-4"
+      style={{ color: THEME.colors.highlight }}
+    >
       {name}
     </h3>
-    <p className="text-sm text-center text-pink-700 mt-2">{story}</p>
-    <div className="mt-4 flex justify-center gap-2 text-xl text-pink-500 animate-pulse">
+    <p
+      className="text-sm text-center mt-2"
+      style={{ color: THEME.colors.textPrimary }}
+    >
+      {story}
+    </p>
+    <div
+      className="mt-4 flex justify-center gap-2 text-xl animate-pulse"
+      style={{ color: THEME.colors.accent }}
+    >
       ❤️ 💑 💕
     </div>
   </div>
 );
 
+// --- RealLoveStories component (needs props update) ---
+
 const RealLoveStories = () => {
   return (
-    // <section className="bg-white py-12 px-4 z-10 relative mb-16">
-    <section className="px-4 pb-12 z-10 relative mb-16">
-      <h2 className="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
+    <section className="px-4 pb-12 z-10 relative mb-10">
+      <h2
+        className="text-3xl sm:text-4xl font-bold text-center mb-8 px-4"
+        style={{ color: THEME.colors.highlight }}
+      >
         ❤️ Real Love Stories
       </h2>
 
@@ -53,12 +105,14 @@ const RealLoveStories = () => {
           1280: { slidesPerView: 4 },
         }}
       >
-        {loveStories.map((story) => (
-          <SwiperSlide key={story.id}>
+        {loveStories?.map((story) => (
+          <SwiperSlide key={story.id} className="py-5">
             <LoveStoryCard
               name={story.name}
-              image={story.image}
               story={story.story}
+              // ✨ IMPORTANT: Update your data to provide these keys
+              maleImage={story.maleImage}
+              femaleImage={story.femaleImage}
             />
           </SwiperSlide>
         ))}

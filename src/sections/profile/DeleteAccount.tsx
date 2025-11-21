@@ -47,12 +47,12 @@ const DeleteAccount = () => {
           >
             Yes, Delete My Account
           </button>
-          <button
+          {/* <button
             className="px-6 py-2 rounded-lg font-semibold border border-white/20 text-white/80 hover:bg-white/10 transition-all"
             onClick={() => alert("❌ Cancel clicked")}
           >
             Cancel
-          </button>
+          </button> */}
         </div>
       </motion.div>
 
