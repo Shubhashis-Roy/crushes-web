@@ -66,10 +66,7 @@ export const useChatSocket = ({
 
     socketRef.current.on(
       "userStatus",
-      (statusUserId: { userId: string; status: string }, status: string) => {
-        console.log("statusUserId:", statusUserId, status);
-        console.log("targetUserId: ", targetUserId, status);
-
+      (statusUserId: { userId: string; status: string }) => {
         if (statusUserId?.status === "online") {
           setIsOnline(true);
         }
