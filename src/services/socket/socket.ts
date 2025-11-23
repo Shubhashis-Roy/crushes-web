@@ -1,6 +1,5 @@
 import { io, Socket } from "socket.io-client";
 
-// const BASE_URL = "http://localhost:3001";
 const BASE_URL =
   window.location.hostname === "localhost"
     ? import.meta.env.VITE_DEV_BASE_URL

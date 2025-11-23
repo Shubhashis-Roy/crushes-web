@@ -2,20 +2,21 @@
 domain:
 F.E: http://16.16.185.216
 
-
-add shimmer UI.
-
 ---------------------------------------------------------
 ToDo: 13 Nov
-- profile page
 - Protected route
-- chat sidebar: show the last mgs properly & show on top least text user 
 - photo loaded late in feed card: add shimmer UI if img not loaded
 shimmer UI:
 - Req, conntions, chat, feed[test]
 ---------------------
 - replce/delete photo
 - fix: redux persist issue[test]
-- footer (show sucess love store) [done]
 - toast
-- show new user login/ac open toast.[done]
+
+---------------------------------------------------------
+ToDo: 21 Nov
+- Video call[done]
+- chat sidebar: show the last mgs properly & show on top least text user 
+- chatting: online, offline, typing
+- profile page: details card, photo add/update
+- cron-job, add dummy [100 - 150] users
