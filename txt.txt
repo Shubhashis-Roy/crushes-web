@@ -15,7 +15,7 @@ shimmer UI:
 
 ---------------------------------------------------------
 ToDo: 21 Nov
-- Video call
+- Video call[done]
 - chat sidebar: show the last mgs properly & show on top least text user 
 - chatting: online, offline, typing
 - profile page: details card, photo add/update
