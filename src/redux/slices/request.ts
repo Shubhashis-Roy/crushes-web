@@ -32,11 +32,19 @@ const slice = createSlice({
       state.isLoading = false;
       state.requests = action.payload.data;
     },
+
+    // CLEAR REQUESTS
+    clearRequests(state, action) {
+      state.requests.filter((item) => item._id !== action.payload);
+    },
   },
 });
 
 // Reducer
 export default slice.reducer;
+
+// Export Actions
+export const { clearRequests } = slice.actions;
 
 // ----------------------------------------------------------------------------
 

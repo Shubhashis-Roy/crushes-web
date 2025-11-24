@@ -5,9 +5,10 @@ import { connectionEnum } from "@enum/connectionEnum";
 import { dispatch } from "@redux/store";
 import { reviewConnectionRequest } from "@redux/slices/request";
 import { dummyImg } from "@constants/images";
+import { showToast } from "@utils/toast";
 
 interface RequestCardProps {
-  requestDetails: chatUserDetailsTypes;
+  requestDetails: requestsDetailsTypes;
   requestId: string;
   //   setRequests: () => void;
   setRequests: React.Dispatch<React.SetStateAction<requestsDetailsTypes[]>>;
@@ -19,19 +20,25 @@ const RequestCard: React.FC<RequestCardProps> = ({
   setRequests,
 }) => {
   const { firstName, lastName, photoUrl, gender, bio, dateOfBirth } =
-    requestDetails;
+    requestDetails?.fromUserId;
 
-  const reviewRequests = async (status: string, _id: string) => {
+  const reviewRequests = async (status: string, requestId: string) => {
     const res = await dispatch(
       reviewConnectionRequest({
         status,
-        userId: _id,
+        userId: requestId,
       })
     );
 
-    if (res?.status === 200) {
-      setRequests((prev) => prev.filter((item) => item._id !== _id));
+    if (res?.status !== 200) return;
+
+    if (status === connectionEnum.ACCEPTED) {
+      showToast(`You and ${firstName} are now a match.`);
+    } else if (status === connectionEnum.REJECTED) {
+      showToast(`You decided not to match with ${firstName}.`);
     }
+
+    setRequests((prev) => prev.filter((item) => item?._id !== requestId));
   };
 
   return (

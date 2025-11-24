@@ -1,6 +1,7 @@
 import { updateUserProfile } from "@redux/slices/user";
 import { dispatch } from "@redux/store";
 import { formatToBackend, formatToDisplay } from "@utils/age";
+import { showToast } from "@utils/toast";
 import React, { useEffect, useState } from "react";
 
 interface EditProfileProps {
@@ -19,7 +20,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const [city, setCity] = useState(user?.city);
   const [gender, setGender] = useState(user?.gender || "");
   const [bio, setbio] = useState(user?.bio || "");
-  const [isEdited, setIsEdited] = useState(false);
+  const [isEdited, setIsEdited] = useState(true);
 
   useEffect(() => {
     setIsEdited(
@@ -60,6 +61,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
 
     const res = await dispatch(updateUserProfile(bodyPayload));
     if (res?.status === 200) {
+      showToast("Your profile has been updated successfully!");
       setIsEdited(false);
     }
   };
@@ -155,6 +157,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
               </option>
               <option value="female" className="text-gray-800">
                 Woman
+              </option>
+              <option value="non-binary" className="text-gray-800">
+                Non-binary
+              </option>
+              <option value="custom" className="text-gray-800">
+                Custom
               </option>
               <option value="other" className="text-gray-800">
                 Other

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllRequests } from "@redux/slices/request";
-import { dispatch } from "@redux/store";
+import { dispatch, useSelector } from "@redux/store";
 import RequestCard from "@sections/request/RequestCard";
 import SkeletonConnections from "@shimmer_ui/SkeletonConnections";
 import NoRequestFound from "@sections/request/NoRequestFound";
@@ -8,11 +8,13 @@ import NoRequestFound from "@sections/request/NoRequestFound";
 const Requests = () => {
   const [requests, setRequests] = useState<requestsDetailsTypes[]>([]);
   const [loading, setLoading] = useState(false);
+  const req = useSelector((state) => state.request.requests);
 
   useEffect(() => {
     async function fetchRequests() {
       setLoading(true);
       const res = await dispatch(getAllRequests());
+
       setRequests(res);
       setLoading(false);
     }
@@ -41,15 +43,7 @@ const Requests = () => {
       {requests?.map((request: requestsDetailsTypes) => (
         <RequestCard
           key={request?._id}
-          requestDetails={{
-            ...request?.fromUserId,
-            photoUrl: Array.isArray(request?.fromUserId?.photoUrl)
-              ? request.fromUserId.photoUrl.map((url: string) => ({
-                  url,
-                  public_id: "",
-                }))
-              : [],
-          }}
+          requestDetails={request}
           requestId={request?._id}
           setRequests={setRequests}
         />

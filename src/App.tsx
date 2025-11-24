@@ -12,6 +12,8 @@ import Profile from "@pages/profile/Profile";
 import Connections from "@pages/connection/Connections";
 import Requests from "@pages/request/Requests";
 import Chat from "@pages/chat/Chat";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -27,12 +29,11 @@ function App() {
             <Route path={PATH.CONNECTION} element={<Connections />} />
             <Route path={PATH.REQUEST} element={<Requests />} />
             <Route path={PATH.CHAT} element={<Chat />} />
-            {/* 
-            <Route path="chat" element={<Chat />} /> */}
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </Provider>
   );
