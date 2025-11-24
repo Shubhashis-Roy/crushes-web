@@ -18,10 +18,14 @@ declare interface fromUserIdTypes {
   firstName: string;
   lastName: string;
   city?: string;
-  photoUrl: string[];
+  photoUrl: {
+    url: string;
+    public_id: string;
+  }[];
   gender?: string;
   bio?: string;
   age?: number;
+  dateOfBirth?: string;
 }
 
 declare interface reviewRequestPayloadTypes {

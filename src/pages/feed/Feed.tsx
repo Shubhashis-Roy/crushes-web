@@ -5,7 +5,7 @@ import UserCard from "@sections/feed/UserCard";
 import { dispatch } from "@redux/store";
 import { getFeed } from "@redux/slices/feed";
 import UserDetailsCard from "@sections/feed/UserDetailsCard";
-import SkeletonCard from "@shimmer_ui/FeedCardSkeleton";
+import FeedCardSkeleton from "@shimmer_ui/FeedCardSkeleton";
 import { NoUserFound } from "@sections/feed/NoUserFound";
 
 const Feed = () => {
@@ -29,6 +29,14 @@ const Feed = () => {
   // const handleSwipe = (direction: string, swipedUser: feedDetailsTypes) => {
   //   setUsers((prev) => prev.slice(1));
   // };
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-full flex items-center justify-center mt-[7%]">
+        <FeedCardSkeleton />;
+      </div>
+    );
+  }
 
   return (
     <div
@@ -77,9 +85,7 @@ const Feed = () => {
                   whileTap={{ scale: 0.98 }}
                   className="cursor-grab active:cursor-grabbing mt-10"
                 >
-                  {loading ? (
-                    <SkeletonCard />
-                  ) : users?.length > 0 ? (
+                  {users?.length > 0 ? (
                     <UserCard
                       user={user}
                       onShowDetails={() => setSelectedUser(user)}

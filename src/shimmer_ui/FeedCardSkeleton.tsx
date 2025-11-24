@@ -1,6 +1,4 @@
-import React from "react";
-
-const SkeletonCard = () => {
+const FeedCardSkeleton = () => {
   return (
     <div className="relative w-[340px] h-[520px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/40 backdrop-blur-md animate-pulse">
       {/* Top shimmer bar */}
@@ -54,4 +52,4 @@ const SkeletonCard = () => {
   );
 };
 
-export default SkeletonCard;
+export default FeedCardSkeleton;

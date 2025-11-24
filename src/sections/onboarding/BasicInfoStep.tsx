@@ -57,7 +57,7 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
     setFormData((prev) => ({ ...prev, interestedIn: newInterestedIn }));
   };
 
-  const genderOptions = ["Male", "Female", "Non-binary", "Custom"];
+  const genderOptions = ["Male", "Female", "Non-binary", "Custom", "Other"];
   const interestedInOptions = ["Men", "Women", "Everyone"];
 
   return (

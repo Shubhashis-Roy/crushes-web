@@ -3,20 +3,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { dispatch } from "@redux/store";
 import { getProfile } from "@redux/slices/user";
 import EditProfile from "@sections/profile/EditProfile";
-import ManageImages from "@sections/profile/ManageImages";
+// import ManageImages from "@sections/profile/ManageImages";
 import MyMatch from "@sections/profile/MyMatch";
 import DeleteAccount from "@sections/profile/DeleteAccount";
 import Logout from "@components/auth/Logout";
+import ProfileSkeleton from "@shimmer_ui/ProfileSkeleton";
 
 const Profile = () => {
   const [user, setUser] = useState<profileDetailsTypes>();
   const [selectedScreen, setSelectedScreen] = useState("Edit Profile");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getProfileData() {
+      setLoading(true);
       const res = await dispatch(getProfile());
       setUser(res);
+      setLoading(false);
     }
 
     getProfileData();
@@ -24,18 +28,26 @@ const Profile = () => {
 
   const menuOptions = [
     { label: "Edit Profile", emoji: "💫" },
-    { label: "Manage Images", emoji: "🖼️" },
+    // { label: "Manage Images", emoji: "🖼️" },
     { label: "My Matches", emoji: "💞" },
     { label: "Delete Account", emoji: "⚠️" },
     { label: "Logout", emoji: "🚪" },
   ];
 
+  if (loading) {
+    return (
+      <div className="relative w-full h-full flex items-center justify-center mt-[7%]">
+        <ProfileSkeleton />;
+      </div>
+    );
+  }
+
   const renderContent = () => {
     switch (selectedScreen) {
       case "Edit Profile":
         return user && <EditProfile user={user} />;
-      case "Manage Images":
-        return user && <ManageImages user={user} />;
+      // case "Manage Images":
+      //   return user && <ManageImages user={user} />;
       case "My Matches":
         return <MyMatch />;
       case "Delete Account":

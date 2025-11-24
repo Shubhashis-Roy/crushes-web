@@ -1,22 +1,15 @@
-import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { dispatch } from "@redux/store";
-import { logout } from "@redux/slices/auth";
-import { PATH } from "@constants/path";
 
 interface logoutProps {
   setShowLogoutConfirm: (arg0: boolean) => void;
 }
 
-const Logout: React.FC<logoutProps> = ({ setShowLogoutConfirm }) => {
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    const statusCode = await dispatch(logout());
-    if (statusCode === 200) {
-      setShowLogoutConfirm(false);
-      navigate(PATH.LOGIN);
-    }
+const DeleteAccountModel: React.FC<logoutProps> = ({
+  setShowLogoutConfirm,
+}) => {
+  const handleDeleteAccount = async () => {
+    alert("Your account will be permanently deleted in 1 day.");
+    setShowLogoutConfirm(false);
   };
 
   return (
@@ -41,10 +34,10 @@ const Logout: React.FC<logoutProps> = ({ setShowLogoutConfirm }) => {
 
           <div className="relative z-10 p-6 flex flex-col items-center text-center">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-pink-100 mb-3">
-              Are you sure you want to logout?
+              Are you sure you want to delete your account?
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-              You’ll need to log in again to continue exploring 💖
+              This action cannot be undone.💔
             </p>
 
             <div className="flex gap-4 w-full justify-center">
@@ -55,10 +48,10 @@ const Logout: React.FC<logoutProps> = ({ setShowLogoutConfirm }) => {
                 Cancel
               </button>
               <button
-                onClick={handleLogout}
+                onClick={handleDeleteAccount}
                 className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-pink-500 to-rose-600 text-white font-medium shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
               >
-                Yes, Logout
+                Yes, Delete Account
               </button>
             </div>
           </div>
@@ -68,4 +61,4 @@ const Logout: React.FC<logoutProps> = ({ setShowLogoutConfirm }) => {
   );
 };
 
-export default Logout;
+export default DeleteAccountModel;
