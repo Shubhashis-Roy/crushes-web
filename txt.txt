@@ -3,20 +3,14 @@ domain:
 F.E: http://16.16.185.216
 
 ---------------------------------------------------------
-ToDo: 13 Nov
-- Protected route
-- photo loaded late in feed card: add shimmer UI if img not loaded
-shimmer UI:
-- Req, conntions, chat, feed[test]
----------------------
-- replce/delete photo
-- fix: redux persist issue[test]
-- toast
+ToDo: 25 Nov
 
----------------------------------------------------------
-ToDo: 21 Nov
-- Video call[done]
-- chat sidebar: show the last mgs properly & show on top least text user 
-- chatting: online, offline, typing
-- profile page: details card, photo add/update
-- cron-job, add dummy [100 - 150] users
+- add dummy user (100 - 150)
+- Test whole web site
+
+----------
+
+- chat: online(working partially)
+- Profile:  photo add/update, 
+- chat: chating last msg, time.
+- protective route
