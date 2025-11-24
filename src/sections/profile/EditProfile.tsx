@@ -9,6 +9,8 @@ interface EditProfileProps {
 const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const [firstName, setFirstName] = useState(user?.firstName);
   const [lastName, setLastName] = useState(user?.lastName);
+  const [profession, setProfession] = useState(user?.profession);
+  const [education, setEducation] = useState(user?.education);
   const [city, setCity] = useState(user?.city);
   const [gender, setGender] = useState(user?.gender || "");
   const [bio, setbio] = useState(user?.bio || "");
@@ -16,6 +18,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
   const isEdited =
     firstName !== user.firstName ||
     lastName !== user.lastName ||
+    profession !== (user.profession || "") ||
+    education !== (user.education || "") ||
     city !== (user.city || "") ||
     gender !== (user.gender || "") ||
     bio !== (user.bio || "");
@@ -47,38 +51,67 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
       </div>
 
       {/* ============ Form ============ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-3xl">
-        <input
-          type="text"
-          placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
-        <input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl">
+        {/* First Name */}
+        <div className="flex flex-col gap-2">
+          <label className="text-white/80 font-medium text-sm">
+            First Name
+          </label>
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 
+                 rounded-lg border border-white/20 backdrop-blur-md 
+                 placeholder:text-white/40 focus:outline-none 
+                 focus:ring-2 focus:ring-pink-400"
+            placeholder="Enter your first name"
+          />
+        </div>
 
-        {/* ================ Custom Gender Dropdown ================ */}
-        <div className="relative w-full">
+        {/* Last Name */}
+        <div className="flex flex-col gap-2">
+          <label className="text-white/80 font-medium text-sm">Last Name</label>
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 
+                 rounded-lg border border-white/20 backdrop-blur-md 
+                 placeholder:text-white/40 focus:outline-none 
+                 focus:ring-2 focus:ring-pink-400"
+            placeholder="Enter your last name"
+          />
+        </div>
+
+        {/* City */}
+        <div className="flex flex-col gap-2">
+          <label className="text-white/80 font-medium text-sm">City</label>
+          <input
+            type="text"
+            value={city ? city?.charAt(0).toUpperCase() + city?.slice(1) : ""}
+            onChange={(e) => setCity(e.target.value)}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 
+                 rounded-lg border border-white/20 backdrop-blur-md 
+                 placeholder:text-white/40 focus:outline-none 
+                 focus:ring-2 focus:ring-pink-400"
+            placeholder="Enter your city"
+          />
+        </div>
+
+        {/* Gender Dropdown */}
+        <div className="flex flex-col gap-2 relative">
+          <label className="text-white/80 font-medium text-sm">Gender</label>
+
           <select
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="appearance-none w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400 pr-10 cursor-pointer"
+            className="appearance-none w-full bg-white/10 text-white font-semibold
+                 px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md
+                 focus:outline-none focus:ring-2 focus:ring-pink-400 pr-10 cursor-pointer"
           >
             <option value="" disabled className="text-gray-400">
-              Select your gender
+              Select gender
             </option>
             <option value="male" className="text-gray-800">
               Man
@@ -91,9 +124,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
             </option>
           </select>
 
-          {/* ================ Custom dropdown arrow ================ */}
+          {/* Custom arrow */}
           <svg
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-pink-300 pointer-events-none"
+            className="absolute right-4 top-[58%] -translate-y-1/2 w-4 h-4 text-pink-300 pointer-events-none"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -107,18 +140,67 @@ const EditProfile: React.FC<EditProfileProps> = ({ user }) => {
           </svg>
         </div>
 
-        <div className="col-span-1 sm:col-span-2">
+        {/* Profession */}
+        <div className="flex flex-col gap-2">
+          <label className="text-white/80 font-medium text-sm">
+            Profession
+          </label>
+          <input
+            type="text"
+            value={
+              profession
+                ? profession?.charAt(0).toUpperCase() + profession?.slice(1)
+                : ""
+            }
+            onChange={(e) => setProfession(e.target.value)}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 
+                 rounded-lg border border-white/20 backdrop-blur-md 
+                 placeholder:text-white/40 focus:outline-none 
+                 focus:ring-2 focus:ring-pink-400"
+            placeholder="Enter your profession"
+          />
+        </div>
+
+        {/* education*/}
+        <div className="flex flex-col gap-2">
+          <label className="text-white/80 font-medium text-sm">Education</label>
+          <input
+            type="text"
+            value={
+              education
+                ? education?.charAt(0).toUpperCase() + education?.slice(1)
+                : ""
+            }
+            onChange={(e) => setEducation(e.target.value)}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 
+                 rounded-lg border border-white/20 backdrop-blur-md 
+                 placeholder:text-white/40 focus:outline-none 
+                 focus:ring-2 focus:ring-pink-400"
+            placeholder="Enter your education"
+          />
+        </div>
+
+        {/* Bio */}
+        <div className="col-span-1 sm:col-span-2 flex flex-col gap-2">
+          <label className="text-white/80 font-medium text-sm">
+            Bio <span className="text-white/50">(max 40 characters)</span>
+          </label>
+
           <textarea
-            placeholder="About You"
             value={bio}
             onChange={(e) => {
               const inputValue = e.target.value;
               if (inputValue.length <= 40) setbio(inputValue);
             }}
-            rows={4}
-            className="w-full bg-white/10 text-white font-semibold px-4 py-3 rounded-lg border border-white/20 backdrop-blur-md placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"
+            rows={3}
+            className="w-full bg-white/10 text-white font-semibold px-4 py-3 
+                 rounded-lg border border-white/20 backdrop-blur-md 
+                 placeholder:text-white/40 focus:outline-none 
+                 focus:ring-2 focus:ring-pink-400 resize-none"
+            placeholder="Write a short bio..."
           />
-          <p className="text-right text-xs text-white/50 mt-1">
+
+          <p className="text-right text-xs text-white/50">
             {bio?.length} / 40 characters
           </p>
         </div>
