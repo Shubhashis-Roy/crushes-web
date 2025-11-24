@@ -38,9 +38,9 @@ const Requests = () => {
         Matche Requests
       </h1>
 
-      {requests.map((request: requestsDetailsTypes) => (
+      {requests?.map((request: requestsDetailsTypes) => (
         <RequestCard
-          key={request._id}
+          key={request?._id}
           requestDetails={{
             ...request?.fromUserId,
             photoUrl: Array.isArray(request?.fromUserId?.photoUrl)

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
  * Tracks the last route visited before the current one.
  * Works across full route transitions.
  */
+//! NOT USE
 export const usePreviousRoute = (): string | null => {
   const location = useLocation();
   const previousPath = useRef<string | null>(null);
@@ -13,8 +14,8 @@ export const usePreviousRoute = (): string | null => {
   useEffect(() => {
     // When location changes, update refs
     if (currentPath.current !== location.pathname) {
-      previousPath.current = currentPath.current; // ✅ store old route
-      currentPath.current = location.pathname; // ✅ update to new route
+      previousPath.current = currentPath.current;
+      currentPath.current = location.pathname;
     }
   }, [location.pathname]);
 

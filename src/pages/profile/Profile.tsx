@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { dispatch } from "@redux/store";
 import { getProfile } from "@redux/slices/user";
 import EditProfile from "@sections/profile/EditProfile";
-import ManageImages from "@sections/profile/ManageImages";
+// import ManageImages from "@sections/profile/ManageImages";
 import MyMatch from "@sections/profile/MyMatch";
 import DeleteAccount from "@sections/profile/DeleteAccount";
 import Logout from "@components/auth/Logout";
@@ -24,7 +24,7 @@ const Profile = () => {
 
   const menuOptions = [
     { label: "Edit Profile", emoji: "💫" },
-    { label: "Manage Images", emoji: "🖼️" },
+    // { label: "Manage Images", emoji: "🖼️" },
     { label: "My Matches", emoji: "💞" },
     { label: "Delete Account", emoji: "⚠️" },
     { label: "Logout", emoji: "🚪" },
@@ -34,8 +34,8 @@ const Profile = () => {
     switch (selectedScreen) {
       case "Edit Profile":
         return user && <EditProfile user={user} />;
-      case "Manage Images":
-        return user && <ManageImages user={user} />;
+      // case "Manage Images":
+      //   return user && <ManageImages user={user} />;
       case "My Matches":
         return <MyMatch />;
       case "Delete Account":
