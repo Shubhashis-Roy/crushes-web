@@ -20,6 +20,7 @@ import { dobFormatter } from "@utils/age";
 import { PATH } from "@constants/path";
 import ErrorMessage from "@sections/onboarding/ErrorMessage";
 import { onBoardingValidations } from "@utils/validation";
+import { splitName } from "@utils/string";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -93,12 +94,14 @@ const OnboardingFlow: React.FC = () => {
     if (currentStep === 0 && data?.email && data?.password) {
       const dob = dobFormatter(data?.dateOfBirth);
 
+      const { firstName, lastName } = splitName(data?.name);
+
       const res = await dispatch(
         signup({
           emailId: data?.email,
           password: data?.password,
-          firstName: data?.name,
-          lastName: data?.name,
+          firstName: firstName,
+          lastName: lastName,
           dob: dob,
           city: data?.city,
           interest: data?.interestedIn?.map((i) => i.toLowerCase()),
@@ -109,6 +112,7 @@ const OnboardingFlow: React.FC = () => {
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(1);
+      return;
     }
 
     if (currentStep === 1) {

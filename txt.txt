@@ -11,9 +11,22 @@ ToDo: 25 Nov
 - Test whole web site
 - If need added toast. 
 
+photo upload continue button add loader
+already exist email show toast
+
 ----------
 
 - chat: online(working partially)
 - Profile:  photo add/update, 
 - chat: chating last msg, time.
 - protective route
+
+
+---------------
+Backend: 
+fix cronjob and run 
+
+delete by email id in array[not now]
+
+ 
+

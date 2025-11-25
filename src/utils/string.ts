@@ -11,4 +11,13 @@ function truncateText(text: string, maxLength: number = 50) {
     : toUpperCase;
 }
 
-export { capitalizeFirstLetter, truncateText };
+function splitName(name: string) {
+  const parts = name.trim().split(" ").filter(Boolean);
+
+  const firstName = parts[0] || "";
+  const lastName = parts[1] ? parts.slice(1).join(" ") : "";
+
+  return { firstName, lastName };
+}
+
+export { capitalizeFirstLetter, truncateText, splitName };
