@@ -12,6 +12,8 @@ import { dispatch } from "@redux/store";
 import { sendRequest } from "@redux/slices/connection";
 import { capitalizeFirstLetter } from "@utils/string";
 import { dummyImg } from "@constants/images";
+import NotInterestText from "./NotInterestText";
+import CrushText from "./CrushText";
 
 interface UserCardProps {
   user: feedDetailsTypes;
@@ -114,20 +116,8 @@ const UserCard: React.FC<UserCardProps> = ({
   return (
     <div className="relative flex items-center justify-center">
       {/* ============== Swipe feedback ============== */}
-      {showLove && (
-        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-          <div className="text-pink-400 text-4xl font-bold drop-shadow-glow">
-            💖 Crush!
-          </div>
-        </div>
-      )}
-      {showNo && (
-        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-          <div className="text-red-400 text-4xl font-bold drop-shadow-glow">
-            💔 Not Interested
-          </div>
-        </div>
-      )}
+      {showLove && <CrushText text="💖 CRUSH!" />}
+      {showNo && <NotInterestText text="💔 NOPE" />}
 
       {/* ============== Swipe Card ============== */}
       <animated.div
