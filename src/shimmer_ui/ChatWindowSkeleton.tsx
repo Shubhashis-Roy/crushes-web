@@ -4,7 +4,7 @@ const ChatWindowSkeleton: React.FC = () => {
   return (
     <div className="w-full h-full p-4 space-y-5 overflow-y-auto">
       {/* Repeat skeleton blocks */}
-      {[...Array(10)].map((_, i) => (
+      {[...Array(7)].map((_, i) => (
         <SkeletonBubble key={i} isRight={i % 2 === 0} />
       ))}
 

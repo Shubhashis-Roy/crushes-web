@@ -73,7 +73,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     <>
       <aside
         className={`transition-all duration-300 flex flex-col 
-        ${sidebarOpen ? "w-80" : "w-16"} 
+        ${sidebarOpen ? "w-80" : "w-[5%]"} 
         bg-gradient-to-b from-[#200a3d] via-[#2a1252] to-[#3a1a5f]
         border-r border-white/10 backdrop-blur-xl shadow-[inset_0_0_10px_rgba(255,255,255,0.1)]`}
       >
@@ -108,10 +108,16 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                         <img
                           src={chat?.photoUrl[0]?.url}
                           alt={chat?.firstName}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]"
+                          className={` ${
+                            sidebarOpen ? "w-10 h-10" : "w-8 h-8"
+                          } rounded-full object-cover border-2 border-pink-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]`}
                         />
                       ) : (
-                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-500/50 text-white font-bold">
+                        <div
+                          className={`${
+                            sidebarOpen ? "w-10 h-10" : "w-8 h-8"
+                          } flex items-center justify-center rounded-full bg-pink-500/50 text-white font-bold`}
+                        >
                           {chat?.firstName?.[0]?.toUpperCase() || "?"}
                         </div>
                       )}

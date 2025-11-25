@@ -79,7 +79,7 @@ const ChatSidebarHeader: React.FC<ChatSidebarHeaderProps> = ({
       ) : (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="text-white/80 hover:text-pink-300 transition-all"
+          className="text-white/80 hover:text-pink-300 transition-all ml-1"
           title="Open Sidebar"
         >
           <FaBars size={18} />
