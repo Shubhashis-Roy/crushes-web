@@ -16,6 +16,8 @@ const Feed = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (users?.length >= 3) return;
+
     async function getFeedData() {
       setLoading(true);
       const res = await dispatch(getFeed());
@@ -24,13 +26,13 @@ const Feed = () => {
     }
 
     getFeedData();
-  }, []);
+  }, [users]);
 
   // const handleSwipe = (direction: string, swipedUser: feedDetailsTypes) => {
   //   setUsers((prev) => prev.slice(1));
   // };
 
-  if (loading) {
+  if (loading && users?.length === 0) {
     return (
       <div className="relative w-full h-full flex items-center justify-center mt-[7%]">
         <FeedCardSkeleton />;

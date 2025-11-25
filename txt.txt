@@ -2,11 +2,14 @@
 domain:
 F.E: http://16.16.185.216
 
+url: https://i.pravatar.cc/4000
+
 ---------------------------------------------------------
 ToDo: 25 Nov
 
-- add dummy user (100 - 150)
+- add dummy user (100 - 150)[done]
 - Test whole web site
+- If need added toast. 
 
 ----------
 
