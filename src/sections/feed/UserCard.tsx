@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useGesture } from "@use-gesture/react";
 import { getAge } from "@utils/age";
@@ -45,6 +45,8 @@ const UserCard: React.FC<UserCardProps> = ({
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [showLove, setShowLove] = useState(false);
   const [showNo, setShowNo] = useState(false);
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
+
   const [{ x, rot }, api] = useSpring(() => ({ x: 0, rot: 0 }));
 
   const handleSendRequest = async (status: string) => {
@@ -105,19 +107,21 @@ const UserCard: React.FC<UserCardProps> = ({
 
   const nextPhoto = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setLoadingPhoto(true);
     setCurrentPhotoIndex((i) => (i + 1) % photos.length);
   };
 
   const prevPhoto = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setLoadingPhoto(true);
     setCurrentPhotoIndex((i) => (i - 1 + photos.length) % photos.length);
   };
 
   return (
     <div className="relative flex items-center justify-center">
       {/* ============== Swipe feedback ============== */}
-      {showLove && <CrushText text="💖 CRUSH!" />}
-      {showNo && <NotInterestText text="💔 NOPE" />}
+      {showLove && <CrushText text="💖CRUSH!💖" />}
+      {showNo && <NotInterestText text="💔 NOPE! 💔" />}
 
       {/* ============== Swipe Card ============== */}
       <animated.div
@@ -127,9 +131,18 @@ const UserCard: React.FC<UserCardProps> = ({
           rotateZ: rot,
           touchAction: "none",
         }}
-        className="relative w-[340px] h-[530px] rounded-2xl overflow-hidden shadow-2xl border border-white/10
-                   bg-black/40 backdrop-blur-md cursor-grab"
+        className="relative w-[340px] h-[530px] rounded-2xl overflow-hidden shadow-2xl 
+             border border-white/10 bg-black/40 backdrop-blur-md cursor-grab group"
       >
+        {loadingPhoto && (
+          <div
+            className="absolute inset-0 flex items-center justify-center z-30
+                  bg-black/50 backdrop-blur-sm"
+          >
+            <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+          </div>
+        )}
+
         {/* ============== Photo Progress Bar ============== */}
         {photos.length > 1 && (
           <div className="absolute top-3 left-3 right-3 z-20 flex gap-2 justify-center">
@@ -156,13 +169,14 @@ const UserCard: React.FC<UserCardProps> = ({
           <>
             <button
               onClick={prevPhoto}
-              className="absolute top-1/2 left-3 -translate-y-1/2 z-20 bg-black/40 p-2 rounded-full text-white hover:bg-black/70 transition"
+              className=" absolute top-1/2 left-3 -translate-y-1/2 z-20  bg-black/40 p-2 rounded-full text-white transition opacity-0 group-hover:opacity-100 max-[600px]:opacity-100"
             >
               <FaChevronLeft />
             </button>
+
             <button
               onClick={nextPhoto}
-              className="absolute top-1/2 right-3 -translate-y-1/2 z-20 bg-black/40 p-2 rounded-full text-white hover:bg-black/70 transition"
+              className=" absolute top-1/2 right-3 -translate-y-1/2 z-20  bg-black/40 p-2 rounded-full text-white transition opacity-0 group-hover:opacity-100 max-[600px]:opacity-100 "
             >
               <FaChevronRight />
             </button>
@@ -173,6 +187,7 @@ const UserCard: React.FC<UserCardProps> = ({
         {photos.length > 0 ? (
           <img
             src={photos[currentPhotoIndex]}
+            onLoad={() => setLoadingPhoto(false)}
             alt={firstName}
             className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
           />
