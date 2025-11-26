@@ -182,6 +182,7 @@ const OnboardingFlow: React.FC = () => {
 
     if (currentStep === 4) {
       navigate(PATH.FEED);
+      setToLocalStorage("onboardingStep", "");
     }
   };
 
