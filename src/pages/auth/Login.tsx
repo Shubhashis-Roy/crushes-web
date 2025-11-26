@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { PATH } from "@constants/path";
 import { dispatch } from "@redux/store";
 import { login } from "@redux/slices/auth";
+import ErrorMessage from "@sections/onboarding/ErrorMessage";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("shub@gmail.com");
@@ -113,7 +114,10 @@ const Login = () => {
           </div>
 
           {error && (
-            <p className="text-red-300 text-sm text-center mt-4">{error}</p>
+            <div className="flex items-center gap-2 border border-red-500 bg-red-50 text-red-600 font-semibold text-sm px-3 py-2 rounded-full mt-4">
+              <span>⚠️</span>
+              <p>{error}</p>
+            </div>
           )}
 
           {/* ================== Button ================== */}
