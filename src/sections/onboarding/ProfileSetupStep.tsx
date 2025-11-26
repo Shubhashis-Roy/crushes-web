@@ -115,9 +115,12 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({
                   />
                   <Camera className="w-6 h-6 mb-2 text-pink-200" />
                   <span className="text-xs">
-                    {formData.photos.length === 0
-                      ? "Main Photo"
-                      : `Photo ${formData.photos.length + 1}`}
+                    {formData?.photos?.length === 0
+                      ? index === 0
+                        ? "Main Photo"
+                        : "Upload Photo"
+                      : formData?.photos?.length > 0 &&
+                        `Photo ${formData.photos.length + 1 + index}`}
                   </span>
                 </label>
               )
