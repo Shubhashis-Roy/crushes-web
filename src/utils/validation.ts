@@ -3,8 +3,6 @@ export const onBoardingValidations = (
   data: OnboardingDataTypes
 ) => {
   if (step === 0) {
-    if (data.name?.length < 4)
-      return "Name must be at least 4 characters long.";
     if (!data.name) return "Please enter your name.";
     if (!data.email) return "Please enter your email address.";
     if (!data.password) return "Please create a password.";
@@ -13,6 +11,8 @@ export const onBoardingValidations = (
     if (!data.gender) return "Please select your gender.";
     if (!data.interestedIn.length)
       return "Please choose who you're interested in.";
+    if (data.name?.length < 4)
+      return "Name must be at least 4 characters long.";
   }
 
   if (step === 1) {

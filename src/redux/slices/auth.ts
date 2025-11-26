@@ -87,6 +87,7 @@ export const signup = (payload: signUpPayloadTypes) => async () => {
         error: errorData || "Something went wrong",
       })
     );
+    return error;
   }
 };
 

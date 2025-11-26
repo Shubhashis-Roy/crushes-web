@@ -21,6 +21,7 @@ import { PATH } from "@constants/path";
 import ErrorMessage from "@sections/onboarding/ErrorMessage";
 import { onBoardingValidations } from "@utils/validation";
 import { splitName } from "@utils/string";
+import { showToast } from "@utils/toast";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -110,7 +111,14 @@ const OnboardingFlow: React.FC = () => {
       );
       setLoading(false);
 
-      if (res?.status !== 200) return;
+      const responseError = res as AxiosErrorResponseTypes;
+      if (responseError?.response?.data?.message === "Email already exists") {
+        showToast("Email already exists. Please login.", "error");
+        return;
+      }
+
+      const resType = res as { status: number };
+      if (resType?.status !== 200) return;
       setDirection(1);
       setCurrentStep(1);
       return;

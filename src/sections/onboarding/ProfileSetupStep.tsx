@@ -68,7 +68,7 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({
         {/* Photo Upload */}
         <div className="space-y-4">
           <Label className="text-pink-200 font-medium text-lg">
-            Photos (1–6 required)
+            Add Photos (Upload at least 2 to continue){" "}
           </Label>
 
           <div className="grid grid-cols-3 sm:grid-cols-3 gap-4">
