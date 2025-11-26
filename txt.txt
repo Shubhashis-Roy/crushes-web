@@ -11,7 +11,7 @@ ToDo: 25 Nov
 - Test whole web site
 - If need added toast. 
 
-photo upload continue button add loader
+photo upload continue button add loader[done]
 already exist email show toast
 
 ----------

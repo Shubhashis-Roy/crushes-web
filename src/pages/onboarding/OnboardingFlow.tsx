@@ -4,7 +4,7 @@ import { Button } from "../../components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { THEME } from "@constants/colors";
-import NavBar from "@components/layout/NavBar";
+// import NavBar from "@components/layout/NavBar";
 
 // Steps
 import BasicInfoStep from "@sections/onboarding/BasicInfoStep";
@@ -95,7 +95,7 @@ const OnboardingFlow: React.FC = () => {
       const dob = dobFormatter(data?.dateOfBirth);
 
       const { firstName, lastName } = splitName(data?.name);
-
+      setLoading(true);
       const res = await dispatch(
         signup({
           emailId: data?.email,
@@ -108,6 +108,7 @@ const OnboardingFlow: React.FC = () => {
           gender: data?.gender.toLocaleLowerCase(),
         })
       );
+      setLoading(false);
 
       if (res?.status !== 200) return;
       setDirection(1);
@@ -116,6 +117,7 @@ const OnboardingFlow: React.FC = () => {
     }
 
     if (currentStep === 1) {
+      setLoading(true);
       const res = await dispatch(
         updateUserProfile({
           profession: data?.profession?.toLocaleLowerCase(),
@@ -125,12 +127,14 @@ const OnboardingFlow: React.FC = () => {
             : "",
         })
       );
+      setLoading(false);
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(2);
     }
 
     if (currentStep === 2) {
+      setLoading(true);
       const res = await dispatch(
         updateUserProfile({
           lookingFor: data?.lookingFor,
@@ -138,19 +142,21 @@ const OnboardingFlow: React.FC = () => {
           preferredDistance: data?.distanceRange,
         })
       );
-
+      setLoading(false);
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(3);
     }
 
     if (currentStep === 3) {
+      setLoading(true);
       const res = await dispatch(
         updateUserProfile({
           bio: data?.bio,
         })
       );
       const resPhoto = await dispatch(uploadPhotos(data?.photos));
+      setLoading(false);
       if (res?.status !== 200 && resPhoto?.status !== 200) return;
       setDirection(1);
       setCurrentStep(4);

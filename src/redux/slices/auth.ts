@@ -70,7 +70,7 @@ export const signup = (payload: signUpPayloadTypes) => async () => {
   dispatch(slice.actions.startLoading());
   try {
     const response = await axiosInstance.post("/signup", payload);
-    console.log(response?.data?.data, "signup response hlo ============");
+    // console.log(response?.data?.data, "signup response hlo ============");
 
     dispatch(
       slice.actions.getUserDetailsSuccess({
