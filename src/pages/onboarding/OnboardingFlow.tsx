@@ -22,6 +22,7 @@ import ErrorMessage from "@sections/onboarding/ErrorMessage";
 import { onBoardingValidations } from "@utils/validation";
 import { splitName } from "@utils/string";
 import { showToast } from "@utils/toast";
+import { getFromLocalStorage, setToLocalStorage } from "@utils/localStorage";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -56,6 +57,13 @@ const OnboardingFlow: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    const step = getFromLocalStorage("onboardingStep");
+    if (step) {
+      setCurrentStep(Number(step));
+    }
+  }, []);
 
   // Reset onboarding when coming from login
   useEffect(() => {
@@ -94,7 +102,6 @@ const OnboardingFlow: React.FC = () => {
 
     if (currentStep === 0 && data?.email && data?.password) {
       const dob = dobFormatter(data?.dateOfBirth);
-
       const { firstName, lastName } = splitName(data?.name);
       setLoading(true);
       const res = await dispatch(
@@ -121,7 +128,7 @@ const OnboardingFlow: React.FC = () => {
       if (resType?.status !== 200) return;
       setDirection(1);
       setCurrentStep(1);
-      return;
+      setToLocalStorage("onboardingStep", "1");
     }
 
     if (currentStep === 1) {
@@ -139,6 +146,7 @@ const OnboardingFlow: React.FC = () => {
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(2);
+      setToLocalStorage("onboardingStep", "2");
     }
 
     if (currentStep === 2) {
@@ -154,6 +162,7 @@ const OnboardingFlow: React.FC = () => {
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(3);
+      setToLocalStorage("onboardingStep", "3");
     }
 
     if (currentStep === 3) {
@@ -168,6 +177,7 @@ const OnboardingFlow: React.FC = () => {
       if (res?.status !== 200 && resPhoto?.status !== 200) return;
       setDirection(1);
       setCurrentStep(4);
+      setToLocalStorage("onboardingStep", "4");
     }
 
     if (currentStep === 4) {

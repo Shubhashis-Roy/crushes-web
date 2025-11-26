@@ -5,6 +5,11 @@ export const onBoardingValidations = (
   if (step === 0) {
     if (!data.name) return "Please enter your name.";
     if (!data.email) return "Please enter your email address.";
+    if (
+      data?.email &&
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
+    )
+      return "Please enter a valid email address.";
     if (!data.password) return "Please create a password.";
     if (!data.city) return "Please enter your city.";
     if (!data.dateOfBirth) return "Please select your date of birth.";
