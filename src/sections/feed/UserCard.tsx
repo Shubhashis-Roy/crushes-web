@@ -212,7 +212,7 @@ const UserCard: React.FC<UserCardProps> = ({
                 )}
               </h2>
               {city && (
-                <p className="text-sm text-white/80">
+                <p className="text-sm font-bold text-white">
                   {capitalizeFirstLetter(city)}
                 </p>
               )}

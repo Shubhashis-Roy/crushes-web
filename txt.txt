@@ -28,12 +28,5 @@ fix cronjob and run
 
 delete by email id in array[not now]
 
-remove from DB:
-test@gmail.com
-test12
-test123
-test13
-test14, 15, 16, 17
-
  
 
