@@ -35,6 +35,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
     fetchConnections();
   }, []);
 
+  useEffect(() => {
+    if (messagesEndRef?.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  }, [messages]);
+
   const hasChat = !!chatPartner;
 
   return (
@@ -75,7 +81,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       )}
 
       {/* Messages */}
-      <main className="flex-1 overflow-y-auto px-6 py-4 space-y-3 relative z-10 scrollbar-thin scrollbar-thumb-pink-400/30 scrollbar-track-transparent">
+      <main className="flex-1 overflow-y-auto px-6 py-4 pb-6 space-y-3 relative z-10 scrollbar-thin scrollbar-thumb-pink-400/30 scrollbar-track-transparent">
         {loading ? (
           <ChatWindowSkeleton />
         ) : !chatUserList?.length && !connections?.length ? (
@@ -144,7 +150,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       </main>
 
       {/* Input */}
-      <footer className="px-4 pb-2 bg-transparent relative z-10">
+      <footer className="px-4 pb-2 bg-transparent sticky bottom-0 z-20">
         <div
           className={`flex items-center px-3 py-[6px] w-full rounded-full transition-all ${
             hasChat

@@ -105,7 +105,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
     );
   };
 
-  // 🌈 Range gradient slider (for age range)
+  // Range gradient slider (for age range)
   const RangeSlider = ({
     label,
     min,

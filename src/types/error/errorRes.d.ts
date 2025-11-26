@@ -4,9 +4,14 @@ declare interface ErrorResponseTypes {
   [key: string]: any;
 }
 
+interface errorDataTypes {
+  message: string;
+  alreadyPresentUser: object;
+}
+
 declare interface AxiosErrorResponseTypes {
   response?: {
-    data: object;
+    data: errorDataTypes;
     status: number;
     statusText: string;
   };

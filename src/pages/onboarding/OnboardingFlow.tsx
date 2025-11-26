@@ -4,7 +4,7 @@ import { Button } from "../../components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { THEME } from "@constants/colors";
-import NavBar from "@components/layout/NavBar";
+// import NavBar from "@components/layout/NavBar";
 
 // Steps
 import BasicInfoStep from "@sections/onboarding/BasicInfoStep";
@@ -20,6 +20,9 @@ import { dobFormatter } from "@utils/age";
 import { PATH } from "@constants/path";
 import ErrorMessage from "@sections/onboarding/ErrorMessage";
 import { onBoardingValidations } from "@utils/validation";
+import { splitName } from "@utils/string";
+import { showToast } from "@utils/toast";
+import { getFromLocalStorage, setToLocalStorage } from "@utils/localStorage";
 
 export const initialData: OnboardingDataTypes = {
   name: "",
@@ -54,6 +57,13 @@ const OnboardingFlow: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    const step = getFromLocalStorage("onboardingStep");
+    if (step) {
+      setCurrentStep(Number(step));
+    }
+  }, []);
 
   // Reset onboarding when coming from login
   useEffect(() => {
@@ -92,26 +102,37 @@ const OnboardingFlow: React.FC = () => {
 
     if (currentStep === 0 && data?.email && data?.password) {
       const dob = dobFormatter(data?.dateOfBirth);
-
+      const { firstName, lastName } = splitName(data?.name);
+      setLoading(true);
       const res = await dispatch(
         signup({
           emailId: data?.email,
           password: data?.password,
-          firstName: data?.name,
-          lastName: data?.name,
+          firstName: firstName,
+          lastName: lastName,
           dob: dob,
           city: data?.city,
           interest: data?.interestedIn?.map((i) => i.toLowerCase()),
           gender: data?.gender.toLocaleLowerCase(),
         })
       );
+      setLoading(false);
 
-      if (res?.status !== 200) return;
+      const responseError = res as AxiosErrorResponseTypes;
+      if (responseError?.response?.data?.message === "Email already exists") {
+        showToast("Email already exists. Please login.", "error");
+        return;
+      }
+
+      const resType = res as { status: number };
+      if (resType?.status !== 200) return;
       setDirection(1);
       setCurrentStep(1);
+      setToLocalStorage("onboardingStep", "1");
     }
 
     if (currentStep === 1) {
+      setLoading(true);
       const res = await dispatch(
         updateUserProfile({
           profession: data?.profession?.toLocaleLowerCase(),
@@ -121,12 +142,15 @@ const OnboardingFlow: React.FC = () => {
             : "",
         })
       );
+      setLoading(false);
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(2);
+      setToLocalStorage("onboardingStep", "2");
     }
 
     if (currentStep === 2) {
+      setLoading(true);
       const res = await dispatch(
         updateUserProfile({
           lookingFor: data?.lookingFor,
@@ -134,26 +158,31 @@ const OnboardingFlow: React.FC = () => {
           preferredDistance: data?.distanceRange,
         })
       );
-
+      setLoading(false);
       if (res?.status !== 200) return;
       setDirection(1);
       setCurrentStep(3);
+      setToLocalStorage("onboardingStep", "3");
     }
 
     if (currentStep === 3) {
+      setLoading(true);
       const res = await dispatch(
         updateUserProfile({
           bio: data?.bio,
         })
       );
       const resPhoto = await dispatch(uploadPhotos(data?.photos));
+      setLoading(false);
       if (res?.status !== 200 && resPhoto?.status !== 200) return;
       setDirection(1);
       setCurrentStep(4);
+      setToLocalStorage("onboardingStep", "4");
     }
 
     if (currentStep === 4) {
       navigate(PATH.FEED);
+      setToLocalStorage("onboardingStep", "");
     }
   };
 

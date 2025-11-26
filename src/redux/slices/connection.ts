@@ -80,7 +80,7 @@ export const getAllConnections = () => async () => {
     const errorData = axiosError?.response?.data as ErrorResponseTypes;
     dispatch(
       slice.actions.hasError({
-        error: axiosError?.response?.data || "Something went wrong",
+        error: errorData || "Something went wrong",
       })
     );
   }
@@ -110,7 +110,7 @@ export const sendRequest =
       const errorData = axiosError?.response?.data as ErrorResponseTypes;
       dispatch(
         slice.actions.hasError({
-          error: axiosError?.response?.data || "Something went wrong",
+          error: errorData || "Something went wrong",
         })
       );
     }
