@@ -13,6 +13,8 @@ import {
 } from "react-icons/fa";
 import { getAge } from "@utils/age";
 import { getZodiacSign } from "@utils/zodiaSing";
+import { Link } from "react-router-dom";
+import { PATH } from "@constants/path";
 
 interface BasicInfoStepProps {
   data: OnboardingDataTypes;
@@ -69,8 +71,18 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ data, updateData }) => {
             account
           </span>
         </h2>
-        <p className="text-white/80 text-base">
+        {/* <p className="text-white/80 text-base">
           Let’s get to know you better 💫
+        </p> */}
+
+        <p className="text-white/70 text-sm text-center italic mb-[-14px]">
+          Use the demo login to explore Crushes.
+          <Link
+            to={PATH.LOGIN}
+            className="text-red-400 hover:text-red-300 pl-1"
+          >
+            Login
+          </Link>
         </p>
       </div>
 
