@@ -4,7 +4,7 @@
 alt="logo" width="550" height="auto" />
 
   <p>
-Crushes – Social Matching App with React.js, Vite, Node, Express.js, MongoDB, React-Redux, Tailwind Css, 
+Crushes – Social Matching App with React.js, Vite, Node, Express.js, MongoDB, Socket.IO, webRTC, Redux, Tailwind CSS.
   </p>
 
 </div>
