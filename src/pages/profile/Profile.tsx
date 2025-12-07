@@ -1,0 +1,120 @@
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { dispatch } from "@redux/store";
+import { getProfile } from "@redux/slices/user";
+import EditProfile from "@sections/profile/EditProfile";
+// import ManageImages from "@sections/profile/ManageImages";
+import MyMatch from "@sections/profile/MyMatch";
+import DeleteAccount from "@sections/profile/DeleteAccount";
+import Logout from "@components/auth/Logout";
+import ProfileSkeleton from "@shimmer_ui/ProfileSkeleton";
+
+const Profile = () => {
+  const [user, setUser] = useState<profileDetailsTypes>();
+  const [selectedScreen, setSelectedScreen] = useState("Edit Profile");
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function getProfileData() {
+      setLoading(true);
+      const res = await dispatch(getProfile());
+      setUser(res);
+      setLoading(false);
+    }
+
+    getProfileData();
+  }, []);
+
+  const menuOptions = [
+    { label: "Edit Profile", emoji: "💫" },
+    // { label: "Manage Images", emoji: "🖼️" },
+    { label: "My Matches", emoji: "💞" },
+    { label: "Delete Account", emoji: "⚠️" },
+    { label: "Logout", emoji: "🚪" },
+  ];
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-full flex items-center justify-center mt-[7%]">
+        <ProfileSkeleton />;
+      </div>
+    );
+  }
+
+  const renderContent = () => {
+    switch (selectedScreen) {
+      case "Edit Profile":
+        return user && <EditProfile user={user} />;
+      // case "Manage Images":
+      //   return user && <ManageImages user={user} />;
+      case "My Matches":
+        return <MyMatch />;
+      case "Delete Account":
+        return <DeleteAccount />;
+      default:
+        return (
+          <p className="text-center text-white/70">Select an option above 🌸</p>
+        );
+    }
+  };
+
+  return (
+    user && (
+      <div className="relative min-h-screen bg-gradient-to-br from-[#2a0e45] via-[#3d176a] to-[#5e2d91] text-white flex flex-col items-center px-4 py-10 pt-28">
+        {/* ============== Header ============== */}
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
+            Your Cosmic Profile ✨
+          </h2>
+          <p className="text-white/80 mt-2">
+            Reflect your vibe and shine bright 💖
+          </p>
+        </div>
+
+        {/* ============== Floating Menu Buttons ============== */}
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
+          {menuOptions.map((opt) => (
+            <motion.button
+              key={opt.label}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() =>
+                opt.label === "Logout"
+                  ? setShowLogoutConfirm(true)
+                  : setSelectedScreen(opt.label)
+              }
+              className={`px-5 py-2.5 rounded-full border backdrop-blur-md transition-all duration-300 text-sm font-semibold shadow-lg ${
+                selectedScreen === opt.label
+                  ? "bg-gradient-to-r from-pink-400 to-purple-500 border-transparent text-white shadow-pink-500/30 scale-105"
+                  : "border-white/20 text-white/70 hover:bg-white/10"
+              }`}
+            >
+              <span className="mr-2">{opt.emoji}</span>
+              {opt.label}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* ============== Glass Card Section ============== */}
+        <motion.div
+          key={selectedScreen}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -30 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="w-full max-w-4xl bg-white/10 border border-white/20 rounded-2xl backdrop-blur-2xl shadow-2xl p-6 overflow-y-auto min-h-[60vh]"
+        >
+          <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
+        </motion.div>
+
+        {/* ============== Logout Confirmation ============== */}
+        {showLogoutConfirm && (
+          <Logout setShowLogoutConfirm={setShowLogoutConfirm} />
+        )}
+      </div>
+    )
+  );
+};
+
+export default Profile;
